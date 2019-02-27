@@ -9,9 +9,8 @@ import {
   Option
 } from '../../combobox/base/example';
 import { DatePicker } from '../../datepickers/base/example';
-import { UtilityIcon } from '../../icons/base/example';
-import { ButtonIcon } from '../../button-icons/base/example';
-import { FormElement } from '../../form-element/base/example';
+import ButtonIcon from '../../button-icons/';
+import { FormElement } from '../../form-element';
 import { Input } from '../../input/base/example';
 
 /* -----------------------------------------------------------------------------
@@ -19,7 +18,6 @@ import { Input } from '../../input/base/example';
 ----------------------------------------------------------------------------- */
 
 const dateInputId = 'date-input-id';
-const timeInputId = 'time-input-id';
 const listboxOptionId01 = 'listbox-option-unique-id-01';
 const listboxOptionId02 = 'listbox-option-unique-id-02';
 const listboxOptionId03 = 'listbox-option-unique-id-03';
@@ -37,9 +35,9 @@ const listboxOptionId12 = 'listbox-option-unique-id-12';
     Private
 ----------------------------------------------------------------------------- */
 
-const ListboxDropdown = props =>
+const ListboxDropdown = props => (
   <Listbox
-    className="slds-dropdown slds-dropdown--fluid slds-dropdown--length-5"
+    className="slds-dropdown slds-dropdown_fluid slds-dropdown_length-5"
     vertical
   >
     <ListboxItem>
@@ -82,50 +80,54 @@ const ListboxDropdown = props =>
     <ListboxItem>
       <Option id={listboxOptionId12} title="5:00pm" />
     </ListboxItem>
-  </Listbox>;
+  </Listbox>
+);
 
 /* -----------------------------------------------------------------------------
     Exports
 ----------------------------------------------------------------------------- */
 
 // Demo wrapper
-export const Context = props =>
-  <div style={{ height: '25rem' }}>
-    {props.children}
-  </div>;
+export const Context = props => (
+  <div style={{ height: '25rem' }}>{props.children}</div>
+);
 
 // Default
 export default (
-  <div className="slds-form slds-form--compound">
+  <div className="slds-form slds-form_compound">
     <fieldset className="slds-form-element">
-      <legend className="slds-form-element__label">Date and Time</legend>
-      <div className="slds-form-element__group">
-        <div className="slds-form-element__row">
-          <FormElement
-            className="slds-dropdown-trigger slds-dropdown-trigger_click slds-is-open"
-            label="Date"
-            inputId={dateInputId}
-            inputIcon="right"
-            dropdown={<DatePicker todayActive />}
-          >
-            <Input id={dateInputId} placeholder=" " />
-            <ButtonIcon
-              className="slds-input__icon slds-input__icon--right"
-              symbol="event"
-              assistiveText="Select a date"
-              title="Select a date"
+      <legend className="slds-form-element__label slds-form-element__legend">
+        Date and Time
+      </legend>
+      <div className="slds-form-element__control">
+        <div className="slds-form-element__group">
+          <div className="slds-form-element__row">
+            <FormElement
+              formElementClassName="slds-dropdown-trigger slds-dropdown-trigger_click slds-is-open"
+              labelContent="Date"
+              inputId={dateInputId}
+              hasRightIcon
+              dropdown={<DatePicker todayActive />}
+            >
+              <Input id={dateInputId} placeholder=" " />
+              <ButtonIcon
+                className="slds-input__icon slds-input__icon_right"
+                symbol="event"
+                assistiveText="Select a date"
+                title="Select a date"
+              />
+            </FormElement>
+            <ComboboxContainer
+              label="Time"
+              autocomplete
+              className="slds-combobox-picklist slds-timepicker"
+              inputIcon="right"
+              inputIconRightSymbol="clock"
+              inputIconRightAssistiveText="Select a time"
+              placeholder=" "
+              listbox={<ListboxDropdown />}
             />
-          </FormElement>
-          <ComboboxContainer
-            label="Time"
-            autocomplete
-            className="slds-combobox-picklist slds-timepicker"
-            inputIcon="right"
-            inputIconRightSymbol="clock"
-            inputIconRightAssistiveText="Select a time"
-            placeholder=" "
-            listbox={<ListboxDropdown />}
-          />
+          </div>
         </div>
       </div>
     </fieldset>
@@ -136,81 +138,111 @@ export let states = [
   {
     id: 'date-selection',
     label: 'Date selected',
-    element:
-      <div className="slds-form slds-form--compound">
+    element: (
+      <div className="slds-form slds-form_compound">
         <fieldset className="slds-form-element">
-          <legend className="slds-form-element__label">Date and Time</legend>
-          <div className="slds-form-element__group">
-            <div className="slds-form-element__row">
-              <FormElement
-                className="slds-dropdown-trigger slds-dropdown-trigger_click slds-is-open"
-                label="Date"
-                inputId={dateInputId}
-                inputIcon="right"
-                dropdown={<DatePicker todayActive dateSelected="single" dateRange="week-4" />}
-              >
-                <Input id={dateInputId} placeholder=" " defaultValue="06/24/2014" />
-                <ButtonIcon
-                  className="slds-input__icon slds-input__icon--right"
-                  symbol="event"
-                  assistiveText="Select a date"
-                  title="Select a date"
+          <legend className="slds-form-element__label slds-form-element__legend">
+            Date and Time
+          </legend>
+          <div className="slds-form-element__control">
+            <div className="slds-form-element__group">
+              <div className="slds-form-element__row">
+                <FormElement
+                  formElementClassName="slds-dropdown-trigger slds-dropdown-trigger_click slds-is-open"
+                  labelContent="Date"
+                  inputId={dateInputId}
+                  hasRightIcon
+                  dropdown={
+                    <DatePicker
+                      todayActive
+                      dateSelected="single"
+                      dateRange="week-4"
+                    />
+                  }
+                >
+                  <Input
+                    id={dateInputId}
+                    placeholder=" "
+                    defaultValue="06/24/2014"
+                  />
+                  <ButtonIcon
+                    className="slds-input__icon slds-input__icon_right"
+                    symbol="event"
+                    assistiveText="Select a date"
+                    title="Select a date"
+                  />
+                </FormElement>
+                <ComboboxContainer
+                  label="Time"
+                  autocomplete
+                  className="slds-combobox-picklist slds-timepicker"
+                  inputIcon="right"
+                  inputIconRightSymbol="clock"
+                  inputIconRightAssistiveText="Select a time"
+                  placeholder=" "
+                  listbox={<ListboxDropdown />}
                 />
-              </FormElement>
-              <ComboboxContainer
-                label="Time"
-                autocomplete
-                className="slds-combobox-picklist slds-timepicker"
-                inputIcon="right"
-                inputIconRightSymbol="clock"
-                inputIconRightAssistiveText="Select a time"
-                placeholder=" "
-                listbox={<ListboxDropdown />}
-              />
+              </div>
             </div>
           </div>
         </fieldset>
       </div>
+    )
   },
   {
     id: 'time-selection',
     label: 'Time selected',
-    element:
-      <div className="slds-form slds-form--compound">
+    element: (
+      <div className="slds-form slds-form_compound">
         <fieldset className="slds-form-element">
-          <legend className="slds-form-element__label">Date and Time</legend>
-          <div className="slds-form-element__group">
-            <div className="slds-form-element__row">
-              <FormElement
-                className="slds-dropdown-trigger slds-dropdown-trigger_click"
-                label="Date"
-                inputId={dateInputId}
-                inputIcon="right"
-                dropdown={<DatePicker todayActive dateSelected="single" dateRange="week-4" />}
-              >
-                <Input id={dateInputId} placeholder=" " defaultValue="06/24/2014" />
-                <ButtonIcon
-                  className="slds-input__icon slds-input__icon--right"
-                  symbol="event"
-                  assistiveText="Select a date"
-                  title="Select a date"
+          <legend className="slds-form-element__label slds-form-element__legend">
+            Date and Time
+          </legend>
+          <div className="slds-form-element__control">
+            <div className="slds-form-element__group">
+              <div className="slds-form-element__row">
+                <FormElement
+                  formElementClassName="slds-dropdown-trigger slds-dropdown-trigger_click"
+                  labelContent="Date"
+                  inputId={dateInputId}
+                  hasRightIcon
+                  dropdown={
+                    <DatePicker
+                      todayActive
+                      dateSelected="single"
+                      dateRange="week-4"
+                    />
+                  }
+                >
+                  <Input
+                    id={dateInputId}
+                    placeholder=" "
+                    defaultValue="06/24/2014"
+                  />
+                  <ButtonIcon
+                    className="slds-input__icon slds-input__icon_right"
+                    symbol="event"
+                    assistiveText="Select a date"
+                    title="Select a date"
+                  />
+                </FormElement>
+                <ComboboxContainer
+                  label="Time"
+                  autocomplete
+                  isOpen
+                  className="slds-combobox-picklist slds-timepicker"
+                  inputIcon="right"
+                  inputIconRightSymbol="clock"
+                  inputIconRightAssistiveText="Select a time"
+                  placeholder=" "
+                  value="8:00am"
+                  listbox={<ListboxDropdown optionSelected />}
                 />
-              </FormElement>
-              <ComboboxContainer
-                label="Time"
-                autocomplete
-                isOpen
-                className="slds-combobox-picklist slds-timepicker"
-                inputIcon="right"
-                inputIconRightSymbol="clock"
-                inputIconRightAssistiveText="Select a time"
-                placeholder=" "
-                value="8:00am"
-                listbox={<ListboxDropdown optionSelected />}
-              />
+              </div>
             </div>
           </div>
         </fieldset>
       </div>
+    )
   }
 ];

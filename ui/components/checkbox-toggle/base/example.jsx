@@ -3,98 +3,131 @@
 
 import React from 'react';
 import classNames from 'classnames';
+import _ from '../../../shared/helpers';
 
 /// ////////////////////////////////////////
 // Partial(s)
 /// ////////////////////////////////////////
 
-let Demo = props =>
-  <div className="demo-only slds-size_1-of-2" {...props}>
-    {props.children}
-  </div>;
-
-let Fieldset = props =>
-  <fieldset className={classNames('form--element', props.className)}>
-    <legend className="slds-form-element__legend slds-form-element__label">Share email with</legend>
-    <div className="slds-form-element__control slds-box_border">
-      {props.children}
-    </div>
-  </fieldset>;
-
-let LabelWrapper = props =>
+export let LabelWrapper = props => (
   <div className={classNames('slds-form-element', props.className)}>
     {props.children}
-  </div>;
+  </div>
+);
 
-let Label = props =>
-  <label className={classNames('slds-checkbox_toggle slds-grid', props.className)} htmlFor={props.id}>
+export let Label = props => (
+  <label
+    className={classNames('slds-checkbox_toggle slds-grid', props.className)}
+    htmlFor={props.id}
+  >
     {props.children}
-  </label>;
+  </label>
+);
 
-let FauxLabel = props =>
-  <span className="slds-form-element__label slds-m-bottom_none">{props.children}</span>;
+export let FauxLabel = props => (
+  <span
+    className={classNames('slds-form-element__label', 'slds-m-bottom_none', {
+      'slds-assistive-text': props.isBare
+    })}
+  >
+    {props.children}
+  </span>
+);
 
-let Checkbox = props =>
-  <input name="checkbox" type="checkbox" disabled={props.disabled} defaultChecked={props.checked} aria-describedby="toggle-desc" />;
+export let Checkbox = props => (
+  <input
+    name={props.uniqueId}
+    value={props.uniqueId}
+    type="checkbox"
+    disabled={props.disabled}
+    defaultChecked={props.checked}
+    aria-describedby={props.uniqueId}
+  />
+);
 
-let Toggle = props =>
-  <span id="toggle-desc" className={classNames('slds-checkbox_faux_container', props.className)} aria-live="assertive">
+export let Toggle = props => (
+  <span
+    id={props.uniqueId}
+    className={classNames('slds-checkbox_faux_container', props.className)}
+    aria-live="assertive"
+  >
     <span className="slds-checkbox_faux" />
-    <span className={classNames('slds-checkbox_on', props.className)}>Enabled</span>
-    <span className={classNames('slds-checkbox_off', props.className)}>Disabled</span>
-  </span>;
+    <span className={classNames('slds-checkbox_on', props.className)}>
+      Enabled
+    </span>
+    <span className={classNames('slds-checkbox_off', props.className)}>
+      Disabled
+    </span>
+  </span>
+);
 
 /// ////////////////////////////////////////
 // State Constructor(s)
 /// ////////////////////////////////////////
-let StateA = props =>
-  <Demo>
+
+export let CheckboxToggle = props => {
+  const uniqueId = _.uniqueId('checkbox-toggle-');
+
+  return (
+    <LabelWrapper>
+      <Label>
+        <FauxLabel isBare={props.isBare}>
+          {props.title || 'Toggle Label'}
+        </FauxLabel>
+        <Checkbox
+          uniqueId={uniqueId}
+          checked={props.checked}
+          disabled={props.disabled}
+        />
+        <Toggle uniqueId={uniqueId} />
+      </Label>
+    </LabelWrapper>
+  );
+};
+
+export let CheckboxToggleChecked = props => {
+  const uniqueId = _.uniqueId('checkbox-toggle-');
+
+  return (
     <LabelWrapper>
       <Label>
         <FauxLabel>Toggle Label</FauxLabel>
-        <Checkbox />
-        <Toggle />
+        <Checkbox uniqueId={uniqueId} checked />
+        <Toggle uniqueId={uniqueId} />
       </Label>
     </LabelWrapper>
-  </Demo>;
+  );
+};
 
-let StateB = props =>
-<Demo>
-  <LabelWrapper>
-    <Label>
-      <FauxLabel>Toggle Label</FauxLabel>
-      <Checkbox checked />
-      <Toggle />
-    </Label>
-  </LabelWrapper>
-</Demo>;
+export let CheckboxToggleDisabled = props => {
+  const uniqueId = _.uniqueId('checkbox-toggle-');
 
-let StateC = props =>
-  <Demo>
+  return (
     <LabelWrapper>
       <Label>
         <FauxLabel>Toggle Label</FauxLabel>
-        <Checkbox disabled />
-        <Toggle />
+        <Checkbox uniqueId={uniqueId} disabled />
+        <Toggle uniqueId={uniqueId} />
       </Label>
     </LabelWrapper>
-  </Demo>;
+  );
+};
 
 /// ////////////////////////////////////////
 // Export
 /// ////////////////////////////////////////
 
-export default <StateA />;
+export default <CheckboxToggle />;
 
 export let states = [
   {
     id: 'checkbox-toggle-checked',
     label: 'Checked',
-    element: <StateB />
+    element: <CheckboxToggleChecked />
   },
   {
     id: 'checkbox-toggle-disabled',
     label: 'Disabled',
-    element: <StateC />
+    element: <CheckboxToggleDisabled />
   }
 ];

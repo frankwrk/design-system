@@ -24,6 +24,7 @@
  * @name base
  * @selector .slds-publisher
  * @restrict div
+ * @support dev-ready
  * @variant
  */
 .slds-publisher {
@@ -39,6 +40,9 @@
 
     .slds-publisher__toggle-visibility {
       display: inherit;
+      height: auto;
+      overflow: visible;
+      width: auto;
     }
 
     .slds-publisher__input {
@@ -88,6 +92,9 @@
    * @required
    */
   .slds-publisher__toggle-visibility {
-    display: none;
+    display: block;
+    height: 0;
+    overflow: hidden;
+    width: 0;
   }
 }

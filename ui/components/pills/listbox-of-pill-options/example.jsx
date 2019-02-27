@@ -2,35 +2,66 @@
 // Licensed under BSD 3-Clause - see LICENSE.txt or git.io/sfdc-license
 
 import React from 'react';
-import { ButtonIcon } from '../../button-icons/base/example';
 import { PillContainer } from '../base/example';
 import { Avatar } from '../../avatar/base/example';
 import SvgIcon from '../../../shared/svg-icon';
+import { StandardIcon } from '../../icons/standard/example';
 import classNames from 'classnames';
 
 /// ////////////////////////////////////////
 // Partial(s)
 /// ////////////////////////////////////////
 
-export let ListboxPill = props =>
-  <span className={classNames('slds-pill', props.className)} role="option" tabIndex={props.tabIndex} aria-selected="true">
+export let ListboxPill = props => (
+  <span
+    className={classNames('slds-pill', props.className)}
+    role="option"
+    tabIndex={props.tabIndex}
+    aria-selected="true"
+  >
     {props.children}
-    <span className="slds-pill__label" title={props.label || 'Full pill label verbiage mirrored here'}>{props.label || 'Pill Label'}</span>
-    <span className="slds-icon_container slds-pill__remove" title="Remove">
-      <SvgIcon className="slds-icon slds-icon_x-small slds-icon-text-default" sprite="utility" symbol="close" />
-      <span className="slds-assistive-text">Press delete or backspace to remove</span>
+    <span
+      className="slds-pill__label"
+      title={props.label || 'Full pill label verbiage mirrored here'}
+    >
+      {props.label || 'Pill Label'}
     </span>
-  </span>;
+    <span className="slds-icon_container slds-pill__remove" title="Remove">
+      <SvgIcon
+        className="slds-icon slds-icon_x-small slds-icon-text-default"
+        sprite="utility"
+        symbol="close"
+      />
+      <span className="slds-assistive-text">
+        Press delete or backspace to remove
+      </span>
+    </span>
+  </span>
+);
 
-export let ListboxHoriz = props =>
-  <ul className="slds-listbox slds-listbox_horizontal" role="listbox" aria-label="Selected Options:" aria-orientation="horizontal">
+export let ListboxPills = props => (
+  <ul
+    className={classNames(
+      'slds-listbox slds-listbox_horizontal',
+      props.className
+    )}
+    role="listbox"
+    aria-label="Selected Options:"
+    aria-orientation="horizontal"
+  >
     {props.children}
-  </ul>;
+  </ul>
+);
 
-export let ListItemHoriz = props =>
-  <li role="presentation">
+export let ListboxPillsItem = props => (
+  <li
+    className={classNames('slds-listbox-item', props.className)}
+    role="presentation"
+    aria-hidden={props['aria-hidden']}
+  >
     {props.children}
-  </li>;
+  </li>
+);
 
 /// ////////////////////////////////////////
 // Export
@@ -38,14 +69,14 @@ export let ListItemHoriz = props =>
 
 export default (
   <PillContainer>
-    <ListboxHoriz>
-      <ListItemHoriz>
+    <ListboxPills>
+      <ListboxPillsItem>
         <ListboxPill tabIndex="0" />
-      </ListItemHoriz>
-      <ListItemHoriz>
+      </ListboxPillsItem>
+      <ListboxPillsItem>
         <ListboxPill />
-      </ListItemHoriz>
-    </ListboxHoriz>
+      </ListboxPillsItem>
+    </ListboxPills>
   </PillContainer>
 );
 
@@ -53,35 +84,39 @@ export let states = [
   {
     id: 'listbox-pill-with-icon',
     label: 'With icon',
-    element:
+    element: (
       <PillContainer>
-        <ListboxHoriz>
-          <ListItemHoriz>
+        <ListboxPills>
+          <ListboxPillsItem>
             <ListboxPill tabIndex="0">
-              <span className="slds-icon_container slds-icon-standard-account slds-pill__icon_container" title="Account">
-                <SvgIcon className="slds-icon" sprite="standard" symbol="account" />
-                <span className="slds-assistive-text">Account</span>
-              </span>
+              <StandardIcon
+                containerClassName="slds-pill__icon_container"
+                title="Account"
+                assistiveText="Account"
+              />
             </ListboxPill>
-          </ListItemHoriz>
-          <ListItemHoriz>
+          </ListboxPillsItem>
+          <ListboxPillsItem>
             <ListboxPill>
-              <span className="slds-icon_container slds-icon-standard-case slds-pill__icon_container" title="Case">
-                <SvgIcon className="slds-icon" sprite="standard" symbol="case" />
-                <span className="slds-assistive-text">Case</span>
-              </span>
+              <StandardIcon
+                containerClassName="slds-pill__icon_container"
+                symbol="case"
+                title="Case"
+                assistiveText="Case"
+              />
             </ListboxPill>
-          </ListItemHoriz>
-        </ListboxHoriz>
+          </ListboxPillsItem>
+        </ListboxPills>
       </PillContainer>
+    )
   },
   {
     id: 'listbox-pill-with-avatar',
     label: 'With avatar',
-    element:
+    element: (
       <PillContainer>
-        <ListboxHoriz>
-          <ListItemHoriz>
+        <ListboxPills>
+          <ListboxPillsItem>
             <ListboxPill tabIndex="0">
               <Avatar className="slds-avatar_x-small slds-pill__icon_container">
                 <img
@@ -91,8 +126,8 @@ export let states = [
                 />
               </Avatar>
             </ListboxPill>
-          </ListItemHoriz>
-          <ListItemHoriz>
+          </ListboxPillsItem>
+          <ListboxPillsItem>
             <ListboxPill>
               <Avatar className="slds-avatar_x-small slds-pill__icon_container">
                 <img
@@ -102,8 +137,9 @@ export let states = [
                 />
               </Avatar>
             </ListboxPill>
-          </ListItemHoriz>
-        </ListboxHoriz>
+          </ListboxPillsItem>
+        </ListboxPills>
       </PillContainer>
+    )
   }
 ];

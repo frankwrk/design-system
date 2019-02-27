@@ -7,7 +7,6 @@
  * @selector .slds-feed__item-comments
  * @restrict .slds-feed__item div
  * @notes Contains comment replies and publisher
- * @required
  */
 .slds-feed__item-comments {
   background: $color-background-post;
@@ -15,7 +14,7 @@
   border-bottom: $border-width-thin solid $color-border;
 
   .slds-comment {
-    padding: $spacing-x-small $spacing-medium;
+    padding: $var-spacing-vertical-x-small $spacing-medium;
   }
 }
 
@@ -23,6 +22,7 @@
  * @name post
  * @selector .slds-post
  * @restrict .slds-feed article
+ * @support dev-ready
  * @variant
  */
 .slds-post {
@@ -44,7 +44,7 @@
    * @restrict .slds-post header
    */
   &__header {
-    margin-bottom: $spacing-small;
+    margin-bottom: $var-spacing-vertical-small;
   }
 
   /**

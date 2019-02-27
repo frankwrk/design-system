@@ -9,13 +9,14 @@
 @mixin focus-inverse {
   outline: none;
   box-shadow: $shadow-button-focus-inverse;
+  border: $border-width-thin solid $color-border-button-focus-inverse;
 }
 
 
 @mixin calendar-selection-fill {
   content: '';
   position: absolute;
-  background: $color-background-button-brand-hover;
+  background: $brand-accessible;
   top: 0;
   left: -50%;
   height: 100%;

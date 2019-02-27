@@ -3,22 +3,19 @@
 
 import React from 'react';
 import _ from '../../../shared/helpers';
-import { ButtonIcon } from '../../button-icons/base/example';
+import ButtonIcon from '../../button-icons/';
 import { StandardIcon } from '../../icons/standard/example';
-import SvgIcon from '../../../shared/svg-icon';
 import classNames from 'classnames';
 
 /// ///////////////////////////////////////////
 // State Constructor(s)
 /// ///////////////////////////////////////////
 
-let NotificationContainer = props =>
-  <div className="slds-notification-container">
-    { props.children }
-  </div>;
+let NotificationContainer = props => (
+  <div className="slds-notification-container">{props.children}</div>
+);
 
 let Notification = props => {
-  const headingUniqueId = _.uniqueId('dialog-heading-id-');
   const bodyUniqueId = _.uniqueId('dialog-body-id-');
 
   return (
@@ -29,34 +26,47 @@ let Notification = props => {
       aria-describedby={bodyUniqueId}
     >
       <div className="slds-notification__body" id={bodyUniqueId}>
-        <a className="slds-notification__target slds-media" href="javascript:void(0);">
+        <a
+          className="slds-notification__target slds-media"
+          href="javascript:void(0);"
+        >
           <StandardIcon
             containerClassName="slds-media__figure"
-            className="slds-icon--small"
+            className="slds-icon_small"
             assistiveText={false}
             symbol={props.type}
             title={props.type}
           />
           <div className="slds-media__body">
-            <h2 className="slds-text-heading--small slds-m-bottom--xx-small" id={props.headingID}>
-              <span className="slds-assistive-text">{props.type + " notification:"}</span>
+            <h2
+              className="slds-text-heading_small slds-m-bottom_xx-small"
+              id={props.headingID}
+            >
+              <span className="slds-assistive-text">
+                {props.type + ' notification:'}
+              </span>
               {props.title}
             </h2>
             <p>{props.description}</p>
           </div>
         </a>
         <ButtonIcon
-          className="slds-button--icon-container slds-notification__close"
+          className="slds-button_icon-container slds-notification__close"
           symbol="close"
-          assistiveText={"Dismiss " + props.title + " notification"}
-          title={"Dismiss " + props.title + " notification"}
+          assistiveText={'Dismiss ' + props.title + ' notification'}
+          title={'Dismiss ' + props.title + ' notification'}
         />
       </div>
-        { props.footer
-        ? <footer className={classNames('slds-notification__footer', props.footerClassName)}>
-          { props.footer }
+      {props.footer ? (
+        <footer
+          className={classNames(
+            'slds-notification__footer',
+            props.footerClassName
+          )}
+        >
+          {props.footer}
         </footer>
-      : null }
+      ) : null}
     </section>
   );
 };
@@ -75,7 +85,7 @@ export default (
       >
         event notification: Tesla - Renewal meeting
       </div>
-      <Notification 
+      <Notification
         headingID="noti52"
         type="event"
         title="Tesla - Renewal meeting"
@@ -89,7 +99,7 @@ export let examples = [
   {
     id: 'task-notification',
     label: 'Task Notification',
-    element:
+    element: (
       <div className="demo-only slds-is-relative" style={{ height: '4.5rem' }}>
         <NotificationContainer>
           <div
@@ -107,11 +117,12 @@ export let examples = [
           />
         </NotificationContainer>
       </div>
+    )
   },
   {
     id: 'stacked-2',
     label: 'Stacked Notifications',
-    element:
+    element: (
       <div className="demo-only slds-is-relative" style={{ height: '15rem' }}>
         <NotificationContainer>
           <div
@@ -135,11 +146,12 @@ export let examples = [
           />
         </NotificationContainer>
       </div>
+    )
   },
   {
     id: 'stacked-3',
     label: 'Three Stacked Notifications',
-    element:
+    element: (
       <div className="demo-only slds-is-relative" style={{ height: '15rem' }}>
         <NotificationContainer>
           <div
@@ -169,11 +181,12 @@ export let examples = [
           />
         </NotificationContainer>
       </div>
+    )
   },
   {
     id: 'overflow-six',
     label: 'Six Stacked Notifications',
-    element:
+    element: (
       <div className="demo-only slds-is-relative" style={{ height: '17rem' }}>
         <NotificationContainer>
           <div
@@ -221,6 +234,6 @@ export let examples = [
           />
         </NotificationContainer>
       </div>
+    )
   }
 ];
-

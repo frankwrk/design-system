@@ -2,34 +2,25 @@
 // Licensed under BSD 3-Clause - see LICENSE.txt or git.io/sfdc-license
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import SvgIcon from '../../../shared/svg-icon';
+import ButtonIcon from '../../button-icons/';
 import classNames from 'classnames';
-import { SpinnerContainer, Spinner } from '../../spinners/base/example';
+import { Spinner } from '../../spinners/base/example';
+import {
+  FormElement,
+  SimpleFormElementWrapper,
+  FormElementControl
+} from '../../form-element';
 
-let inputId = 'text-input-id-1';
+const inputLabel = 'Input Label';
+const inputId = 'text-input-id-1';
+const errorId = 'error-message-unique-id';
+const placeholderText = 'Placeholder Text';
 
 /// ////////////////////////////////////////
 // Partial(s)
 /// ////////////////////////////////////////
-
-// Might need to move this to its own component example
-export let FormElement = props =>
-  <div className={classNames('slds-form-element', props.className)}>
-    {props.children}
-  </div>;
-
-export let FormElementLabel = props =>
-  <label
-    className={classNames('slds-form-element__label', props.className)}
-    htmlFor={inputId}
-  >
-    {props.children}
-  </label>;
-
-export let FormElementControl = props =>
-  <div className={classNames('slds-form-element__control', props.className)}>
-    {props.children}
-  </div>;
 
 export let Input = props => {
   return (
@@ -38,78 +29,84 @@ export let Input = props => {
       id={props.id || inputId}
       className={classNames('slds-input', props.className)}
       type={props.type || 'text'}
-      placeholder={props.placeholder || 'Placeholder Text'}
+      placeholder={props.placeholder}
       readOnly={props['readOnly']}
       defaultValue={props.defaultValue}
     />
   );
 };
 
+Input.propTypes = {
+  placeholder: PropTypes.string
+};
+
 /// ///////////////////////////////////////////
 // State Constructor(s)
 /// ///////////////////////////////////////////
 
-let Default = props =>
-    <FormElement>
-      <FormElementLabel>Input Label</FormElementLabel>
-      <FormElementControl>
-        <Input />
-      </FormElementControl>
-    </FormElement>;
+let Required = props => (
+  <FormElement labelContent={inputLabel} inputId={inputId} isRequired>
+    <Input id={inputId} placeholder={placeholderText} required />
+  </FormElement>
+);
 
-let Required = props =>
-    <FormElement>
-      <FormElementLabel><abbr className="slds-required" title="required">*</abbr> Input Label</FormElementLabel>
-      <FormElementControl>
-        <Input required />
-      </FormElementControl>
-    </FormElement>;
+let ErrorState = props => (
+  <FormElement
+    hasError
+    labelContent={inputLabel}
+    inputId={inputId}
+    errorId={props.errorId}
+    isRequired
+    inlineMessage="This field is required"
+  >
+    <Input
+      id={inputId}
+      placeholder={placeholderText}
+      required
+      aria-describedby={props.errorId}
+    />
+  </FormElement>
+);
 
-let ErrorState = props =>
-    <FormElement className="slds-has-error">
-      <FormElementLabel><abbr className="slds-required" title="required">*</abbr> Input Label</FormElementLabel>
-      <FormElementControl>
-        <Input required aria-describedby={props.errorId} />
-      </FormElementControl>
-      <div id={props.errorId} className="slds-form-element__help">This field is required</div>
-    </FormElement>;
+let ErrorIcon = props => (
+  <FormElement
+    hasError
+    labelContent={inputLabel}
+    inputId={inputId}
+    hasLeftIcon
+    errorId={props.errorId}
+    isRequired
+    inlineMessage="This field is required"
+  >
+    <SvgIcon className="slds-input__icon" sprite="utility" symbol="error" />
+    <Input
+      id={inputId}
+      required
+      placeholder={placeholderText}
+      aria-describedby={props.errorId}
+    />
+  </FormElement>
+);
 
-let ErrorIcon = props =>
-    <FormElement className="slds-has-error">
-      <FormElementLabel><abbr className="slds-required" title="required">*</abbr> Input Label</FormElementLabel>
-      <FormElementControl className="slds-input-has-icon slds-input-has-icon_left">
-        <SvgIcon className="slds-input__icon" sprite="utility" symbol="warning" />
-        <Input required aria-describedby={props.errorId} />
-      </FormElementControl>
-      <div id={props.errorId} className="slds-form-element__help">This field is required</div>
-    </FormElement>;
+let Disabled = props => (
+  <FormElement labelContent={inputLabel} inputId={inputId}>
+    <Input id={inputId} placeholder={placeholderText} disabled />
+  </FormElement>
+);
 
-let Disabled = props =>
-    <FormElement>
-      <FormElementLabel>Input Label</FormElementLabel>
-      <FormElementControl>
-        <Input disabled />
-      </FormElementControl>
-    </FormElement>;
-
-let Readonly = props =>
-  <FormElement>
-    <FormElementLabel>Input Label</FormElementLabel>
-    <FormElementControl>
-      <Input readOnly defaultValue="Read Only" placeholder="" />
-    </FormElementControl>
-  </FormElement>;
+let Readonly = props => (
+  <FormElement labelContent={inputLabel} inputId={inputId}>
+    <Input id={inputId} readOnly defaultValue="Read Only" placeholder="" />
+  </FormElement>
+);
 
 /// ///////////////////////////////////////////
 // Export
 /// ///////////////////////////////////////////
 
 export default (
-  <FormElement>
-    <FormElementLabel>Input Label</FormElementLabel>
-    <FormElementControl>
-      <Input />
-    </FormElementControl>
+  <FormElement labelContent={inputLabel} inputId={inputId}>
+    <Input id={inputId} placeholder={placeholderText} />
   </FormElement>
 );
 
@@ -127,12 +124,12 @@ export let states = [
   {
     id: 'input-error',
     label: 'Error',
-    element: <ErrorState errorId="error-message" />
+    element: <ErrorState errorId={errorId} />
   },
   {
     id: 'input-error-icon',
     label: 'Error with icon',
-    element: <ErrorIcon errorId="error-message" />
+    element: <ErrorIcon errorId={errorId} />
   },
   {
     id: 'read-only',
@@ -142,13 +139,14 @@ export let states = [
   {
     id: 'static',
     label: 'Static',
-    element:
-      <FormElement>
+    element: (
+      <SimpleFormElementWrapper>
         <span className="slds-form-element__label">Input Label</span>
         <FormElementControl>
           <span className="slds-form-element__static">Read Only</span>
         </FormElementControl>
-      </FormElement>
+      </SimpleFormElementWrapper>
+    )
   }
 ];
 
@@ -156,135 +154,179 @@ export let examples = [
   {
     id: 'left-icon',
     label: 'Left Icon',
-    element:
-      <FormElement>
-        <FormElementLabel>Input Label</FormElementLabel>
-        <FormElementControl className="slds-input-has-icon slds-input-has-icon_left" >
-          <SvgIcon
-            className="slds-icon slds-input__icon slds-input__icon_left slds-icon-text-default"
-            sprite="utility"
-            symbol="search"
-          />
-          <Input />
-        </FormElementControl>
+    element: (
+      <FormElement labelContent={inputLabel} inputId={inputId} hasLeftIcon>
+        <SvgIcon
+          className="slds-icon slds-input__icon slds-input__icon_left slds-icon-text-default"
+          sprite="utility"
+          symbol="search"
+        />
+        <Input id={inputId} placeholder={placeholderText} />
       </FormElement>
+    )
   },
   {
     id: 'right-icon',
     label: 'Right Icon',
-    element:
-      <FormElement>
-        <FormElementLabel>Input Label</FormElementLabel>
-        <FormElementControl className="slds-input-has-icon slds-input-has-icon_right" >
-          <SvgIcon
-            className="slds-icon slds-input__icon slds-input__icon_right slds-icon-text-default"
-            sprite="utility"
-            symbol="search"
-          />
-          <Input />
-        </FormElementControl>
+    element: (
+      <FormElement labelContent={inputLabel} inputId={inputId} hasRightIcon>
+        <SvgIcon
+          className="slds-icon slds-input__icon slds-input__icon_right slds-icon-text-default"
+          sprite="utility"
+          symbol="search"
+        />
+        <Input id={inputId} placeholder={placeholderText} />
       </FormElement>
+    )
   },
   {
     id: 'double-icon',
-    label: 'Left & Right Icon',
-    element:
-      <FormElement>
-        <FormElementLabel>Input Label</FormElementLabel>
-        <FormElementControl className="slds-input-has-icon slds-input-has-icon_left-right" >
-          <SvgIcon
-            className="slds-icon slds-input__icon slds-input__icon_left slds-icon-text-default"
-            sprite="utility"
-            symbol="search"
-          />
-          <Input />
-          <button className="slds-input__icon slds-input__icon_right slds-button slds-button_icon">
-            <SvgIcon
-              className="slds-button__icon slds-icon-text-light"
-              sprite="utility"
-              symbol="clear"
-            />
-            <span className="slds-assistive-text">Clear</span>
-          </button>
-        </FormElementControl>
+    label: 'Left Icon & Clear Button',
+    element: (
+      <FormElement
+        labelContent={inputLabel}
+        inputId={inputId}
+        hasLeftIcon
+        hasRightIcon
+      >
+        <SvgIcon
+          className="slds-icon slds-input__icon slds-input__icon_left slds-icon-text-default"
+          sprite="utility"
+          symbol="search"
+        />
+        <Input id={inputId} placeholder={placeholderText} />
+        <ButtonIcon
+          symbol="clear"
+          className="slds-input__icon slds-input__icon_right"
+          iconClassName="slds-icon-text-light"
+          assistiveText="Clear"
+          title="Clear"
+        />
       </FormElement>
+    )
   },
   {
     id: 'double-icon-spinner',
-    label: 'Icons with Spinner',
-    element:
-      <FormElement>
-        <FormElementLabel>Input Label</FormElementLabel>
-        <FormElementControl className="slds-input-has-icon slds-input-has-icon_left-right" >
-          <SvgIcon
-            className="slds-icon slds-input__icon slds-input__icon_left slds-icon-text-default"
-            sprite="utility"
-            symbol="search"
+    label: 'Clear Button with Spinner',
+    element: (
+      <FormElement
+        labelContent={inputLabel}
+        inputId={inputId}
+        hasLeftIcon
+        hasRightIcon
+        hasRightIconGroup
+      >
+        <SvgIcon
+          className="slds-icon slds-input__icon slds-input__icon_left slds-icon-text-default"
+          sprite="utility"
+          symbol="search"
+        />
+        <Input id={inputId} placeholder={placeholderText} />
+        <div className="slds-input__icon-group slds-input__icon-group_right">
+          <Spinner className="slds-spinner_brand slds-spinner_x-small slds-input__spinner" />
+          <ButtonIcon
+            symbol="clear"
+            className="slds-input__icon slds-input__icon_right"
+            iconClassName="slds-icon-text-light"
+            assistiveText="Clear"
+            title="Clear"
           />
-          <Input />
-          <div className="slds-input__icon-group slds-input__icon-group_right">
-            <Spinner className="slds-spinner_brand slds-spinner_x-small slds-input__spinner" />
-            <button className="slds-input__icon slds-input__icon_right slds-button slds-button_icon">
-              <SvgIcon
-                className="slds-button__icon slds-icon-text-light"
-                sprite="utility"
-                symbol="clear"
-              />
-              <span className="slds-assistive-text">Clear</span>
-            </button>
-          </div>
-        </FormElementControl>
+        </div>
       </FormElement>
+    )
   },
   {
     id: 'fixed-text',
     label: 'Fixed text',
-    element:
-      <FormElement>
-        <FormElementLabel>Input Label</FormElementLabel>
-        <FormElementControl className="slds-input-has-fixed-addon">
-          <span className="slds-form-element__addon">$</span>
-          <Input />
-          <span className="slds-form-element__addon">euro</span>
-        </FormElementControl>
+    element: (
+      <FormElement
+        labelContent={inputLabel}
+        inputId={inputId}
+        formControlClassName="slds-input-has-fixed-addon"
+        labelId="fixed-text-label"
+      >
+        <span className="slds-form-element__addon" id="fixed-text-addon-pre">
+          $
+        </span>
+        <Input
+          id={inputId}
+          placeholder={placeholderText}
+          aria-labelledby="fixed-text-label fixed-text-addon-pre fixed-text-addon-post"
+        />
+        <span className="slds-form-element__addon" id="fixed-text-addon-post">
+          euro
+        </span>
       </FormElement>
+    )
+  },
+  {
+    id: 'inline-help',
+    label: 'Inline Help',
+    element: (
+      <FormElement
+        labelId="inline-text-label"
+        labelContent={inputLabel}
+        inputId={inputId}
+      >
+        <Input
+          id={inputId}
+          placeholder={placeholderText}
+          aria-labelledby="inline-text-label"
+        />
+        <div className="slds-form-element__help">ex: (415)111-2222</div>
+      </FormElement>
+    )
   },
   {
     id: 'field-level-help',
     label: 'Field level help',
-    element:
-    <div className="demo-only" style={{ paddingTop: '5rem' }}>
-      <div className="slds-form-element">
-        <label className="slds-form-element__label slds-align-middle" htmlFor="form-help">Text Label</label>
-        <div className="slds-form-element__icon">
-          <button aria-describedby="help" className="slds-button slds-button_icon">
-            <SvgIcon
-              className="slds-icon slds-icon_x-small slds-icon-text-default"
-              sprite="utility"
-              symbol="info"
-            />
-            <span className="slds-assistive-text">Help</span>
-          </button>
-        </div>
-        <div className="slds-form-element__control">
-          <input
-            className="slds-input"
-            id="form-help"
-            placeholder="Field Level Help"
-            type="text"
-          />
-        </div>
-      </div>
+    element: (
       <div
-        className="slds-popover slds-popover_tooltip slds-nubbin_bottom-left"
-        id="help"
-        role="tooltip"
-        style={{position: 'absolute', top: '15px', left: '72px', marginLeft: '-1rem', width: '20rem'}}
+        style={{
+          paddingTop: '3rem',
+          position: 'relative'
+        }}
       >
-        <div className="slds-popover__body slds-text-longform">
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Adipisci facere eligendi reiciendis obcaecati.</p>
-        </div>
+        <FormElement
+          labelContent={inputLabel}
+          inputId={inputId}
+          hasTooltip
+          showTooltip
+        >
+          <Input id={inputId} placeholder={placeholderText} />
+        </FormElement>
       </div>
-    </div>
+    )
+  },
+  {
+    id: 'increment-decrement-counter',
+    label: 'Counter',
+    element: (
+      <FormElement
+        formElementClassName="slds-text-align_center"
+        labelContent={inputLabel}
+        inputId={inputId}
+        labelClassName="slds-m-right_none"
+      >
+        <ButtonIcon
+          className="slds-button_icon-small slds-input__button_decrement"
+          symbol="ban"
+          assistiveText={'Decrement counter'}
+          title={'Decrement counter'}
+        />
+        <Input
+          className="slds-input_counter"
+          id={inputId}
+          type="number"
+          placeholder={'1'}
+        />
+        <ButtonIcon
+          className="slds-button_icon-small slds-input__button_increment"
+          symbol="new"
+          assistiveText={'Increment counter'}
+          title={'Increment counter'}
+        />
+      </FormElement>
+    )
   }
 ];

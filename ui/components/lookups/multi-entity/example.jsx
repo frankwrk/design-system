@@ -2,68 +2,59 @@
 // Licensed under BSD 3-Clause - see LICENSE.txt or git.io/sfdc-license
 
 import React from 'react';
-import { Avatar } from '../../avatar/base/example';
-import { StandardIcon } from '../../icons/standard/example';
-import {
-  ComboboxContainer,
-  Listbox,
-  ListboxItem,
-  EntityOption
-} from '../../combobox/base/example';
-import { ListboxPill }
-  from '../../pills/listbox-of-pill-options/example';
-import SvgIcon from '../../../shared/svg-icon';
-
-/* -----------------------------------------------------------------------------
-    Variables
------------------------------------------------------------------------------ */
-
-const listboxSelectionsId = 'listbox-selections-unique-id';
-const listboxOptionId01 = 'listbox-option-unique-id-01';
-const listboxOptionId02 = 'listbox-option-unique-id-02';
-
-/* -----------------------------------------------------------------------------
-    Private
------------------------------------------------------------------------------ */
-
-const ListboxDropdown = props =>
-  <Listbox className="slds-dropdown slds-dropdown_fluid" vertical>
-    <ListboxItem>
-      <EntityOption
-        id={listboxOptionId01}
-        entityTitle="Acme"
-        entityMeta
-        focused={props.focused}
-      />
-    </ListboxItem>
-    <ListboxItem>
-      <EntityOption
-        id={listboxOptionId02}
-        entityTitle="Salesforce.com, Inc."
-        entityMeta
-      />
-    </ListboxItem>
-  </Listbox>;
+import { ComboboxGroup } from '../../combobox/';
+import Listbox from '../../combobox/listbox/';
+import ObjectSwitcher from '../../combobox/object-switcher/';
+import ListboxOfSelections from '../../combobox/listbox-of-pills/';
+import { UtilityIcon } from '../../icons/base/example';
+import _ from '../../../shared/helpers';
+import * as Snapshot from '../../combobox/snapshots.data';
 
 /* -----------------------------------------------------------------------------
     Exports
 ----------------------------------------------------------------------------- */
 
 // Demo wrapper
-export const Context = props =>
-  <div style={{ height: '10rem' }}>
-    {props.children}
-  </div>;
+export const Context = props => (
+  <div style={{ height: '15rem' }}>{props.children}</div>
+);
 
 // Default
 export default (
-  <ComboboxContainer
-    inputIcon="right"
-    inputIconRightSymbol="search"
-    objectSwitcherInline
+  <ComboboxGroup
+    id="combobox-id-1"
+    aria-controls="listbox-id-1"
+    comboboxID="primary-combobox-id-1"
     autocomplete
-    listbox={<ListboxDropdown />}
-    objectSwitcher
+    results={
+      <Listbox
+        id="listbox-id-1"
+        snapshot={Snapshot.EntityOptions}
+        type="entity"
+        count={4}
+      />
+    }
+    resultsType="listbox"
+    addon={
+      <ObjectSwitcher
+        id={_.uniqueId('combobox-id-')}
+        value="Accounts"
+        addonPosition="start"
+        hasInteractions
+        comboboxAriaControls="primary-combobox-id-1"
+      />
+    }
+    addonPosition="start"
+    comboboxPosition="end"
+    inputIconPosition="right"
+    rightInputIcon={
+      <UtilityIcon
+        symbol="search"
+        className="slds-icon slds-icon_x-small slds-icon-text-default"
+        containerClassName="slds-input__icon slds-input__icon_right"
+      />
+    }
+    hasInteractions
   />
 );
 
@@ -72,108 +63,175 @@ export let states = [
   {
     id: 'focused',
     label: 'Focused',
-    element:
-      <ComboboxContainer
-        containerClassName="slds-has-input-focus"
-        inputIcon="right"
-        inputIconRightSymbol="search"
-        objectSwitcherInline
+    element: (
+      <ComboboxGroup
+        id="combobox-id-1"
+        aria-controls="listbox-id-1"
+        comboboxID="primary-combobox-id-1"
         autocomplete
+        results={
+          <Listbox
+            id="listbox-id-1"
+            snapshot={Snapshot.EntityOptions}
+            type="entity"
+            count={4}
+          />
+        }
+        resultsType="listbox"
+        addon={
+          <ObjectSwitcher
+            id={_.uniqueId('combobox-id-')}
+            value="Accounts"
+            addonPosition="start"
+            hasInteractions
+            comboboxAriaControls="primary-combobox-id-1"
+          />
+        }
+        addonPosition="start"
+        comboboxPosition="end"
+        inputIconPosition="right"
+        rightInputIcon={
+          <UtilityIcon
+            symbol="search"
+            className="slds-icon slds-icon_x-small slds-icon-text-default"
+            containerClassName="slds-input__icon slds-input__icon_right"
+          />
+        }
         isOpen
-        listbox={<ListboxDropdown />}
-        objectSwitcher
-      />,
-    script: `
-      document.getElementById('combobox-unique-id').focus()
-    `
+        hasFocus
+      />
+    )
   },
   {
     id: 'open-item-focused',
     label: 'Open - Item Focused',
-    element:
-      <ComboboxContainer
-        inputIcon="right"
-        inputIconRightSymbol="search"
-        objectSwitcherInline
+    element: (
+      <ComboboxGroup
+        id="combobox-id-2"
+        aria-controls="listbox-id-2"
+        comboboxID="primary-combobox-id-2"
         autocomplete
+        results={
+          <Listbox
+            id="listbox-id-2"
+            snapshot={Snapshot.EntityOptionsFocused}
+            type="entity"
+            count={4}
+          />
+        }
+        resultsType="listbox"
+        aria-activedescendant="option1"
+        addon={
+          <ObjectSwitcher
+            id={_.uniqueId('combobox-id-')}
+            value="Accounts"
+            addonPosition="start"
+            hasInteractions
+            comboboxAriaControls="primary-combobox-id-2"
+          />
+        }
+        addonPosition="start"
+        comboboxPosition="end"
+        inputIconPosition="right"
+        rightInputIcon={
+          <UtilityIcon
+            symbol="search"
+            className="slds-icon slds-icon_x-small slds-icon-text-default"
+            containerClassName="slds-input__icon slds-input__icon_right"
+          />
+        }
         isOpen
-        listbox={<ListboxDropdown focused />}
-        objectSwitcher
-        aria-activedescendant={listboxOptionId01}
+        hasFocus
       />
+    )
   },
   {
     id: 'options-selected',
     label: 'Option(s) Selected',
-    element:
-      <ComboboxContainer
-        inputIcon="right"
-        inputIconRightSymbol="search"
-        objectSwitcherInline
+    element: (
+      <ComboboxGroup
+        id="combobox-id-3"
+        aria-controls="listbox-id-3"
+        comboboxID="primary-combobox-id-3"
         autocomplete
-        objectSwitcher
-      >
-        <Listbox
-          id={listboxSelectionsId}
-          aria-label="Selected Options:"
-          className="slds-p-top_xxx-small"
-          inline
-        >
-          <ListboxItem>
-            <ListboxPill label="Acme" tabIndex="0">
-              <Avatar className="slds-avatar_x-small slds-pill__icon_container">
-                <StandardIcon symbol="account" />
-              </Avatar>
-            </ListboxPill>
-          </ListboxItem>
-          <ListboxItem>
-            <ListboxPill label="Salesforce.com, Inc.">
-              <Avatar className="slds-avatar_x-small slds-pill__icon_container">
-                <StandardIcon symbol="opportunity" />
-              </Avatar>
-            </ListboxPill>
-          </ListboxItem>
-        </Listbox>
-      </ComboboxContainer>
+        results={
+          <Listbox
+            id="listbox-id-3"
+            snapshot={Snapshot.EntityOptions}
+            type="entity"
+            count={4}
+          />
+        }
+        resultsType="listbox"
+        hasFocus
+        addon={
+          <ObjectSwitcher
+            id={_.uniqueId('combobox-id-')}
+            value="Accounts"
+            addonPosition="start"
+            comboboxAriaControls="primary-combobox-id-3"
+          />
+        }
+        addonPosition="start"
+        comboboxPosition="end"
+        inputIconPosition="right"
+        rightInputIcon={
+          <UtilityIcon
+            symbol="search"
+            className="slds-icon slds-icon_x-small slds-icon-text-default"
+            containerClassName="slds-input__icon slds-input__icon_right"
+          />
+        }
+        hasSelection
+        listboxOfSelections={
+          <ListboxOfSelections snapshot={Snapshot.EntitySelections} count={2} />
+        }
+      />
+    )
   },
   {
     id: 'focused-options-selected',
     label: 'Focused - Option(s) Selected',
-    element:
-      <ComboboxContainer
-        isOpen
-        containerClassName="slds-has-input-focus"
-        inputIcon="right"
-        inputIconRightSymbol="search"
-        objectSwitcherInline
+    element: (
+      <ComboboxGroup
+        id="combobox-id-4"
+        aria-controls="listbox-id-4"
+        comboboxID="primary-combobox-id-4"
         autocomplete
-        listbox={<ListboxDropdown />}
-        objectSwitcher
-      >
-        <Listbox
-          id={listboxSelectionsId}
-          aria-label="Selected Options:"
-          className="slds-p-top_xxx-small"
-          inline
-        >
-          <ListboxItem>
-            <ListboxPill label="Acme" tabIndex="0">
-              <Avatar className="slds-avatar_x-small slds-pill__icon_container">
-                <StandardIcon symbol="account" />
-              </Avatar>
-            </ListboxPill>
-          </ListboxItem>
-          <ListboxItem>
-            <ListboxPill label="Salesforce.com, Inc.">
-              <Avatar className="slds-avatar_x-small slds-pill__icon_container">
-                <StandardIcon symbol="opportunity" />
-              </Avatar>
-            </ListboxPill>
-          </ListboxItem>
-        </Listbox>
-      </ComboboxContainer>,
-    script: `
-      document.getElementById('combobox-unique-id').focus()
-    `
+        results={
+          <Listbox
+            id="listbox-id-4"
+            snapshot={Snapshot.EntityOptions}
+            type="entity"
+            count={4}
+          />
+        }
+        resultsType="listbox"
+        isOpen
+        hasFocus
+        addon={
+          <ObjectSwitcher
+            id={_.uniqueId('combobox-id-')}
+            value="Accounts"
+            addonPosition="start"
+            comboboxAriaControls="primary-combobox-id-4"
+          />
+        }
+        addonPosition="start"
+        comboboxPosition="end"
+        inputIconPosition="right"
+        rightInputIcon={
+          <UtilityIcon
+            symbol="search"
+            className="slds-icon slds-icon_x-small slds-icon-text-default"
+            containerClassName="slds-input__icon slds-input__icon_right"
+          />
+        }
+        hasSelection
+        listboxOfSelections={
+          <ListboxOfSelections snapshot={Snapshot.EntitySelections} count={2} />
+        }
+      />
+    )
   }
 ];

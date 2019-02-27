@@ -44,7 +44,7 @@
 
     &:hover,
     &:focus {
-      color: $color-text-link-inverse-hover;
+      text-decoration: none;
     }
 
     &:active {
@@ -76,7 +76,7 @@
     }
 
     @else if nth($support, $i) == 'buttons' {
-      $link-selector: 'a:not(.slds-button--neutral), button:not(.slds-button--neutral)';
+      $link-selector: 'a:not([class*="slds-button_"]):not([class*="slds-button--"]), button:not([class*="slds-button_"]):not([class*="slds-button--"])';
     }
 
     @else if nth($support, $i) == 'borders' {
@@ -95,12 +95,18 @@
 
   #{$link-selector} {
     color: currentColor;
+    border: $border-width-thin solid transparent;
+    border-radius: $border-radius-medium;
 
     &:hover,
     &:focus {
-      color: $color-text-link-inverse-hover;
       text-decoration: none;
       outline: 0;
+    }
+
+    &:focus {
+      box-shadow: $shadow-link-focus-inverse;
+      border: $border-width-thin solid $color-border-link-focus-inverse;
     }
 
     &:active {
@@ -113,6 +119,66 @@
   }
 }
 
+/// Warning links mixin
+///
+/// The warning-links mixin determines how to change links when on a warning background
+///
+@mixin warning-links {
+
+  a {
+    color: $color-text-default; // gray-13
+    text-decoration: underline;
+
+    &:link,
+    &:visited {
+      color: $color-text-default;
+    }
+
+    &:hover,
+    &:focus {
+      text-decoration: none;
+    }
+
+    &:focus {
+      box-shadow: 0 0 3px $color-gray-10;
+      border: $border-width-thin solid $color-gray-10;
+    }
+
+    &:active {
+      color: $color-gray-10;
+    }
+
+    &[disabled] {
+      color: $color-gray-10;
+    }
+  }
+}
+
+/// Warning buttons mixin
+///
+/// The warning-buttons mixin determines how to change buttons when on a warning background
+///
+@mixin warning-buttons {
+
+  button {
+    color: $color-gray-10;
+    text-decoration: underline;
+
+    &:hover {
+      color: $color-gray-9;
+    }
+
+    &:focus {
+      color: $color-gray-10;
+      box-shadow: 0 0 3px $color-gray-10;
+      border: $border-width-thin solid $color-gray-10;
+    }
+
+    &:active {
+      color: $color-gray-9;
+    }
+  }
+}
 
 // Border Helper
 @mixin border($borders: null, $radius: null) {
@@ -199,13 +265,4 @@
 
   background-image: linear-gradient($angle, $stripe-color 25%, transparent 25%, transparent 50%, $stripe-color 50%, $stripe-color 75%, transparent 75%, transparent);
   background-size: 64px 64px;
-}
-
-// Page header
-@mixin page-header {
-  @include deprecate('4.0.0') {
-    padding: $spacing-large $spacing-large $spacing-small;
-    border-bottom: $border-width-thin solid $color-border;
-    background: $color-background;
-  }
 }

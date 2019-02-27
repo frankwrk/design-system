@@ -2,7 +2,13 @@
 // Licensed under BSD 3-Clause - see LICENSE.txt or git.io/sfdc-license
 
 import React from 'react';
-import { Modal, ModalHeader, ModalContent, ModalFooter } from '../../modals/base/example';
+import PropTypes from 'prop-types';
+import {
+  Modal,
+  ModalHeader,
+  ModalContent,
+  ModalFooter
+} from '../../modals/base/example';
 import { CheckboxAddButton } from '../../checkbox-button/base/example';
 import {
   ComboboxContainer,
@@ -10,67 +16,90 @@ import {
   ListboxItem,
   EntityOption
 } from '../../combobox/base/example';
-import { Th } from '../../data-tables/';
+import {
+  Table,
+  THead,
+  ColumnTh,
+  THeadTr,
+  InteractiveColumnHeader,
+  ColumnHeader,
+  TBody,
+  TBodyTr,
+  RowTh,
+  Td,
+  ReadOnlyCell
+} from '../../data-tables/';
 import { PillContainer } from '../../pills/base/example';
-import { ListboxPill } from '../../pills/listbox-of-pill-options/example';
-import classNames from 'classnames';
-import _ from '../../../shared/helpers';
+import {
+  ListboxPills,
+  ListboxPillsItem,
+  ListboxPill
+} from '../../pills/listbox-of-pill-options/example';
 
 /* -----------------------------------------------------------------------------
     Variables and Objects
 ----------------------------------------------------------------------------- */
 
-const listboxSelectionsId = 'listbox-selections-unique-id';
 const listboxOptionId01 = 'listbox-option-unique-id-01';
 const listboxOptionId02 = 'listbox-option-unique-id-02';
 const columns = ['Name', 'Product Code', 'List Price', 'Product Family'];
-const rows = [{
-  'name': 'Analytics',
-  'productCode': 'ANTLY',
-  'listPrice': '5000.00',
-  'productFamily': 'Analytics Product'
-}, {
-  'name': 'Analytics',
-  'productCode': 'ANTLY',
-  'listPrice': '5000.00',
-  'productFamily': 'Analytics Product'
-}, {
-  'name': 'Analytics',
-  'productCode': 'ANTLY',
-  'listPrice': '5000.00',
-  'productFamily': 'Analytics Product'
-}, {
-  'name': 'Analytics',
-  'productCode': 'ANTLY',
-  'listPrice': '5000.00',
-  'productFamily': 'Analytics Product'
-}, {
-  'name': 'Analytics',
-  'productCode': 'ANTLY',
-  'listPrice': '5000.00',
-  'productFamily': 'Analytics Product'
-}, {
-  'name': 'Analytics',
-  'productCode': 'ANTLY',
-  'listPrice': '5000.00',
-  'productFamily': 'Analytics Product'
-}, {
-  'name': 'Analytics',
-  'productCode': 'ANTLY',
-  'listPrice': '5000.00',
-  'productFamily': 'Analytics Product'
-}, {
-  'name': 'Analytics',
-  'productCode': 'ANTLY',
-  'listPrice': '5000.00',
-  'productFamily': 'Analytics Product'
-}];
+const singleColumn = ['Product Name'];
+const rows = [
+  {
+    name: 'Analytics',
+    productCode: 'ANTLY',
+    listPrice: '5000.00',
+    productFamily: 'Analytics Product'
+  },
+  {
+    name: 'Analytics',
+    productCode: 'ANTLY',
+    listPrice: '5000.00',
+    productFamily: 'Analytics Product'
+  },
+  {
+    name: 'Analytics',
+    productCode: 'ANTLY',
+    listPrice: '5000.00',
+    productFamily: 'Analytics Product'
+  },
+  {
+    name: 'Analytics',
+    productCode: 'ANTLY',
+    listPrice: '5000.00',
+    productFamily: 'Analytics Product'
+  },
+  {
+    name: 'Analytics',
+    productCode: 'ANTLY',
+    listPrice: '5000.00',
+    productFamily: 'Analytics Product'
+  },
+  {
+    name: 'Analytics',
+    productCode: 'ANTLY',
+    listPrice: '5000.00',
+    productFamily: 'Analytics Product'
+  },
+  {
+    name: 'Analytics',
+    productCode: 'ANTLY',
+    listPrice: '5000.00',
+    productFamily: 'Analytics Product'
+  },
+  {
+    name: 'Analytics',
+    productCode: 'ANTLY',
+    listPrice: '5000.00',
+    productFamily: 'Analytics Product'
+  }
+];
 
 /* -----------------------------------------------------------------------------
     Private
 ----------------------------------------------------------------------------- */
 
-const ListboxDropdown = props =>
+const ListboxDropdown = props => (
   <Listbox className="slds-dropdown slds-dropdown_fluid" vertical>
     <ListboxItem>
       <EntityOption
@@ -87,9 +116,10 @@ const ListboxDropdown = props =>
         entityMeta
       />
     </ListboxItem>
-  </Listbox>;
+  </Listbox>
+);
 
-let ProductListHeader = props =>
+let ProductListHeader = props => (
   <div className="slds-p-vertical_x-small slds-p-horizontal_large slds-shrink-none slds-theme_shade">
     <ComboboxContainer
       autocomplete
@@ -98,100 +128,197 @@ let ProductListHeader = props =>
       inputIconRightSymbol="search"
       listbox={<ListboxDropdown />}
     />
-    { props.selectedFilters ? props.selectedFilters : null }
-    <div className="slds-text-title slds-m-top_x-small" aria-live="polite">{ props.itemsSelected || '0' } Item(s) Selected</div>
-  </div>;
+    {props.selectedFilters ? props.selectedFilters : null}
+    <div className="slds-text-title slds-m-top_x-small" aria-live="polite">
+      {props.itemsSelected || '0'} Item(s) Selected
+    </div>
+  </div>
+);
 
-let ProductList = props =>
+let ProductList = props => (
   <div className="slds-scrollable slds-grow">
-    <table role="grid" className="slds-table slds-table_fixed-layout slds-table_bordered slds-table_resizable-cols slds-no-row-hover slds-scrollable_none">
-      <thead>
-        <tr className="slds-line-height_reset">
-          <th scope="col" style={{ width: '3.75rem' }} />
-          { _.times(columns.length, i =>
-            <Th key={i}
-              columnName={columns[i]}
-              aria-label={columns[i]}
-            />
-          )}
-        </tr>
-      </thead>
-      <tbody>
-        { props.children }
-      </tbody>
-    </table>
-  </div>;
+    <div className="slds-scrollable_none">
+      <Table
+        hasNoRowHover
+        isBordered
+        isFixedLayout
+        isResizable
+        selectionType="multiple"
+        type="advanced"
+      >
+        <THead>
+          <THeadTr>
+            <ColumnTh style={{ width: '3.75rem' }} />
+            {columns.map((column, i) => (
+              <ColumnTh aria-label={column} isSortable isResizable key={i}>
+                <InteractiveColumnHeader columnName={column} />
+              </ColumnTh>
+            ))}
+          </THeadTr>
+        </THead>
+        <TBody>{props.children}</TBody>
+      </Table>
+    </div>
+  </div>
+);
+
+let SingleColumnProductList = props => {
+  return (
+    <div className="slds-scrollable slds-grow">
+      <div className="slds-scrollable_none">
+        <Table
+          hasHiddenHeader
+          hasNoRowHover
+          isBordered
+          selectionType="multiple"
+          type="advanced"
+        >
+          <THead isHidden={props.hasHiddenHeader}>
+            <THeadTr>
+              <ColumnTh style={{ width: '3.75rem' }} />
+              {props.hasHiddenHeader ? (
+                <ColumnTh aria-label={singleColumn[0]}>
+                  <ColumnHeader columnName={singleColumn[0]} />
+                </ColumnTh>
+              ) : (
+                <ColumnTh aria-label={singleColumn[0]}>
+                  <InteractiveColumnHeader columnName={singleColumn[0]} />
+                </ColumnTh>
+              )}
+            </THeadTr>
+          </THead>
+          <TBody>{props.children}</TBody>
+        </Table>
+      </div>
+    </div>
+  );
+};
+
+SingleColumnProductList.propTypes = {
+  hasHiddenHeader: PropTypes.bool,
+  children: PropTypes.node
+};
 
 let RowData = props => {
   let checkboxLabel = 'Select item ' + props.index;
 
   return (
-    <tr className={classNames('slds-hint-parent', props.className)} aria-selected={props.checked}>
-      <td role="gridcell" tabIndex={(props.index === 1) ? '0' : '-1'} className="slds-text-align_right" style={{ width: '3.75rem' }}>
-        <CheckboxAddButton label={checkboxLabel} checked={props.checked} tabIndex="-1" />
-      </td>
-      <th scope="row">
-        <div className="slds-truncate" title={props.name}>{ props.name }</div>
-      </th>
-      <td role="gridcell">
-        <div className="slds-truncate" title={props.productCode}>{ props.productCode }</div>
-      </td>
-      <td role="gridcell">
-        <div className="slds-truncate" title={props.listPrice}>{ props.listPrice }</div>
-      </td>
-      <td role="gridcell">
-        <div className="slds-truncate" title={props.productFamily}>{ props.productFamily }</div>
-      </td>
-    </tr>
+    <TBodyTr isSelected={props.checked}>
+      <Td
+        isRightAligned
+        tabIndex={props.index === 1 ? '0' : null}
+        type="advanced"
+      >
+        <CheckboxAddButton
+          label={checkboxLabel}
+          checked={props.checked}
+          disabled={props.disabled}
+          tabIndex="-1"
+        />
+      </Td>
+      <RowTh>
+        <ReadOnlyCell cellText={props.name} />
+      </RowTh>
+      <Td type="advanced">
+        <ReadOnlyCell cellText={props.productCode} />
+      </Td>
+      <Td type="advanced">
+        <ReadOnlyCell cellText={props.listPrice} />
+      </Td>
+      <Td type="advanced">
+        <ReadOnlyCell cellText={props.productFamily} />
+      </Td>
+    </TBodyTr>
   );
 };
 
-let FilteredItem = props =>
-  <PillContainer className="slds-pill_container_bare">
-    <Listbox horizonta>
-      <ListboxItem>
-        <ListboxPill label="Analytics" tabIndex="0" />
-      </ListboxItem>
-    </Listbox>
-  </PillContainer>;
+let TwoColumnRowData = props => {
+  let checkboxLabel = 'Select item ' + props.index;
 
-let FilteredItems = props =>
+  return (
+    <TBodyTr isSelected={props.checked}>
+      <Td
+        isRightAligned
+        tabIndex={props.index === 1 ? '0' : '-1'}
+        type="advanced"
+        style={{ width: '3.75rem' }}
+      >
+        <CheckboxAddButton
+          label={checkboxLabel}
+          checked={props.checked}
+          disabled={props.disabled}
+          tabIndex="-1"
+        />
+      </Td>
+      <Td type="advanced">
+        <ReadOnlyCell cellText={props.name} />
+      </Td>
+    </TBodyTr>
+  );
+};
+
+TwoColumnRowData.propTypes = {
+  className: PropTypes.string,
+  index: PropTypes.number,
+  checked: PropTypes.bool,
+  disabled: PropTypes.bool,
+  name: PropTypes.string
+};
+
+let FilteredItem = props => (
   <PillContainer className="slds-pill_container_bare">
-    <Listbox horizontal>
-      <ListboxItem>
+    <ListboxPills>
+      <ListboxPillsItem>
+        <ListboxPill label="Analytics" tabIndex="0" />
+      </ListboxPillsItem>
+    </ListboxPills>
+  </PillContainer>
+);
+
+let FilteredItems = props => (
+  <PillContainer className="slds-pill_container_bare">
+    <ListboxPills>
+      <ListboxPillsItem>
         <ListboxPill label="Option A" tabIndex="0" />
-      </ListboxItem>
-      <ListboxItem>
+      </ListboxPillsItem>
+      <ListboxPillsItem>
         <ListboxPill label="Option B" />
-      </ListboxItem>
-    </Listbox>
-  </PillContainer>;
+      </ListboxPillsItem>
+    </ListboxPills>
+  </PillContainer>
+);
 
 /* -----------------------------------------------------------------------------
     Exports
 ----------------------------------------------------------------------------- */
 
 export default (
-  <div className="demo-only" style={{height: '640px'}}>
-    <Modal className="slds-modal_large slds-list-builder" aria-labelledby="id-of-modalheader-h2">
+  <div className="demo-only" style={{ height: '640px' }}>
+    <Modal
+      className="slds-modal_large slds-list-builder"
+      aria-labelledby="id-of-modalheader-h2"
+    >
       <ModalHeader>
-        <h2 id="id-of-modalheader-h2" className="slds-text-heading_medium">Add Products</h2>
+        <h2 id="id-of-modalheader-h2" className="slds-text-heading_medium">
+          Add Products
+        </h2>
         <p className="slds-m-top_x-small">Pricebook: Salesforce Products</p>
       </ModalHeader>
       <ModalContent className="slds-grid slds-grow">
         <div className="slds-grid slds-grid_vertical">
           <ProductListHeader />
           <ProductList>
-            { _.times(rows.length, i =>
+            {rows.map((row, i) => (
               <RowData
+                checked={false}
                 key={i}
                 index={i + 1}
-                name={rows[i].name}
-                productCode={rows[i].productCode}
-                listPrice={rows[i].listPrice}
-                productFamily={rows[i].productFamily}
+                name={row.name}
+                productCode={row.productCode}
+                listPrice={row.listPrice}
+                productFamily={row.productFamily}
               />
-            )}
+            ))}
           </ProductList>
         </div>
       </ModalContent>
@@ -207,55 +334,198 @@ export default (
 export let states = [
   {
     id: 'items-selected',
-    label: 'Items selected',
-    element:
-    <div className="demo-only" style={{height: '640px'}}>
-      <Modal className="slds-modal_large" aria-labelledby="id-of-modalheader-h2">
-        <ModalHeader>
-          <h2 id="id-of-modalheader-h2" className="slds-text-heading_medium">Add Products</h2>
-          <p className="slds-m-top_x-small">Pricebook: Salesforce Products</p>
-        </ModalHeader>
-        <ModalContent className="slds-grid slds-nowrap">
-          <div className="slds-col slds-grid slds-grid_vertical slds-nowrap">
-            <ProductListHeader selectedFilters={<FilteredItem />} itemsSelected="1" />
-            <ProductList>
-              { _.times(rows.length, i =>
-                <RowData
-                  key={i}
-                  index={i + 1}
-                  checked={(i === 0) ? true : null}
-                  name={rows[i].name}
-                  productCode={rows[i].productCode}
-                  listPrice={rows[i].listPrice}
-                  productFamily={rows[i].productFamily}
-                />
-              )}
-            </ProductList>
-          </div>
-        </ModalContent>
-        <ModalFooter>
-          <button className="slds-button slds-button_neutral">Cancel</button>
-          <button className="slds-button slds-button_brand">Next</button>
-        </ModalFooter>
-      </Modal>
-      <div className="slds-backdrop slds-backdrop_open" />
-    </div>
+    label: 'Items Selected',
+    element: (
+      <div className="demo-only" style={{ height: '640px' }}>
+        <Modal
+          className="slds-modal_large"
+          aria-labelledby="id-of-modalheader-h2"
+        >
+          <ModalHeader>
+            <h2 id="id-of-modalheader-h2" className="slds-text-heading_medium">
+              Add Products
+            </h2>
+            <p className="slds-m-top_x-small">Pricebook: Salesforce Products</p>
+          </ModalHeader>
+          <ModalContent className="slds-grid slds-nowrap">
+            <div className="slds-col slds-grid slds-grid_vertical slds-nowrap">
+              <ProductListHeader
+                selectedFilters={<FilteredItem />}
+                itemsSelected="1"
+              />
+              <ProductList>
+                {rows.map((row, i) => (
+                  <RowData
+                    key={i}
+                    index={i + 1}
+                    checked={i === 0}
+                    name={row.name}
+                    productCode={row.productCode}
+                    listPrice={row.listPrice}
+                    productFamily={row.productFamily}
+                  />
+                ))}
+              </ProductList>
+            </div>
+          </ModalContent>
+          <ModalFooter>
+            <button className="slds-button slds-button_neutral">Cancel</button>
+            <button className="slds-button slds-button_brand">Next</button>
+          </ModalFooter>
+        </Modal>
+        <div className="slds-backdrop slds-backdrop_open" />
+      </div>
+    )
+  },
+  {
+    id: 'items-disabled',
+    label: 'Items Disabled',
+    element: (
+      <div className="demo-only" style={{ height: '640px' }}>
+        <Modal
+          className="slds-modal_large"
+          aria-labelledby="id-of-modalheader-h2"
+        >
+          <ModalHeader>
+            <h2 id="id-of-modalheader-h2" className="slds-text-heading_medium">
+              Add Products
+            </h2>
+            <p className="slds-m-top_x-small">Pricebook: Salesforce Products</p>
+          </ModalHeader>
+          <ModalContent className="slds-grid slds-nowrap">
+            <div className="slds-col slds-grid slds-grid_vertical slds-nowrap">
+              <ProductListHeader itemsSelected="0" />
+              <ProductList>
+                {rows.map((row, i) => (
+                  <RowData
+                    checked={false}
+                    key={i}
+                    index={i + 1}
+                    disabled={i % 2 === 0 ? true : null}
+                    name={row.name}
+                    productCode={row.productCode}
+                    listPrice={row.listPrice}
+                    productFamily={row.productFamily}
+                  />
+                ))}
+              </ProductList>
+            </div>
+          </ModalContent>
+          <ModalFooter>
+            <button className="slds-button slds-button_neutral">Cancel</button>
+            <button className="slds-button slds-button_brand">Next</button>
+          </ModalFooter>
+        </Modal>
+        <div className="slds-backdrop slds-backdrop_open" />
+      </div>
+    )
+  },
+  {
+    id: 'items-default-selected',
+    label: 'Items Default Selected',
+    element: (
+      <div className="demo-only" style={{ height: '640px' }}>
+        <Modal
+          className="slds-modal_large"
+          aria-labelledby="id-of-modalheader-h2"
+        >
+          <ModalHeader>
+            <h2 id="id-of-modalheader-h2" className="slds-text-heading_medium">
+              Add Products
+            </h2>
+            <p className="slds-m-top_x-small">Pricebook: Salesforce Products</p>
+          </ModalHeader>
+          <ModalContent className="slds-grid slds-nowrap">
+            <div className="slds-col slds-grid slds-grid_vertical slds-nowrap">
+              <ProductListHeader itemsSelected="0" />
+              <ProductList>
+                {rows.map((row, i) => (
+                  <RowData
+                    key={i}
+                    index={i + 1}
+                    checked={i % 2 === 1}
+                    disabled={i % 2 === 1 ? true : null}
+                    name={row.name}
+                    productCode={row.productCode}
+                    listPrice={row.listPrice}
+                    productFamily={row.productFamily}
+                  />
+                ))}
+              </ProductList>
+            </div>
+          </ModalContent>
+          <ModalFooter>
+            <button className="slds-button slds-button_neutral">Cancel</button>
+            <button className="slds-button slds-button_brand">Next</button>
+          </ModalFooter>
+        </Modal>
+        <div className="slds-backdrop slds-backdrop_open" />
+      </div>
+    )
+  },
+  {
+    id: 'two-column-with-hidden-header',
+    label: 'Two Column with Hidden Header',
+    element: (
+      <div className="demo-only" style={{ height: '640px' }}>
+        <Modal
+          className="slds-modal_large"
+          aria-labelledby="id-of-modalheader-h2"
+        >
+          <ModalHeader>
+            <h2 id="id-of-modalheader-h2" className="slds-text-heading_medium">
+              Add Products
+            </h2>
+            <p className="slds-m-top_x-small">Pricebook: Salesforce Products</p>
+          </ModalHeader>
+          <ModalContent className="slds-grid slds-nowrap">
+            <div className="slds-col slds-grid slds-grid_vertical slds-nowrap">
+              <ProductListHeader itemsSelected="0" />
+              <SingleColumnProductList hasHiddenHeader>
+                {rows.map((row, i) => (
+                  <TwoColumnRowData
+                    checked={false}
+                    key={i}
+                    index={i + 1}
+                    name={row.name}
+                  />
+                ))}
+              </SingleColumnProductList>
+            </div>
+          </ModalContent>
+          <ModalFooter>
+            <button className="slds-button slds-button_neutral">Cancel</button>
+            <button className="slds-button slds-button_brand">Next</button>
+          </ModalFooter>
+        </Modal>
+        <div className="slds-backdrop slds-backdrop_open" />
+      </div>
+    )
   },
   {
     id: 'filtered',
     label: 'Filtered Results',
-    element:
-      <div className="demo-only" style={{height: '640px'}}>
-        <Modal className="slds-modal_large" aria-labelledby="id-of-modalheader-h2">
+    element: (
+      <div className="demo-only" style={{ height: '640px' }}>
+        <Modal
+          className="slds-modal_large"
+          aria-labelledby="id-of-modalheader-h2"
+        >
           <ModalHeader>
-            <h2 id="id-of-modalheader-h2" className="slds-text-heading_medium">Add Products</h2>
+            <h2 id="id-of-modalheader-h2" className="slds-text-heading_medium">
+              Add Products
+            </h2>
             <p className="slds-m-top_x-small">Pricebook: Salesforce Products</p>
           </ModalHeader>
           <ModalContent className="slds-grid slds-grow">
             <div className="slds-grid slds-grid_vertical">
-              <ProductListHeader selectedFilters={<FilteredItems />} itemsSelected="2" />
+              <ProductListHeader
+                selectedFilters={<FilteredItems />}
+                itemsSelected="2"
+              />
               <ProductList>
                 <RowData
+                  checked={false}
                   index={1}
                   name={rows[0].name}
                   productCode={rows[0].productCode}
@@ -272,5 +542,6 @@ export let states = [
         </Modal>
         <div className="slds-backdrop slds-backdrop_open" />
       </div>
+    )
   }
 ];

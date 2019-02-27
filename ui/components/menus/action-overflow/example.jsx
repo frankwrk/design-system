@@ -2,34 +2,62 @@
 // Licensed under BSD 3-Clause - see LICENSE.txt or git.io/sfdc-license
 
 import React from 'react';
-import { ButtonIcon } from '../../button-icons/base/example';
-import { Trigger } from '../dropdown/example';
-import { Menu } from '../dropdown/example';
-import { MenuList } from '../dropdown/example';
-import { MenuItem } from '../dropdown/example';
+import PropTypes from 'prop-types';
+import ButtonIcon from '../../button-icons/';
+import { Trigger, Menu, MenuList, MenuItem } from '../dropdown/example';
+import classNames from 'classnames';
 
 /// ////////////////////////////////////////
 // Partial(s)
 /// ////////////////////////////////////////
+export const Context = props => (
+  <div className="demo-only" style={{ height: '165px' }}>
+    {props.children}
+  </div>
+);
 
 const moreIcon = (
-  <ButtonIcon className="slds-button_icon-border-filled slds-button_icon-x-small" sprite="utility" symbol="down" assistiveText="Show More" aria-haspopup="true" title="Show More" />
+  <ButtonIcon
+    className="slds-button_icon-border-filled slds-button_icon-x-small"
+    symbol="down"
+    assistiveText="Show More"
+    aria-haspopup="true"
+    title="Show More"
+  />
 );
+
+export const ActionOverflow = props => {
+  const { position, dropdownIsOpen } = props;
+  return (
+    <Trigger isOpen={dropdownIsOpen} triggerIcon={moreIcon}>
+      <Menu
+        className={classNames(
+          'slds-dropdown_actions',
+          `slds-dropdown_${position}`
+        )}
+      >
+        <MenuList>
+          <MenuItem tabIndex="0">Action One</MenuItem>
+          <MenuItem>Action Two</MenuItem>
+          <MenuItem>Action Three</MenuItem>
+        </MenuList>
+      </Menu>
+    </Trigger>
+  );
+};
+
+ActionOverflow.defaultProps = {
+  dropdownIsOpen: true,
+  position: 'left'
+};
+
+ActionOverflow.propTypes = {
+  position: PropTypes.oneOf(['left', 'right']),
+  dropdownIsOpen: PropTypes.bool
+};
 
 /// ///////////////////////////////////////////
 // Export
 /// ///////////////////////////////////////////
 
-export default (
-<div className="demo-only" style={{height: '165px'}}>
-  <Trigger className="slds-is-open" triggerIcon={moreIcon}>
-    <Menu className="slds-dropdown_left slds-dropdown_actions">
-      <MenuList>
-        <MenuItem tabIndex="0">Action One</MenuItem>
-        <MenuItem>Action Two</MenuItem>
-        <MenuItem>Action Three</MenuItem>
-      </MenuList>
-    </Menu>
-  </Trigger>
-</div>
-);
+export default <ActionOverflow />;

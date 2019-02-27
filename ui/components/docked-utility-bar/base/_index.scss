@@ -2,8 +2,12 @@
 // Licensed under BSD 3-Clause - see LICENSE.txt or git.io/sfdc-license
 
 /**
- * Fixed bar at the bottom of viewport, contains items
+ * Fixed bar at the bottom of viewport, that contains items.
  *
+ * If the utility bar item is active and its panel is popped open in a new window, use `.slds-utility-bar__item_pop-out` on the
+ * `.slds-utility-bar__item`. This will add a visual indicator to communicate that the panel is opened in a new window.
+ *
+ * @summary Fixed bar at the bottom of viewport, that contains items
  * @name base
  * @selector .slds-utility-bar_container
  * @restrict footer
@@ -56,6 +60,40 @@
 }
 
 /**
+ * @name pop-out
+ * @summary Modifier to add pop out element
+ * @selector .slds-utility-bar__item_pop-out
+ * @restrict .slds-utility-bar__item
+ * @modifier
+ * @group feedback
+ */
+.slds-utility-bar__item_pop-out {
+  position: relative;
+
+  &:before {
+    content: '';
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    height: 4px;
+    width: 4px;
+    border-top: $border-width-thin solid $color-text-default;
+    border-right: $border-width-thin solid $color-text-default;
+  }
+
+  &:after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    right: 6px;
+    height: 7px;
+    width: 7px;
+    border-right: $border-width-thin solid $color-text-default;
+    transform: rotate(45deg);
+  }
+}
+
+/**
  * Button that invokes utility panel
  *
  * @selector .slds-utility-bar__action
@@ -87,12 +125,12 @@
 
   &:focus:after {
     height: ($border-width-thick + 1px);
-    background: $color-brand;
+    background: $brand-primary;
   }
 
   &:hover,
   &:focus {
-    background: $color-background-utility-bar-hover;
+    background: $brand-primary-transparent-10;
     color: inherit;
   }
 
@@ -102,11 +140,11 @@
    * @modifier
    */
   &.slds-is-active {
-    background: $color-background-utility-bar-hover;
+    background: $brand-primary-transparent-10;
     color: inherit;
 
     &:after {
-      background: $color-brand;
+      background: $brand-primary;
     }
   }
 }

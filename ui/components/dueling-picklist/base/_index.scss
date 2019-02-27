@@ -2,6 +2,7 @@
 // Licensed under BSD 3-Clause - see LICENSE.txt or git.io/sfdc-license
 
 // Anything [class*='slds-picklist'] is deprecated and should not be used
+@import 'deprecate';
 
 /**
  * A dueling picklist inherits styles from the listbox component
@@ -10,10 +11,12 @@
  * @name base
  * @selector .slds-dueling-list
  * @restrict div
+ * @support dev-ready
  * @variant
  */
 .slds-dueling-list {
   display: flex;
+  clear: left;
 }
 
 /**
@@ -33,27 +36,23 @@
       margin-top: $spacing-large;
     }
   }
+}
 
-  [aria-disabled="true"] {
-    background-color: $color-background-input-disabled;
-    border: 1px solid $color-border-input-disabled;
-    color: $color-text-input-disabled;
+/**
+ * @summary Changes the layout of the dueling picklist to be responsive
+ *
+ * @selector .slds-dueling-list__column_responsive
+ * @restrict .slds-dueling-list__column
+ */
+.slds-dueling-list__column_responsive {
+  flex: 0 1 $size-small;
+  flex-wrap: wrap;
+  overflow: hidden;
+  min-width: $size-xx-small;
 
-    &:hover {
-      cursor: not-allowed;
-    }
-
-    .slds-listbox__option {
-
-      &:hover {
-        cursor: not-allowed;
-        background-color: transparent;
-      }
-
-      &:focus {
-        background-color: transparent;
-      }
-    }
+  .slds-dueling-list__options {
+    width: auto;
+    max-width: $size-small;
   }
 }
 
@@ -73,54 +72,55 @@
   background-color: $color-background-input-active;
   overflow: auto;
 
+  /**
+   * @summary Selected/dragging state of a listbox option
+   * @selector .slds-is-selected
+   * @restrict .slds-dueling-list__options div
+   */
   [aria-selected="true"] {
-    background-color: $color-background-button-brand;
+    background-color: $brand-accessible;
     color: $color-text-button-brand;
 
     &:hover,
     &:focus {
-      background: $color-background-button-brand-hover;
+      background: $brand-accessible-active;
       color: $color-text-button-brand-hover;
     }
   }
-}
 
-@include deprecate('4.0.0', 'Use slds-listbox__item instead of slds-picklist__item') {
-
-  .slds-picklist_draggable,
-  .slds-picklist--draggable {
-    display: flex;
-
-    .slds-button {
-      margin: $spacing-xx-small;
-
-      &:first-of-type {
-        margin-top: $spacing-large;
-      }
-    }
+  /**
+   * @summary grabbed state of a listbox option
+   * @selector .slds-is-grabbed
+   * @restrict .slds-dueling-list__options div
+   */
+  .slds-is-grabbed {
+    transform: rotate(3deg);
   }
 
-  .slds-picklist__item {
-    position: relative;
-    line-height: $line-height-text;
+  /**
+   * @summary Disabled state of a picklist option
+   * @selector .slds-is-disabled
+   * @restrict .slds-dueling-list__options
+   */
+  &.slds-is-disabled {
+    background-color: $color-background-input-disabled;
+    border-color: $color-border-input-disabled;
+    color: $color-text-input-disabled;
 
-    > a,
-    > span {
-      display: block;
-      padding: $spacing-x-small $spacing-small;
-
-      &:hover {
-        background-color: $color-background-row-hover;
-        cursor: pointer;
-      }
-
-      &:active {
-        background-color: $color-background-row-active;
-      }
+    &:hover {
+      cursor: not-allowed;
     }
 
-    &[aria-selected="true"] {
-      background-color: $color-background-row-active;
+    .slds-listbox__option {
+
+      &:hover {
+        cursor: not-allowed;
+        background-color: transparent;
+      }
+
+      &:focus {
+        background-color: transparent;
+      }
     }
   }
 }

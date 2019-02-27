@@ -2,7 +2,7 @@
 // Licensed under BSD 3-Clause - see LICENSE.txt or git.io/sfdc-license
 
 import React from 'react';
-import { ButtonIcon } from '../../button-icons/base/example';
+import ButtonIcon from '../../button-icons/';
 import { UtilityIcon } from '../../icons/base/example';
 import classNames from 'classnames';
 
@@ -11,12 +11,7 @@ import classNames from 'classnames';
 /// ///////////////////////////////////////////
 
 export let Alert = props => {
-  const {
-    className,
-    type,
-    children,
-    ...rest
-  } = props;
+  const { className, type, children } = props;
 
   return (
     <div
@@ -27,14 +22,19 @@ export let Alert = props => {
       )}
       role="alert"
     >
-      <span className="slds-assistive-text">{ type || 'info' }</span>
-      { children }
-      <ButtonIcon
-        className="slds-notify__close slds-button_icon-inverse"
-        symbol="close"
-        assistiveText="Close"
-        title="Close"
-      />
+      <span className="slds-assistive-text">{type || 'info'}</span>
+      {children}
+      <div className="slds-notify__close">
+        <ButtonIcon
+          className={classNames(
+            type !== 'warning' && 'slds-button_icon-inverse'
+          )}
+          symbol="close"
+          assistiveText="Close"
+          title="Close"
+          size="small"
+        />
+      </div>
     </div>
   );
 };
@@ -51,7 +51,10 @@ export default (
       assistiveText={false}
       symbol="user"
     />
-    <h2>Logged in as John Smith (johnsmith@acme.com). <a href="javascript:void(0);">Log out</a></h2>
+    <h2>
+      Logged in as John Smith (johnsmith@acme.com).{' '}
+      <a href="javascript:void(0);">Log out</a>
+    </h2>
   </Alert>
 );
 
@@ -59,7 +62,7 @@ export let states = [
   {
     id: 'warning',
     label: 'Warning',
-    element:
+    element: (
       <Alert type="warning">
         <UtilityIcon
           containerClassName="slds-m-right_x-small"
@@ -67,27 +70,35 @@ export let states = [
           assistiveText={false}
           symbol="warning"
         />
-        <h2>Your browser is outdated. Your Salesforce experience may be degraded. <a href="javascript:void(0);">More Information</a></h2>
+        <h2>
+          Your browser is outdated. Your Salesforce experience may be degraded.{' '}
+          <a href="javascript:void(0);">More Information</a>
+        </h2>
       </Alert>
+    )
   },
   {
     id: 'error',
     label: 'Error',
-    element:
+    element: (
       <Alert type="error">
         <UtilityIcon
           containerClassName="slds-m-right_x-small"
           className="slds-icon_x-small"
           assistiveText={false}
-          symbol="ban"
+          symbol="error"
         />
-        <h2>Your browser is currently not supported. Your Salesforce may be degraded. <a href="javascript:void(0);">More Information</a></h2>
+        <h2>
+          Your browser is currently not supported. Your Salesforce may be
+          degraded. <a href="javascript:void(0);">More Information</a>
+        </h2>
       </Alert>
+    )
   },
   {
     id: 'offline',
     label: 'Offline',
-    element:
+    element: (
       <Alert type="offline">
         <UtilityIcon
           containerClassName="slds-m-right_x-small"
@@ -95,7 +106,11 @@ export let states = [
           assistiveText={false}
           symbol="offline"
         />
-        <h2>You are in offline mode. <a href="javascript:void(0);">More Information</a></h2>
+        <h2>
+          You are in offline mode.{' '}
+          <a href="javascript:void(0);">More Information</a>
+        </h2>
       </Alert>
+    )
   }
 ];

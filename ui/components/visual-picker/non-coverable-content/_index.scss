@@ -2,11 +2,12 @@
 // Licensed under BSD 3-Clause - see LICENSE.txt or git.io/sfdc-license
 
 /**
- * Checkmark that is visibily toggled when input is checked
+ * @summary Checkmark that is visibily toggled when input is checked
  *
  * @name non-coverable-content
  * @selector .slds-visual-picker__text-check
  * @restrict .slds-visual-picker span
+ * @support dev-ready
  * @variant
  */
 .slds-visual-picker__text-check {
@@ -15,4 +16,8 @@
   right: rem(10px);
   width: $square-icon-x-small-content;
   height: $square-icon-x-small-content;
+}
+
+.slds-visual-picker input[disabled] ~ label .slds-visual-picker__text-check {
+  opacity: 0;
 }

@@ -2,14 +2,33 @@
 // Licensed under BSD 3-Clause - see LICENSE.txt or git.io/sfdc-license
 
 import React from 'react';
-import { ButtonIcon } from '../../button-icons/base/example';
-import { Menu, MenuList, MenuItem, Trigger } from '../../menus/dropdown/example';
+import PropTypes from 'prop-types';
+import { Button } from '../../buttons/base/example';
+import ButtonIcon from '../../button-icons/';
+import {
+  Menu,
+  MenuList,
+  MenuItem,
+  Trigger
+} from '../../menus/dropdown/example';
 import classNames from 'classnames';
 
-export let ButtonGroupList = props =>
-  <ul {...props} className={classNames('slds-button-group-list', props.className)}>
+export let ButtonGroupList = props => (
+  <ul
+    {...props}
+    className={classNames('slds-button-group-list', props.className)}
+  >
     {props.children}
-  </ul>;
+  </ul>
+);
+ButtonGroupList.propTypes = {
+  children: PropTypes.node
+};
+
+export const ButtonGroupListItem = props => <li>{props.children}</li>;
+ButtonGroupListItem.propTypes = {
+  children: PropTypes.node
+};
 
 /// ////////////////////////////////////////
 // Export
@@ -17,80 +36,74 @@ export let ButtonGroupList = props =>
 
 export default (
   <ButtonGroupList>
-    <li>
-      <button className="slds-button slds-button_neutral">Refresh</button>
-    </li>
-
-    <li>
-      <button className="slds-button slds-button_neutral">Edit</button>
-    </li>
-
-    <li>
-      <button className="slds-button slds-button_neutral">Save</button>
-    </li>
+    <ButtonGroupListItem>
+      <Button isNeutral>Refresh</Button>
+    </ButtonGroupListItem>
+    <ButtonGroupListItem>
+      <Button isNeutral>Edit</Button>
+    </ButtonGroupListItem>
+    <ButtonGroupListItem>
+      <Button isNeutral>Save</Button>
+    </ButtonGroupListItem>
   </ButtonGroupList>
 );
 
 export let states = [
   {
-    id: 'button-group-disabled',
-    label: 'Default Disabled',
-    element:
+    id: 'disabled',
+    label: 'Disabled',
+    element: (
       <ButtonGroupList>
-        <li>
-          <button className="slds-button slds-button_neutral">Refresh</button>
-        </li>
-
-        <li>
-          <button className="slds-button slds-button_neutral">Edit</button>
-        </li>
-
-        <li>
-          <button className="slds-button slds-button_neutral" disabled>Save</button>
-        </li>
+        <ButtonGroupListItem>
+          <Button isNeutral>Refresh</Button>
+        </ButtonGroupListItem>
+        <ButtonGroupListItem>
+          <Button isNeutral>Edit</Button>
+        </ButtonGroupListItem>
+        <ButtonGroupListItem>
+          <Button isNeutral disabled>
+            Save
+          </Button>
+        </ButtonGroupListItem>
       </ButtonGroupList>
+    )
   },
   {
-    id: 'button-group-more',
-    label: 'More Icon',
-    element:
+    id: 'with-overflow',
+    label: 'With Overflow Menu',
+    element: (
       <ButtonGroupList>
-        <li>
-          <button className="slds-button slds-button_neutral">Refresh</button>
-        </li>
-
-        <li>
-          <button className="slds-button slds-button_neutral">Edit</button>
-        </li>
-
-        <li>
-          <button className="slds-button slds-button_neutral">Save</button>
-        </li>
-
-        <li>
+        <ButtonGroupListItem>
+          <Button isNeutral>Refresh</Button>
+        </ButtonGroupListItem>
+        <ButtonGroupListItem>
+          <Button isNeutral>Edit</Button>
+        </ButtonGroupListItem>
+        <ButtonGroupListItem>
+          <Button isNeutral>Save</Button>
+        </ButtonGroupListItem>
+        <ButtonGroupListItem>
           <Trigger className="slds-button_last" ariaExpanded="false" />
-        </li>
+        </ButtonGroupListItem>
       </ButtonGroupList>
+    )
   },
   {
-    id: 'button-group-more-open',
-    label: 'More Icon Open',
-    element:
+    id: 'with-overflow-open',
+    label: 'With Overflow Menu - Open',
+    element: (
       <div className="demo-only" style={{ height: '8.75rem' }}>
         <ButtonGroupList>
-          <li>
-            <button className="slds-button slds-button_neutral">Refresh</button>
-          </li>
-
-          <li>
-            <button className="slds-button slds-button_neutral">Edit</button>
-          </li>
-
-          <li>
-            <button className="slds-button slds-button_neutral">Save</button>
-          </li>
-
-          <li>
+          <ButtonGroupListItem>
+            <Button isNeutral>Refresh</Button>
+          </ButtonGroupListItem>
+          <ButtonGroupListItem>
+            <Button isNeutral>Edit</Button>
+          </ButtonGroupListItem>
+          <ButtonGroupListItem>
+            <Button isNeutral>Save</Button>
+          </ButtonGroupListItem>
+          <ButtonGroupListItem>
             <Trigger className="slds-button_last slds-is-open">
               <Menu className="slds-dropdown_right">
                 <MenuList>
@@ -100,28 +113,26 @@ export let states = [
                 </MenuList>
               </Menu>
             </Trigger>
-          </li>
+          </ButtonGroupListItem>
         </ButtonGroupList>
       </div>
+    )
   },
   {
-    id: 'button-group-icon-disabled',
-    label: 'More Icon Disabled',
-    element:
+    id: 'with-overflow-disabled',
+    label: 'With Overflow Menu - Disabled',
+    element: (
       <ButtonGroupList>
-        <li>
-          <button className="slds-button slds-button_neutral">Refresh</button>
-        </li>
-
-        <li>
-          <button className="slds-button slds-button_neutral">Edit</button>
-        </li>
-
-        <li>
-          <button className="slds-button slds-button_neutral">Save</button>
-        </li>
-
-        <li>
+        <ButtonGroupListItem>
+          <Button isNeutral>Refresh</Button>
+        </ButtonGroupListItem>
+        <ButtonGroupListItem>
+          <Button isNeutral>Edit</Button>
+        </ButtonGroupListItem>
+        <ButtonGroupListItem>
+          <Button isNeutral>Save</Button>
+        </ButtonGroupListItem>
+        <ButtonGroupListItem>
           <div className="slds-dropdown-trigger slds-dropdown-trigger_click slds-button_last">
             <ButtonIcon
               className="slds-button_icon-border"
@@ -132,28 +143,32 @@ export let states = [
               title="More Actions"
             />
           </div>
-        </li>
+        </ButtonGroupListItem>
       </ButtonGroupList>
-  },
+    )
+  }
+];
+
+export let examples = [
   {
-    id: 'button-group-inverse',
+    id: 'inverse',
     label: 'Inverse',
-    element:
-      <div className="demo-only" style={{ padding: '0.5rem', background: '#16325c' }}>
+    element: (
+      <div
+        className="demo-only"
+        style={{ padding: '0.5rem', background: '#16325c' }}
+      >
         <ButtonGroupList>
-          <li>
-            <button className="slds-button slds-button_inverse">Refresh</button>
-          </li>
-
-          <li>
-            <button className="slds-button slds-button_inverse">Edit</button>
-          </li>
-
-          <li>
-            <button className="slds-button slds-button_inverse">Save</button>
-          </li>
-
-          <li>
+          <ButtonGroupListItem>
+            <Button isInverse>Refresh</Button>
+          </ButtonGroupListItem>
+          <ButtonGroupListItem>
+            <Button isInverse>Edit</Button>
+          </ButtonGroupListItem>
+          <ButtonGroupListItem>
+            <Button isInverse>Save</Button>
+          </ButtonGroupListItem>
+          <ButtonGroupListItem>
             <div className="slds-dropdown-trigger slds-dropdown-trigger_click slds-button_last">
               <ButtonIcon
                 className="slds-button_icon-border-inverse"
@@ -163,29 +178,32 @@ export let states = [
                 title="More Actions"
               />
             </div>
-          </li>
+          </ButtonGroupListItem>
         </ButtonGroupList>
       </div>
+    )
   },
   {
-    id: 'button-group-inverse-disabled',
-    label: 'Inverse Disabled',
-    element:
-      <div className="demo-only" style={{ padding: '0.5rem', background: '#16325c' }}>
+    id: 'inverse-disabled',
+    label: 'Inverse - Disabled',
+    element: (
+      <div
+        className="demo-only"
+        style={{ padding: '0.5rem', background: '#16325c' }}
+      >
         <ButtonGroupList>
-          <li>
-            <button className="slds-button slds-button_inverse">Refresh</button>
-          </li>
-
-          <li>
-            <button className="slds-button slds-button_inverse" disabled>Edit</button>
-          </li>
-
-          <li>
-            <button className="slds-button slds-button_inverse" >Save</button>
-          </li>
-
-          <li>
+          <ButtonGroupListItem>
+            <Button isInverse>Refresh</Button>
+          </ButtonGroupListItem>
+          <ButtonGroupListItem>
+            <Button isInverse disabled>
+              Edit
+            </Button>
+          </ButtonGroupListItem>
+          <ButtonGroupListItem>
+            <Button isInverse>Save</Button>
+          </ButtonGroupListItem>
+          <ButtonGroupListItem>
             <div className="slds-dropdown-trigger slds-dropdown-trigger_click slds-button_last">
               <ButtonIcon
                 className="slds-button_icon-border-inverse"
@@ -195,29 +213,63 @@ export let states = [
                 title="More Actions"
               />
             </div>
-          </li>
+          </ButtonGroupListItem>
         </ButtonGroupList>
       </div>
+    )
   },
   {
-    id: 'button-group-icon-inverse-disabled',
-    label: 'Inverse More Icon Disabled',
-    element:
-      <div className="demo-only" style={{ padding: '0.5rem', background: '#16325c' }}>
+    id: 'inverse-overflow',
+    label: 'Inverse - With Overflow Menu',
+    element: (
+      <div
+        className="demo-only"
+        style={{ padding: '0.5rem', background: '#16325c' }}
+      >
         <ButtonGroupList>
-          <li>
-            <button className="slds-button slds-button_inverse">Refresh</button>
-          </li>
-
-          <li>
-            <button className="slds-button slds-button_inverse">Edit</button>
-          </li>
-
-          <li>
-            <button className="slds-button slds-button_inverse">Save</button>
-          </li>
-
-          <li>
+          <ButtonGroupListItem>
+            <Button isInverse>Refresh</Button>
+          </ButtonGroupListItem>
+          <ButtonGroupListItem>
+            <Button isInverse>Edit</Button>
+          </ButtonGroupListItem>
+          <ButtonGroupListItem>
+            <Button isInverse>Save</Button>
+          </ButtonGroupListItem>
+          <ButtonGroupListItem>
+            <div className="slds-dropdown-trigger slds-dropdown-trigger_click slds-button_last">
+              <ButtonIcon
+                className="slds-button_icon-border-inverse"
+                assistiveText="More Actions"
+                aria-haspopup="true"
+                symbol="down"
+                title="More Actions"
+              />
+            </div>
+          </ButtonGroupListItem>
+        </ButtonGroupList>
+      </div>
+    )
+  },
+  {
+    id: 'inverse-overflow-disabled',
+    label: 'Inverse - With Overflow Menu - Disabled',
+    element: (
+      <div
+        className="demo-only"
+        style={{ padding: '0.5rem', background: '#16325c' }}
+      >
+        <ButtonGroupList>
+          <ButtonGroupListItem>
+            <Button isInverse>Refresh</Button>
+          </ButtonGroupListItem>
+          <ButtonGroupListItem>
+            <Button isInverse>Edit</Button>
+          </ButtonGroupListItem>
+          <ButtonGroupListItem>
+            <Button isInverse>Save</Button>
+          </ButtonGroupListItem>
+          <ButtonGroupListItem>
             <div className="slds-dropdown-trigger slds-dropdown-trigger_click slds-button_last">
               <ButtonIcon
                 className="slds-button_icon-border-inverse"
@@ -228,8 +280,134 @@ export let states = [
                 title="More Actions"
               />
             </div>
-          </li>
+          </ButtonGroupListItem>
         </ButtonGroupList>
       </div>
+    )
+  },
+  {
+    id: 'button-group-icon',
+    label: 'Button Icon Group',
+    element: (
+      <ButtonGroupList>
+        <ButtonGroupListItem>
+          <ButtonIcon
+            className="slds-button_icon-border-filled"
+            symbol="chart"
+            assistiveText="Charts"
+            title="Charts"
+            aria-pressed="false"
+          />
+        </ButtonGroupListItem>
+        <ButtonGroupListItem>
+          <ButtonIcon
+            className="slds-button_icon-border-filled"
+            symbol="filterList"
+            assistiveText="Filter List"
+            title="Filter List"
+            aria-pressed="false"
+          />
+        </ButtonGroupListItem>
+        <ButtonGroupListItem>
+          <ButtonIcon
+            className="slds-button_icon-more"
+            hasDropdown
+            assistiveText="More Actions"
+            title="More Actions"
+          />
+        </ButtonGroupListItem>
+      </ButtonGroupList>
+    )
+  },
+  {
+    id: 'button-group-icon-disabled',
+    label: 'Button Icon Group - Disabled',
+    element: (
+      <ButtonGroupList>
+        <ButtonGroupListItem>
+          <ButtonIcon
+            className="slds-button_icon-border-filled"
+            symbol="chart"
+            assistiveText="Charts"
+            title="Charts"
+            aria-pressed="false"
+          />
+        </ButtonGroupListItem>
+        <ButtonGroupListItem>
+          <ButtonIcon
+            className="slds-button_icon-border-filled"
+            disabled
+            symbol="filterList"
+            assistiveText="Filter List"
+            title="Filter List"
+            aria-pressed="false"
+          />
+        </ButtonGroupListItem>
+        <ButtonGroupListItem>
+          <ButtonIcon
+            className="slds-button_icon-more"
+            hasDropdown
+            assistiveText="More Actions"
+            title="More Actions"
+          />
+        </ButtonGroupListItem>
+      </ButtonGroupList>
+    )
+  },
+  {
+    id: 'button-group-icon-selected',
+    label: 'Button Icon Group - Selected',
+    element: (
+      <ButtonGroupList>
+        <ButtonGroupListItem>
+          <ButtonIcon
+            className="slds-button_icon-border-filled slds-is-selected"
+            symbol="chart"
+            assistiveText="Charts"
+            title="Charts"
+            aria-pressed="false"
+          />
+        </ButtonGroupListItem>
+        <ButtonGroupListItem>
+          <ButtonIcon
+            className="slds-button_icon-border-filled"
+            symbol="filterList"
+            assistiveText="Filter List"
+            title="Filter List"
+            aria-pressed="false"
+          />
+        </ButtonGroupListItem>
+        <ButtonGroupListItem>
+          <ButtonIcon
+            className="slds-button_icon-more"
+            hasDropdown
+            assistiveText="More Actions"
+            title="More Actions"
+          />
+        </ButtonGroupListItem>
+      </ButtonGroupList>
+    )
+  },
+  {
+    id: 'brand-with-overflow',
+    label: 'Brand Button With Overflow Menu',
+    element: (
+      <ButtonGroupList>
+        <ButtonGroupListItem>
+          <Button isBrand>Save</Button>
+        </ButtonGroupListItem>
+        <ButtonGroupListItem>
+          <div className="slds-dropdown-trigger slds-dropdown-trigger_click slds-button_last">
+            <ButtonIcon
+              aria-haspopup="true"
+              assistiveText="More Actions"
+              className="slds-button_icon-brand"
+              symbol="down"
+              title="More Actions"
+            />
+          </div>
+        </ButtonGroupListItem>
+      </ButtonGroupList>
+    )
   }
 ];

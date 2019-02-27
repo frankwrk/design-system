@@ -4,23 +4,28 @@
 import React from 'react';
 import classNames from 'classnames';
 import _ from '../../../shared/helpers';
+import { FormElementControl } from '../../form-element/';
 
 /// ////////////////////////////////////////
 // Partial(s)
 /// ////////////////////////////////////////
 
-export let Fieldset = props =>
+export let Fieldset = props => (
   <fieldset className={classNames('slds-form-element', props.className)}>
     {props.children}
-  </fieldset>;
+  </fieldset>
+);
 
-export let Legend = props =>
-  <legend className={classNames('slds-form-element__legend slds-form-element__label', props.className)}>{props.children}</legend>;
-
-export let FormElementControl = props =>
-  <div className={classNames('slds-form-element__control', props.className)}>
+export let Legend = props => (
+  <legend
+    className={classNames(
+      'slds-form-element__legend slds-form-element__label',
+      props.className
+    )}
+  >
     {props.children}
-  </div>;
+  </legend>
+);
 
 export let Radio = props => {
   const uniqueId = _.uniqueId('radio-');
@@ -29,15 +34,33 @@ export let Radio = props => {
     <span className={classNames('slds-radio', props.className)}>
       <input
         type="radio"
-        id={uniqueId}
+        id={props.id ? props.id : uniqueId}
+        value={props.id ? props.id : uniqueId}
         name={props.name || 'options'}
         disabled={props.disabled}
         defaultChecked={props.checked}
+        tabIndex={props.tabIndex}
         aria-describedby={props.errorId}
+        aria-labelledby={
+          props.labelId && props.groupId
+            ? props.labelId + ' ' + props.groupId
+            : null
+        }
       />
-      <label className="slds-radio__label" htmlFor={uniqueId}>
+      <label
+        className="slds-radio__label"
+        htmlFor={props.id ? props.id : uniqueId}
+        id={props.labelId}
+      >
         <span className="slds-radio_faux" />
-        <span className="slds-form-element__label">{props.label}</span>
+        <span
+          className={classNames(
+            'slds-form-element__label',
+            props.hideLabel ? 'slds-assistive-text' : null
+          )}
+        >
+          {props.label}
+        </span>
       </label>
     </span>
   );
@@ -61,38 +84,66 @@ export let states = [
   {
     id: 'disabled',
     label: 'Disabled',
-    element:
+    element: (
       <Fieldset>
         <Legend>Radio Group Label</Legend>
         <FormElementControl>
           <Radio disabled label="Radio Label One" />
-          <Radio disable label="Radio Label Two" />
+          <Radio disabled label="Radio Label Two" />
         </FormElementControl>
       </Fieldset>
+    )
+  },
+  {
+    id: 'checked-and-disabled',
+    label: 'Checked and Disabled',
+    element: (
+      <Fieldset>
+        <Legend>Radio Group Label</Legend>
+        <FormElementControl>
+          <Radio checked disabled label="Radio Label One" />
+          <Radio disabled label="Radio Label Two" />
+        </FormElementControl>
+      </Fieldset>
+    )
   },
   {
     id: 'required',
     label: 'Required',
-    element:
+    element: (
       <Fieldset>
-        <Legend><abbr className="slds-required" title="required">*</abbr> Radio Group Label</Legend>
+        <Legend>
+          <abbr className="slds-required" title="required">
+            *
+          </abbr>{' '}
+          Radio Group Label
+        </Legend>
         <FormElementControl>
           <Radio checked label="Radio Label One" />
           <Radio label="Radio Label Two" />
         </FormElementControl>
       </Fieldset>
+    )
   },
   {
     id: 'error',
     label: 'Error',
-    element:
+    element: (
       <Fieldset className="slds-has-error">
-        <Legend><abbr className="slds-required" title="required">*</abbr> Radio Group Label</Legend>
+        <Legend>
+          <abbr className="slds-required" title="required">
+            *
+          </abbr>{' '}
+          Radio Group Label
+        </Legend>
         <FormElementControl>
           <Radio errorId="error_01" checked label="Radio Label One" />
           <Radio errorId="error_01" label="Radio Label Two" />
         </FormElementControl>
-        <div id="error_01" className="slds-form-element__help">This field is required</div>
+        <div id="error_01" className="slds-form-element__help">
+          This field is required
+        </div>
       </Fieldset>
+    )
   }
 ];

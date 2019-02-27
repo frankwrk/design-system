@@ -4,12 +4,11 @@
 import _ from '../../shared/helpers';
 import React from 'react';
 import classNames from 'classnames';
-
-import Truncate from '../../shared/truncate/index.react.jsx';
+import PropTypes from 'prop-types';
 
 class LabelHeading extends React.Component {
-  render () {
-    const className = classNames('slds-text-title_caps', this.props.className);
+  render() {
+    const className = classNames('slds-text-title_bold', this.props.className);
     return (
       <p {...this.props} className={className}>
         {this.props.children}
@@ -19,31 +18,30 @@ class LabelHeading extends React.Component {
 }
 
 class MediumHeading extends React.Component {
-  render () {
-    const className = classNames('slds-text-heading_medium', this.props.className);
+  render() {
+    const className = classNames(
+      'slds-text-heading_medium',
+      this.props.className
+    );
     return (
       <h1 {...this.props} className={className}>
         {this.props.children}
       </h1>
     );
-  };
+  }
 }
 
 class Heading extends React.Component {
-  render () {
+  render() {
     const props = _.omit(this.props, 'flavor');
     const Tag = this.props.flavor === 'medium' ? MediumHeading : LabelHeading;
-    return (
-      <Tag {...props}>
-        { this.props.children }
-      </Tag>
-    );
+    return <Tag {...props}>{this.props.children}</Tag>;
   }
 }
 
 Heading.propTypes = {
-  flavor: React.PropTypes.oneOf(['label', 'medium']),
-  truncate: React.PropTypes.number
+  flavor: PropTypes.oneOf(['label', 'medium']),
+  truncate: PropTypes.number
 };
 
 Heading.defaultProps = { flavor: 'label' };

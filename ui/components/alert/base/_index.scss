@@ -3,10 +3,10 @@
 
 /**
  * @summary Initializes alert notification
- *
  * @name base
  * @selector .slds-notify_alert
  * @restrict div
+ * @support dev-ready
  * @variant
  */
 .slds-notify_alert,
@@ -23,10 +23,9 @@
   width: 100%;
 
   /**
-   * Alert close button
-   *
+   * @summary Alert close button
    * @selector .slds-notify__close
-   * @restrict .slds-notify button
+   * @restrict .slds-notify_alert div
    */
   .slds-notify__close {
     float: right;

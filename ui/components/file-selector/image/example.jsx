@@ -2,8 +2,6 @@
 // Licensed under BSD 3-Clause - see LICENSE.txt or git.io/sfdc-license
 
 import React from 'react';
-import SvgIcon from '../../../shared/svg-icon';
-import classNames from 'classnames';
 import { FileSelector } from '../base/example';
 
 export default (
@@ -16,25 +14,32 @@ export let states = [
   {
     id: 'file-selector-images-error',
     label: 'Error',
-    element:
+    element: (
       <div className="demo-only" style={{ maxWidth: '320px' }}>
         <FileSelector className="slds-file-selector_images" error />
       </div>
+    )
   },
   {
     id: 'file-selector-images-draggover',
     label: 'Dragover',
-    element:
+    element: (
       <div className="demo-only" style={{ maxWidth: '320px' }}>
         <FileSelector className="slds-file-selector_images" draggover />
       </div>
+    )
   },
   {
     id: 'file-selector-images-draggover-error',
     label: 'Dragover with error',
-    element:
+    element: (
       <div className="demo-only" style={{ maxWidth: '320px' }}>
-        <FileSelector className="slds-file-selector_images" draggoverError error />
+        <FileSelector
+          className="slds-file-selector_images"
+          draggoverError
+          error
+        />
       </div>
+    )
   }
 ];

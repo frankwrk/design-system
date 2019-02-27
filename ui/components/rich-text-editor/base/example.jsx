@@ -3,10 +3,23 @@
 
 import React from 'react';
 import { ButtonGroupList } from '../../button-groups/list/example';
-import { ButtonIcon } from '../../button-icons/base/example';
+import PropTypes from 'prop-types';
+import ButtonIcon from '../../button-icons/';
 import SvgIcon from '../../../shared/svg-icon';
 import { Tooltip } from '../../tooltips/base/example';
-import { ComboboxContainer, Listbox, ListboxItem, Option } from '../../combobox/base/example';
+import {
+  ComboboxContainer,
+  Listbox,
+  ListboxItem,
+  Option
+} from '../../combobox/base/example';
+import { Listbox as NewListbox } from '../../combobox/listbox';
+import { ComboboxGroup } from '../../combobox/';
+import { IconObjectSwitcher } from '../../combobox/object-switcher/';
+import { UtilityIcon } from '../../icons/base/example';
+import * as Snapshot from '../../combobox/snapshots.data';
+import { FormElement } from '../../form-element';
+import { Input } from '../../input/base/example';
 import classNames from 'classnames';
 import _ from '../../../shared/helpers';
 
@@ -14,28 +27,188 @@ const listboxOptionId01 = 'listbox-option-unique-id-01';
 const listboxOptionId02 = 'listbox-option-unique-id-02';
 const listboxOptionId03 = 'listbox-option-unique-id-03';
 const listboxOptionId04 = 'listbox-option-unique-id-04';
+const richTextEditorLabelId01 = 'rich-text-editor-unique-id-01';
 
 /// ////////////////////////////////////////
 // Partial(s)
 /// ////////////////////////////////////////
 
-export let Demo = props =>
-  <div className="demo-only" style={{minHeight: '180px'}}>
+export let Demo = props => (
+  <div
+    className={classNames('demo-only', props.className)}
+    style={{ minHeight: '180px' }}
+    {...props}
+  >
     {props.children}
-  </div>;
+  </div>
+);
 
-export let RichTextEditor = props =>
-  <div {...props} className={classNames('slds-rich-text-editor slds-form-element slds-grid slds-grid_vertical slds-nowrap', props.className)}>
+export let RichTextEditor = props => (
+  <FormElement
+    labelId={props.labelId}
+    labelContent={props.label}
+    inlineMessage={props.inlineMessage}
+    hasError={props.hasError}
+    errorId={props.errorId}
+    hasFauxLabel
+  >
+    <div
+      className={classNames(
+        'slds-rich-text-editor slds-grid slds-grid_vertical slds-nowrap',
+        props.className
+      )}
+    >
+      {props.children}
+    </div>
+  </FormElement>
+);
+
+RichTextEditor.propTypes = {
+  children: PropTypes.node.isRequired,
+  errorId: PropTypes.string,
+  hasError: PropTypes.bool,
+  inlineMessage: PropTypes.string,
+  labelContent: PropTypes.string,
+  labelId: PropTypes.string
+};
+
+export let RteToolbar = props => (
+  <div
+    role="toolbar"
+    aria-label={props.disabledLabel}
+    className={classNames(
+      'slds-rich-text-editor__toolbar slds-shrink-none',
+      props.className
+    )}
+  >
     {props.children}
-  </div>;
+  </div>
+);
 
-export let RteToolbar = props =>
-  <div role="toolbar" aria-label={props.disabledLabel} className={classNames('slds-rich-text-editor__toolbar slds-shrink-none', props.className)}>
-    {props.children}
-  </div>;
+export const RteFormula = props => {
+  const listboxId1 = _.uniqueId('listbox-id-');
+  const listboxId2 = _.uniqueId('listbox-id-');
+  const primaryComboboxId1 = _.uniqueId('primary-combobox-id-');
+  const primaryComboboxId2 = _.uniqueId('primary-combobox-id-');
+  const inputId = _.uniqueId('text-input-id-');
 
-const FontFamilyDropdown = props =>
-  <Listbox className="slds-dropdown slds-dropdown_fluid" vertical listboxId="family-listbox">
+  return (
+    <React.Fragment>
+      <div className="slds-rich-text-editor__col slds-rich-text-editor__col_grow">
+        <ComboboxGroup
+          id={_.uniqueId('combobox-id-')}
+          aria-controls={listboxId1}
+          comboboxID={primaryComboboxId1}
+          autocomplete
+          results={
+            <NewListbox
+              id={listboxId1}
+              snapshot={Snapshot.EntityOptions}
+              type="entity"
+              count={2}
+              hasUniqueId
+            />
+          }
+          resultsType="listbox"
+          addon={
+            <IconObjectSwitcher
+              id={_.uniqueId('combobox-id-')}
+              listboxId={_.uniqueId('objectswitcher-listbox-id-')}
+              value="Apex"
+              label="Filter resources by:"
+              filteredSymbol="apex"
+              addonPosition="start"
+              comboboxAriaControls={primaryComboboxId1}
+            />
+          }
+          addonPosition="start"
+          comboboxPosition="end"
+          inputIconPosition="right"
+          placeholder="Insert a resource"
+          hideLabel
+          label="Insert a Resource"
+          rightInputIcon={
+            <UtilityIcon
+              symbol="search"
+              className="slds-icon slds-icon_x-small slds-icon-text-default"
+              containerClassName="slds-input__icon slds-input__icon_right"
+              assistiveText={false}
+              title={false}
+            />
+          }
+        />
+      </div>
+      <div className="slds-rich-text-editor__col slds-rich-text-editor__col_grow">
+        <ComboboxGroup
+          id={_.uniqueId('combobox-id-')}
+          aria-controls={listboxId2}
+          comboboxID={primaryComboboxId2}
+          autocomplete
+          results={
+            <NewListbox
+              id={listboxId2}
+              snapshot={Snapshot.EntityOptions}
+              type="entity"
+              count={2}
+              hasUniqueId
+            />
+          }
+          resultsType="listbox"
+          addon={
+            <IconObjectSwitcher
+              id={_.uniqueId('combobox-id-')}
+              listboxId={_.uniqueId('objectswitcher-listbox-id-')}
+              value="Apex"
+              label="Filter functions by:"
+              filteredSymbol="apex"
+              addonPosition="start"
+              comboboxAriaControls={primaryComboboxId2}
+            />
+          }
+          addonPosition="start"
+          comboboxPosition="end"
+          inputIconPosition="right"
+          placeholder="Insert a function"
+          hideLabel
+          label="Insert a function"
+          rightInputIcon={
+            <UtilityIcon
+              symbol="search"
+              className="slds-icon slds-icon_x-small slds-icon-text-default"
+              containerClassName="slds-input__icon slds-input__icon_right"
+              assistiveText={false}
+              title={false}
+            />
+          }
+        />
+      </div>
+      <div className="slds-rich-text-editor__col slds-rich-text-editor__col_grow">
+        <FormElement
+          hasHiddenLabel
+          labelContent={'Insert operator'}
+          inputId={inputId}
+        >
+          <Input id={inputId} placeholder="Insert operator" />
+        </FormElement>
+      </div>
+      <div className="slds-rich-text-editor__col">
+        <ButtonIcon
+          symbol="help"
+          assistiveText="Help"
+          title="Help"
+          size="medium"
+        />
+      </div>
+    </React.Fragment>
+  );
+};
+
+export const FontFamilyDropdown = props => (
+  <Listbox
+    className="slds-dropdown slds-dropdown_fluid"
+    vertical
+    id="family-listbox"
+  >
     <ListboxItem>
       <Option
         id={listboxOptionId01}
@@ -48,10 +221,15 @@ const FontFamilyDropdown = props =>
     <ListboxItem>
       <Option id={listboxOptionId02} title="Arial" hideIcon />
     </ListboxItem>
-  </Listbox>;
+  </Listbox>
+);
 
-const FontSizeDropdown = props =>
-  <Listbox className="slds-dropdown slds-dropdown_fluid" vertical id="family-listbox">
+const FontSizeDropdown = props => (
+  <Listbox
+    className="slds-dropdown slds-dropdown_fluid"
+    vertical
+    id="size-listbox"
+  >
     <ListboxItem>
       <Option
         id={listboxOptionId03}
@@ -64,10 +242,15 @@ const FontSizeDropdown = props =>
     <ListboxItem>
       <Option id={listboxOptionId04} title="14px" hideIcon />
     </ListboxItem>
-  </Listbox>;
+  </Listbox>
+);
 
-export let RteFormatFont = props =>
-  <div className="slds-grid" role="group" aria-label="Format font family &amp; size">
+export let RteFormatFont = props => (
+  <div
+    className="slds-grid slds-rich-text-editor__spacing-wrapper"
+    role="group"
+    aria-label="Format font family &amp; size"
+  >
     <div className="slds-rich-text-editor__select">
       <ComboboxContainer
         className="slds-size_x-small"
@@ -98,9 +281,10 @@ export let RteFormatFont = props =>
         listbox={<FontSizeDropdown />}
       />
     </div>
-  </div>;
+  </div>
+);
 
-export let RteFormatText = props =>
+export let RteFormatText = props => (
   <ButtonGroupList aria-label="Format text">
     <li>
       <ButtonIcon
@@ -109,7 +293,8 @@ export let RteFormatText = props =>
         tabIndex={props.tabIndexSetting}
         aria-describedby={props.hasTooltip ? 'bold' : null}
         disabled={props.disabledButtons}
-        assistiveText="Bold" />
+        assistiveText="Bold"
+      />
     </li>
 
     <li>
@@ -118,7 +303,8 @@ export let RteFormatText = props =>
         className="slds-button_icon-border-filled"
         symbol="italic"
         disabled={props.disabledButtons}
-        assistiveText="Italic" />
+        assistiveText="Italic"
+      />
     </li>
 
     <li>
@@ -127,7 +313,8 @@ export let RteFormatText = props =>
         className="slds-button_icon-border-filled"
         symbol="underline"
         disabled={props.disabledButtons}
-        assistiveText="Underline" />
+        assistiveText="Underline"
+      />
     </li>
 
     <li>
@@ -136,30 +323,59 @@ export let RteFormatText = props =>
         className="slds-button_icon-border-filled"
         symbol="strikethrough"
         disabled={props.disabledButtons}
-        assistiveText="Strike Through" />
+        assistiveText="Strike Through"
+      />
     </li>
-  </ButtonGroupList>;
+  </ButtonGroupList>
+);
 
-export let RteFormatColor = props =>
+export let RteFormatColor = props => (
   <ButtonGroupList aria-label="Format background & text color">
     <li>
-      <button tabIndex="-1" disabled={props.disabledButtons} className="slds-button slds-button_icon slds-button_icon-more slds-button_icon-more-filled" aria-haspopup="true">
-        <SvgIcon className="slds-button__icon" sprite="utility" symbol="text_background_color" />
-        <SvgIcon className="slds-button__icon slds-button__icon_x-small" sprite="utility" symbol="down" />
+      <button
+        tabIndex="-1"
+        disabled={props.disabledButtons}
+        className="slds-button slds-button_icon slds-button_icon-more slds-button_icon-more-filled"
+        aria-haspopup="true"
+      >
+        <SvgIcon
+          className="slds-button__icon"
+          sprite="utility"
+          symbol="text_background_color"
+        />
+        <SvgIcon
+          className="slds-button__icon slds-button__icon_x-small"
+          sprite="utility"
+          symbol="down"
+        />
         <span className="slds-assistive-text">Background Color</span>
       </button>
     </li>
 
     <li>
-      <button tabIndex="-1" disabled={props.disabledButtons} className="slds-button slds-button_icon slds-button_icon-more slds-button_icon-more-filled" aria-haspopup="true">
-        <SvgIcon className="slds-button__icon" sprite="utility" symbol="text_color" />
-        <SvgIcon className="slds-button__icon slds-button__icon_x-small" sprite="utility" symbol="down" />
+      <button
+        tabIndex="-1"
+        disabled={props.disabledButtons}
+        className="slds-button slds-button_icon slds-button_icon-more slds-button_icon-more-filled"
+        aria-haspopup="true"
+      >
+        <SvgIcon
+          className="slds-button__icon"
+          sprite="utility"
+          symbol="text_color"
+        />
+        <SvgIcon
+          className="slds-button__icon slds-button__icon_x-small"
+          sprite="utility"
+          symbol="down"
+        />
         <span className="slds-assistive-text">Text Color</span>
       </button>
     </li>
-  </ButtonGroupList>;
+  </ButtonGroupList>
+);
 
-export let RteFormatBody = props =>
+export let RteFormatBody = props => (
   <ButtonGroupList aria-label="Format body">
     <li>
       <ButtonIcon
@@ -167,7 +383,8 @@ export let RteFormatBody = props =>
         className="slds-button_icon-border-filled"
         symbol="richtextbulletedlist"
         disabled={props.disabledButtons}
-        assistiveText="Bulleted List" />
+        assistiveText="Bulleted List"
+      />
     </li>
     <li>
       <ButtonIcon
@@ -175,7 +392,8 @@ export let RteFormatBody = props =>
         className="slds-button_icon-border-filled"
         symbol="richtextnumberedlist"
         disabled={props.disabledButtons}
-        assistiveText="Numbered List" />
+        assistiveText="Numbered List"
+      />
     </li>
     <li>
       <ButtonIcon
@@ -183,7 +401,8 @@ export let RteFormatBody = props =>
         className="slds-button_icon-border-filled"
         symbol="richtextindent"
         disabled={props.disabledButtons}
-        assistiveText="Indent" />
+        assistiveText="Indent"
+      />
     </li>
     <li>
       <ButtonIcon
@@ -191,11 +410,13 @@ export let RteFormatBody = props =>
         className="slds-button_icon-border-filled"
         symbol="richtextoutdent"
         disabled={props.disabledButtons}
-        assistiveText="Outdent" />
+        assistiveText="Outdent"
+      />
     </li>
-  </ButtonGroupList>;
+  </ButtonGroupList>
+);
 
-export let RteAlignText = props =>
+export let RteAlignText = props => (
   <ButtonGroupList aria-label="Align text">
     <li>
       <ButtonIcon
@@ -203,7 +424,8 @@ export let RteAlignText = props =>
         className="slds-button_icon-border-filled"
         symbol="left_align_text"
         disabled={props.disabledButtons}
-        assistiveText="Left Align Text" />
+        assistiveText="Left Align Text"
+      />
     </li>
     <li>
       <ButtonIcon
@@ -211,7 +433,8 @@ export let RteAlignText = props =>
         className="slds-button_icon-border-filled"
         symbol="center_align_text"
         disabled={props.disabledButtons}
-        assistiveText="Center Align Text" />
+        assistiveText="Center Align Text"
+      />
     </li>
     <li>
       <ButtonIcon
@@ -219,14 +442,17 @@ export let RteAlignText = props =>
         className="slds-button_icon-border-filled"
         symbol="right_align_text"
         disabled={props.disabledButtons}
-        assistiveText="Right Align Text" />
+        assistiveText="Right Align Text"
+      />
     </li>
-  </ButtonGroupList>;
+  </ButtonGroupList>
+);
 
-export let RteInsertContent = props =>
+export let RteInsertContent = props => (
   <ButtonGroupList
     role={props.overflow ? 'presentation' : null}
-    aria-label={!props.overflow ? 'Insert content' : null}>
+    aria-label={!props.overflow ? 'Insert content' : null}
+  >
     <li role={props.overflow ? 'presentation' : null}>
       <ButtonIcon
         role={props.overflow ? 'menuitem' : null}
@@ -234,7 +460,8 @@ export let RteInsertContent = props =>
         className="slds-button_icon-border-filled"
         symbol="emoji"
         disabled={props.disabledButtons}
-        assistiveText="Add Emoji" />
+        assistiveText="Add Emoji"
+      />
     </li>
     <li role={props.overflow ? 'presentation' : null}>
       <ButtonIcon
@@ -243,7 +470,8 @@ export let RteInsertContent = props =>
         className="slds-button_icon-border-filled"
         symbol="image"
         disabled={props.disabledButtons}
-        assistiveText="Add Image" />
+        assistiveText="Add Image"
+      />
     </li>
     <li role={props.overflow ? 'presentation' : null}>
       <ButtonIcon
@@ -252,11 +480,13 @@ export let RteInsertContent = props =>
         className="slds-button_icon-border-filled"
         symbol="link"
         disabled={props.disabledButtons}
-        assistiveText="Add Link" />
+        assistiveText="Add Link"
+      />
     </li>
-  </ButtonGroupList>;
+  </ButtonGroupList>
+);
 
-export let RteInsertUser = props =>
+export let RteInsertUser = props => (
   <ButtonGroupList aria-label="Add user">
     <li>
       <ButtonIcon
@@ -264,14 +494,17 @@ export let RteInsertUser = props =>
         className="slds-button_icon-border-filled"
         symbol="adduser"
         disabled={props.disabledButtons}
-        assistiveText="Add User" />
+        assistiveText="Add User"
+      />
     </li>
-  </ButtonGroupList>;
+  </ButtonGroupList>
+);
 
-export let RteClearFormatting = props =>
+export let RteClearFormatting = props => (
   <ButtonGroupList
     role={props.overflow ? 'presentation' : null}
-    aria-label={!props.overflow ? 'Remove Formatting' : null}>
+    aria-label={!props.overflow ? 'Remove Formatting' : null}
+  >
     <li role={props.overflow ? 'presentation' : null}>
       <ButtonIcon
         role={props.overflow ? 'menuitem' : null}
@@ -279,47 +512,172 @@ export let RteClearFormatting = props =>
         className="slds-button_icon-border-filled"
         symbol="remove_formatting"
         disabled={props.disabledButtons}
-        assistiveText="Remove Formatting" />
+        assistiveText="Remove Formatting"
+      />
     </li>
-  </ButtonGroupList>;
+  </ButtonGroupList>
+);
 
-export let RteTextarea = props =>
-  <div className="slds-rich-text-editor__textarea slds-grid">
-      { props.text
-        ? <div aria-describedby={props['aria-describedby']} aria-label="Compose text" contentEditable={!props.disabled ? 'true' : null} suppressContentEditableWarning className="slds-rich-text-area__content slds-grow">{props.text}</div>
-        : <div aria-describedby={props['aria-describedby']} aria-label="Compose text" contentEditable={!props.disabled ? 'true' : null} suppressContentEditableWarning className="slds-rich-text-area__content slds-text-color_weak slds-grow">
-          {props.placeholder}
-        </div>
-      }
-  </div>;
+export let RteTextarea = props => (
+  <div
+    className={classNames(
+      props.text
+        ? 'slds-rich-text-editor__output'
+        : 'slds-rich-text-editor__textarea',
+      'slds-grid'
+    )}
+  >
+    {props.text ? (
+      <div
+        aria-describedby={props['aria-describedby']}
+        aria-label={!props.labelId ? 'Compose text' : null}
+        aria-labelledby={props.labelId}
+        contentEditable={!props.disabled ? 'true' : null}
+        suppressContentEditableWarning
+        className="slds-rich-text-area__content slds-grow"
+      >
+        {props.text}
+      </div>
+    ) : (
+      <div
+        aria-describedby={props['aria-describedby']}
+        aria-label={!props.labelId ? props.label || 'Compose text' : null}
+        aria-labelledby={props.labelId}
+        contentEditable={!props.disabled ? 'true' : null}
+        suppressContentEditableWarning
+        className="slds-rich-text-area__content slds-text-color_weak slds-grow"
+      >
+        {props.placeholder}
+      </div>
+    )}
+  </div>
+);
 
-let TextInputExample = props =>
+let TextInputExample = props => (
   <div>
     <h1>Heading - h1</h1>
-    <p>Lorem ipsum dolor sit amet, <strong>strong</strong> adipisicing elit, sed do <em>emphasis</em> tempor incididunt ut <u>underlined</u> et dolore <strike>strikethrough</strike> aliqua. Ut <sub>subscript</sub> ad <sup>superscript</sup> veniam, <abbr>quis</abbr> nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in <a href="#">link</a> in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    <p>
+      Lorem ipsum dolor sit amet, <strong>strong</strong> adipisicing elit, sed
+      do <em>emphasis</em> tempor incididunt ut <u>underlined</u> et dolore{' '}
+      <s>strikethrough</s> aliqua. Ut <sub>subscript</sub> ad{' '}
+      <sup>superscript</sup> veniam, <abbr>quis</abbr> nostrud exercitation
+      ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure
+      dolor in <a href="#">link</a> in voluptate velit esse cillum dolore eu
+      fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident,
+      sunt in culpa qui officia deserunt mollit anim id est laborum.
+    </p>
     <h2>Heading - h2</h2>
-    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+    <p>
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod{' '}
+      <a href="#">veryVeryLongWordWithHyperlinkExample</a> tempor incididunt ut
+      labore et dolore magna aliqua.
+    </p>
     <ul>
-      <li>Unordered list item</li>
-      <li>Unordered list item</li>
+      <li>
+        Unordered list item
+        <ul>
+          <li>
+            Nested Unordered list item
+            <ol>
+              <li>Nested Ordered list item</li>
+              <li>Nested Ordered list item</li>
+            </ol>
+          </li>
+          <li>
+            Nested Unordered list item
+            <ul>
+              <li>Nested Unordered list item</li>
+              <li>Nested Unordered list item</li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li>
+        Unordered list item
+        <ol>
+          <li>Nested Ordered list item</li>
+          <li>Nested Ordered list item</li>
+        </ol>
+      </li>
       <li>Unordered list item</li>
     </ul>
     <h3>Heading - h3</h3>
-    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+    <p>
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+      tempor incididunt ut labore et dolore magna aliqua.
+    </p>
     <ol>
-      <li>Ordered list item</li>
-      <li>Ordered list item</li>
+      <li>
+        Ordered list item
+        <ul>
+          <li>
+            Nested Unordered list item
+            <ol>
+              <li>Nested Ordered list item</li>
+              <li>Nested Ordered list item</li>
+            </ol>
+          </li>
+          <li>
+            Nested Unordered list item
+            <ul>
+              <li>Nested Unordered list item</li>
+              <li>Nested Unordered list item</li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li>
+        Ordered list item
+        <ol>
+          <li>
+            Nested Ordered list item
+            <ol>
+              <li>
+                Nested Ordered list item
+                <ol>
+                  <li>Nested Ordered list item</li>
+                  <li>Nested Ordered list item</li>
+                </ol>
+              </li>
+              <li>Nested Ordered list item</li>
+            </ol>
+          </li>
+          <li>Nested Ordered list item</li>
+        </ol>
+      </li>
       <li>Ordered list item</li>
     </ol>
+    <ul>
+      <li>
+        <div>List Item with div</div>
+      </li>
+      <li>
+        <div>List Item with div</div>
+      </li>
+    </ul>
+    <ol>
+      <li>
+        <div>List Item with div</div>
+      </li>
+      <li>
+        <div>List Item with div</div>
+      </li>
+    </ol>
     <h4>Heading - h4</h4>
-    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+    <p>
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+      tempor incididunt ut labore et dolore magna aliqua.
+    </p>
     <dl>
       <dt>Description List - Term</dt>
       <dd>Description List - Description</dd>
       <dt>Description List - Term</dt>
       <dd>Description List - Description</dd>
     </dl>
-    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+    <p>
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+      tempor incididunt ut labore et dolore magna aliqua.
+    </p>
     <table>
       <thead>
         <tr>
@@ -339,12 +697,41 @@ let TextInputExample = props =>
       </tbody>
     </table>
     <h5>Heading - h5</h5>
-    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-    <blockquote>Blockquote - incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation</blockquote>
-    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    <p>
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+      tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+      veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+      commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
+      velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
+      cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id
+      est laborum.
+    </p>
+    <blockquote>
+      Blockquote - incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+      veniam, quis nostrud exercitation
+    </blockquote>
+    <p>
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+      tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+      veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+      commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
+      velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
+      cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id
+      est laborum.
+    </p>
     <h6>Heading - h6</h6>
-    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, <a href="#">https://url.com/document/d/1dSOGKlCQtSG73NcSJB7qCJVyjE52MdTjvjGNqc3L2Rw/edE52MdTjvjGNqc3L2Rw/edE52MdTjvjGNqc3L2Rw/edE52MdTjvjGNqc3L2Rw/edE52MdTjvjGNqc3L2Rw/edE52MdTjvjGNqc3L2Rw/edE52MdTjvjGNqc3L2Rw/edE52MdTjvjGNqc3L2Rw/edE52MdTjvjGNqc3L2Rw/edE52MdTjvjGNqc3L2Rw/edE52MdTjvjGNqc3L2Rw/edE52MdTjvjGNqc3L2Rw/edE52MdTjvjGNqc3L2Rw/edE52MdTjvjGNqc3L2Rw/ed</a> quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-  </div>;
+    <p>
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+      tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+      veniam,{' '}
+      <a href="#">
+        https://url.com/document/d/1dSOGKlCQtSG73NcSJB7qCJVyjE52MdTjvjGNqc3L2Rw/edE52MdTjvjGNqc3L2Rw/edE52MdTjvjGNqc3L2Rw/edE52MdTjvjGNqc3L2Rw/edE52MdTjvjGNqc3L2Rw/edE52MdTjvjGNqc3L2Rw/edE52MdTjvjGNqc3L2Rw/edE52MdTjvjGNqc3L2Rw/edE52MdTjvjGNqc3L2Rw/edE52MdTjvjGNqc3L2Rw/edE52MdTjvjGNqc3L2Rw/edE52MdTjvjGNqc3L2Rw/edE52MdTjvjGNqc3L2Rw/edE52MdTjvjGNqc3L2Rw/ed
+      </a>{' '}
+      quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+      consequat.
+    </p>
+  </div>
+);
 
 /// ////////////////////////////////////////
 // Export
@@ -367,7 +754,7 @@ export let states = [
   {
     id: 'focused',
     label: 'Focused',
-    element:
+    element: (
       <Demo>
         <RichTextEditor className="slds-has-focus">
           <RteToolbar>
@@ -378,11 +765,12 @@ export let states = [
           <RteTextarea placeholder="Compose text..." />
         </RichTextEditor>
       </Demo>
+    )
   },
   {
     id: 'filled-out',
     label: 'Filled Out',
-    element:
+    element: (
       <Demo>
         <RichTextEditor>
           <RteToolbar>
@@ -393,27 +781,36 @@ export let states = [
           <RteTextarea text={<TextInputExample />} />
         </RichTextEditor>
       </Demo>
+    )
   },
   {
     id: 'error',
     label: 'Error',
-    element:
+    element: (
       <Demo>
-        <RichTextEditor className="slds-has-error">
+        <RichTextEditor
+          className="slds-has-error"
+          inlineMessage="This field is required"
+          hasError
+          errorId="rte-error-01"
+        >
           <RteToolbar>
             <RteFormatText tabIndexSetting="0" />
             <RteFormatBody />
             <RteClearFormatting />
           </RteToolbar>
-          <RteTextarea placeholder="Compose text..." aria-describedby="rte-error-01" />
-          <div id="rte-error-01" className="slds-form-element__help slds-p-around_small">This field is required</div>
+          <RteTextarea
+            placeholder="Compose text..."
+            aria-describedby="rte-error-01"
+          />
         </RichTextEditor>
       </Demo>
+    )
   },
   {
     id: 'disabled',
     label: 'Disabled',
-    element:
+    element: (
       <Demo>
         <RichTextEditor>
           <RteToolbar disabledButtons disabledLabel="disabled">
@@ -424,11 +821,12 @@ export let states = [
           <RteTextarea placeholder="Compose text..." disabled />
         </RichTextEditor>
       </Demo>
+    )
   },
   {
     id: 'tooltip',
     label: 'Tooltip',
-    element:
+    element: (
       <Demo>
         <RichTextEditor>
           <RteToolbar>
@@ -437,11 +835,16 @@ export let states = [
             <RteClearFormatting />
           </RteToolbar>
           <RteTextarea placeholder="Compose text..." />
-          <Tooltip className="slds-nubbin_top-left" id="bold" style={{position: 'absolute', top: '48px', left: '2px'}}>
+          <Tooltip
+            className="slds-nubbin_top-left"
+            id="bold"
+            style={{ position: 'absolute', top: '48px', left: '2px' }}
+          >
             Bold <kbd>cmd+b</kbd>
           </Tooltip>
         </RichTextEditor>
       </Demo>
+    )
   }
 ];
 
@@ -449,72 +852,119 @@ export let examples = [
   {
     id: 'bottom-toolbar',
     label: 'Bottom toolbar',
-    element:
-    <Demo>
-      <RichTextEditor>
-        <RteTextarea placeholder="Compose text..." />
+    element: (
+      <Demo>
+        <RichTextEditor>
+          <RteTextarea placeholder="Compose text..." />
 
-        <RteToolbar className="slds-rich-text-editor__toolbar_bottom">
-          <RteFormatText tabIndexSetting="0" />
-          <RteFormatBody />
-          <RteClearFormatting />
-        </RteToolbar>
-      </RichTextEditor>
-    </Demo>
+          <RteToolbar className="slds-rich-text-editor__toolbar_bottom">
+            <RteFormatText tabIndexSetting="0" />
+            <RteFormatBody />
+            <RteClearFormatting />
+          </RteToolbar>
+        </RichTextEditor>
+      </Demo>
+    )
+  },
+  {
+    id: 'with-label',
+    label: 'With a Label',
+    element: (
+      <Demo>
+        <RichTextEditor
+          label="Details and Steps to Reproduce"
+          labelId={richTextEditorLabelId01}
+        >
+          <RteToolbar>
+            <RteFormatText tabIndexSetting="0" />
+            <RteFormatBody />
+            <RteClearFormatting />
+          </RteToolbar>
+          <RteTextarea
+            placeholder="Compose text..."
+            labelId={richTextEditorLabelId01}
+          />
+        </RichTextEditor>
+      </Demo>
+    )
   },
   {
     id: 'email',
     label: 'Email',
-    element:
-    <Demo>
-      <RichTextEditor>
-        <RteToolbar>
-          <RteFormatFont />
-          <RteFormatText tabIndexSetting="-1" />
-          <RteFormatColor />
-          <RteFormatBody />
-          <RteAlignText />
-          <RteInsertContent />
-          <RteClearFormatting />
-        </RteToolbar>
+    element: (
+      <Demo>
+        <RichTextEditor>
+          <RteToolbar>
+            <RteFormatFont />
+            <RteFormatText tabIndexSetting="-1" />
+            <RteFormatColor />
+            <RteFormatBody />
+            <RteAlignText />
+            <RteInsertContent />
+            <RteClearFormatting />
+          </RteToolbar>
 
-        <RteTextarea placeholder="Compose Email..." />
-      </RichTextEditor>
-    </Demo>
+          <RteTextarea label="Compose email" placeholder="Compose Email..." />
+        </RichTextEditor>
+      </Demo>
+    )
+  },
+  {
+    id: 'toolbar-narrow',
+    label: 'Toolbar Narrow',
+    element: (
+      <Demo style={{ width: '294px' }} className="slds-region_narrow">
+        <RichTextEditor>
+          <RteToolbar>
+            <RteFormatFont />
+            <RteFormatText tabIndexSetting="-1" />
+            <RteFormatColor />
+            <RteFormatBody />
+            <RteAlignText />
+            <RteInsertContent />
+            <RteClearFormatting />
+          </RteToolbar>
+
+          <RteTextarea label="Compose email" placeholder="Compose Email..." />
+        </RichTextEditor>
+      </Demo>
+    )
   },
   {
     id: 'feed',
     label: 'Feed',
-    element:
-    <Demo>
-      <RichTextEditor>
-        <RteToolbar>
-          <RteFormatText tabIndexSetting="0" />
-          <RteFormatBody />
-          <RteAlignText />
-          <RteInsertContent />
-          <RteInsertUser />
-          <RteClearFormatting />
-        </RteToolbar>
+    element: (
+      <Demo>
+        <RichTextEditor>
+          <RteToolbar>
+            <RteFormatText tabIndexSetting="0" />
+            <RteFormatBody />
+            <RteAlignText />
+            <RteInsertContent />
+            <RteInsertUser />
+            <RteClearFormatting />
+          </RteToolbar>
 
-        <RteTextarea placeholder="Post to feed..." />
-      </RichTextEditor>
-    </Demo>
+          <RteTextarea label="Post to feed" placeholder="Post to feed..." />
+        </RichTextEditor>
+      </Demo>
+    )
   },
   {
     id: 'note',
     label: 'Notes',
-    element:
-    <Demo>
-      <RichTextEditor>
-        <RteToolbar>
-          <RteFormatText tabIndexSetting="0" />
-          <RteFormatBody />
-          <RteInsertContent />
-          <RteClearFormatting />
-        </RteToolbar>
-        <RteTextarea placeholder="Compose Note..." />
-      </RichTextEditor>
-    </Demo>
+    element: (
+      <Demo>
+        <RichTextEditor>
+          <RteToolbar>
+            <RteFormatText tabIndexSetting="0" />
+            <RteFormatBody />
+            <RteInsertContent />
+            <RteClearFormatting />
+          </RteToolbar>
+          <RteTextarea label="Compose note" placeholder="Compose Note..." />
+        </RichTextEditor>
+      </Demo>
+    )
   }
 ];

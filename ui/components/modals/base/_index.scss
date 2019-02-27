@@ -5,6 +5,7 @@
  * @name base
  * @selector .slds-modal
  * @restrict section
+ * @support dev-ready
  * @variant
  */
 .slds-modal {
@@ -118,7 +119,6 @@
    * @required
    */
   &__content {
-    @include hyphenate;
     overflow: hidden {
       y: auto;
     }
@@ -222,7 +222,7 @@
   right: 0;
   bottom: 0;
   left: 0;
-  background: rgba($color-background-temp-modal-tint, 0.8);
+  background: $color-background-temp-modal-tint;
   z-index: $z-index-modal;
 
   /**
@@ -243,8 +243,45 @@
 }
 
 /**
- * Widens the modal to take more horizontal space
- *
+ * @summary Widens the modal to take more horizontal space than default
+ * @name small
+ * @selector .slds-modal_small
+ * @restrict .slds-modal
+ * @modifier
+ * @group size
+ */
+.slds-modal_small {
+
+  .slds-modal__container {
+    @include mq-medium-min {
+      width: 52.0625rem; // These values taken from welcome mat modal
+      max-width: none;
+    }
+  }
+}
+
+/**
+ * @summary Widens the modal to take more horizontal space than small
+ * @name medium
+ * @selector .slds-modal_medium
+ * @restrict .slds-modal
+ * @modifier
+ * @group size
+ */
+.slds-modal_medium {
+
+  .slds-modal__container {
+    @include mq-medium-min {
+      width: 70%;
+      max-width: 75rem;
+      min-width: 40rem; // TODO: Tokenize
+    }
+  }
+}
+
+/**
+ * @summary Widens the modal to take more horizontal space than large
+ * @name large
  * @selector .slds-modal_large
  * @restrict .slds-modal
  * @modifier
@@ -252,19 +289,10 @@
  */
 .slds-modal_large .slds-modal__container,
 .slds-modal--large .slds-modal__container {
-
-  // TODO: We'll want to readdress this to do the .99 thing
   @include mq-medium-min {
     width: 90%;
     max-width: none;
     min-width: 40rem; // TODO: Tokenize
-  }
-}
-
-// old class
-.slds-modal-backdrop {
-  @include deprecate('4.0.0') {
-    @include backdrop;
   }
 }
 

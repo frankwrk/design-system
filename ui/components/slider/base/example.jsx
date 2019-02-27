@@ -3,7 +3,7 @@
 
 import React from 'react';
 import classNames from 'classnames';
-import { FormElement } from '../../form-element/base/example';
+import { FormElement } from '../../form-element';
 
 /* -----------------------------------------------------------------------------
     Variables
@@ -17,16 +17,14 @@ const sliderId = 'slider-id-01';
 
 const SliderLabel = props => (
   <span className="slds-slider-label">
-    <span className="slds-slider-label__label">
-      Slider Label
-    </span>
+    <span className="slds-slider-label__label">Slider Label</span>
     <span className="slds-slider-label__range">
       {props.min || '0'} - {props.max || '100'}
     </span>
   </span>
 );
 
-const Slider = props => (
+export const Slider = props => (
   <div className={classNames('slds-slider', props.className)}>
     <input
       aria-describedby={props['aria-describedby']}
@@ -39,7 +37,9 @@ const Slider = props => (
       step={props.step}
       disabled={props.disabled}
     />
-    <span className="slds-slider__value" aria-hidden="true">{props.value}</span>
+    <span className="slds-slider__value" aria-hidden="true">
+      {props.value}
+    </span>
   </div>
 );
 
@@ -49,7 +49,7 @@ const Slider = props => (
 
 // Default
 export default (
-  <FormElement label={<SliderLabel />} inputId={sliderId}>
+  <FormElement labelContent={<SliderLabel />} inputId={sliderId}>
     <Slider value="50" />
   </FormElement>
 );
@@ -59,50 +59,71 @@ export let states = [
   {
     id: 'disabled',
     label: 'Disabled',
-    element:
-      <FormElement label={<SliderLabel />} inputId={sliderId}>
+    element: (
+      <FormElement labelContent={<SliderLabel />} inputId={sliderId}>
         <Slider value="50" disabled />
       </FormElement>
+    )
   },
   {
     id: 'value-0',
     label: 'Value: 0',
-    element:
-      <FormElement label={<SliderLabel min="0" max="100" />} inputId={sliderId}>
+    element: (
+      <FormElement
+        labelContent={<SliderLabel min="0" max="100" />}
+        inputId={sliderId}
+      >
         <Slider value="0" />
       </FormElement>
+    )
   },
   {
     id: 'value-25',
     label: 'Value: 25',
-    element:
-      <FormElement label={<SliderLabel min="0" max="100" />} inputId={sliderId}>
+    element: (
+      <FormElement
+        labelContent={<SliderLabel min="0" max="100" />}
+        inputId={sliderId}
+      >
         <Slider value="25" />
       </FormElement>
+    )
   },
   {
     id: 'value-50',
     label: 'Value: 50',
-    element:
-      <FormElement label={<SliderLabel min="0" max="100" />} inputId={sliderId}>
+    element: (
+      <FormElement
+        labelContent={<SliderLabel min="0" max="100" />}
+        inputId={sliderId}
+      >
         <Slider value="50" />
       </FormElement>
+    )
   },
   {
     id: 'value-75',
     label: 'Value: 75',
-    element:
-      <FormElement label={<SliderLabel min="0" max="100" />} inputId={sliderId}>
+    element: (
+      <FormElement
+        labelContent={<SliderLabel min="0" max="100" />}
+        inputId={sliderId}
+      >
         <Slider value="75" />
       </FormElement>
+    )
   },
   {
     id: 'value-100',
     label: 'Value: 100',
-    element:
-      <FormElement label={<SliderLabel min="0" max="100" />} inputId={sliderId}>
+    element: (
+      <FormElement
+        labelContent={<SliderLabel min="0" max="100" />}
+        inputId={sliderId}
+      >
         <Slider value="100" />
       </FormElement>
+    )
   }
 ];
 
@@ -111,58 +132,77 @@ export let examples = [
   {
     id: 'min-max',
     label: 'Min/Max Range',
-    element:
-      <FormElement label={<SliderLabel min="0" max="400" />} inputId={sliderId}>
+    element: (
+      <FormElement
+        labelContent={<SliderLabel min="0" max="400" />}
+        inputId={sliderId}
+      >
         <Slider value="200" min="0" max="400" />
       </FormElement>
+    )
   },
   {
     id: 'steps',
     label: 'Min/Max Range with Steps',
-    element:
-      <FormElement label={<SliderLabel min="0" max="400" />} inputId={sliderId}>
+    element: (
+      <FormElement
+        labelContent={<SliderLabel min="0" max="400" />}
+        inputId={sliderId}
+      >
         <Slider value="200" min="0" max="400" step="100" />
       </FormElement>
+    )
   },
   {
     id: 'width-x-small',
     label: 'Width: x-small',
-    element:
-      <FormElement label={<SliderLabel />} inputId={sliderId}>
+    element: (
+      <FormElement labelContent={<SliderLabel />} inputId={sliderId}>
         <Slider className="slds-size_x-small" value="50" />
       </FormElement>
+    )
   },
   {
     id: 'width-small',
     label: 'Width: small',
-    element:
-      <FormElement label={<SliderLabel />} inputId={sliderId}>
+    element: (
+      <FormElement labelContent={<SliderLabel />} inputId={sliderId}>
         <Slider className="slds-size_small" value="50" />
       </FormElement>
+    )
   },
   {
     id: 'width-medium',
     label: 'Width: medium',
-    element:
-      <FormElement label={<SliderLabel />} inputId={sliderId}>
+    element: (
+      <FormElement labelContent={<SliderLabel />} inputId={sliderId}>
         <Slider className="slds-size_medium" value="50" />
       </FormElement>
+    )
   },
   {
     id: 'width-large',
     label: 'Width: large',
-    element:
-      <FormElement label={<SliderLabel />} inputId={sliderId}>
+    element: (
+      <FormElement labelContent={<SliderLabel />} inputId={sliderId}>
         <Slider className="slds-size_large" value="50" />
       </FormElement>
+    )
   },
   {
     id: 'error',
     label: 'Error',
-    element:
-      <FormElement className="slds-has-error" label={<SliderLabel />} inputId={sliderId}>
-        <Slider aria-describedby="error-message" className="slds-size_large" value="50" />
-        <div id="error-message" className="slds-form-element__help">There is a problem with this field</div>
+    element: (
+      <FormElement hasError labelContent={<SliderLabel />} inputId={sliderId}>
+        <Slider
+          aria-describedby="error-message"
+          className="slds-size_large"
+          value="50"
+        />
+        <div id="error-message" className="slds-form-element__help">
+          There is a problem with this field
+        </div>
       </FormElement>
+    )
   }
 ];

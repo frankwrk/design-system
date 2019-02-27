@@ -2,27 +2,28 @@
 // Licensed under BSD 3-Clause - see LICENSE.txt or git.io/sfdc-license
 
 import React from 'react';
-import { NavVertical, NavVerticalItem, NavVerticalSection }
-  from '../base/example';
-import { FormElement } from '../../form-element/base/example';
+import {
+  NavVertical,
+  NavVerticalItem,
+  NavVerticalSection
+} from '../list/example';
+import { FormElement } from '../../form-element';
 import { Input } from '../../input/base/example';
 import SvgIcon from '../../../shared/svg-icon';
-import classNames from 'classnames';
 
 const inputId01 = 'input-id-01';
 const sectionId01 = 'entity-header';
 const sectionId02 = 'folder-header';
-const sectionId03 = 'all-results';
 
 export default (
   <div className="demo-only" style={{ width: '320px' }}>
     <NavVertical>
       <FormElement
-        className="slds-p-horizontal_large"
-        label="Filter navigation items"
+        formElementClassName="slds-p-horizontal_large"
+        labelContent="Filter navigation items"
         inputId={inputId01}
-        inputIcon="left"
-        hideLabel
+        hasLeftIcon
+        hasHiddenLabel
       >
         <SvgIcon
           className="slds-icon slds-input__icon slds-input__icon_right slds-icon-text-default"

@@ -23,12 +23,12 @@
  * included in the `use` attribute with the underscore separator as shown on
  * the icon page. For example: log_a_call.
  *
- * <h3 class="site-text-heading--label">Changing the background of an icon</h3>
+ * ##### Changing the background of an icon
  *
  * Change a background color using composed class names:
  *
  * ```css
- * .slds-icon-[sprite name]-[icon name] {}
+ * .slds-icon-[sprite name]-[icon name]
  * ```
  *
  * Place the class on the `.slds-icon_container`.
@@ -48,6 +48,10 @@
  * - [Doctype](/components/icons?variant=doctype) icons have no background color.
  * - [Standard](/components/icons?variant=standard) and [Custom](/components/icons?variant=custom) icons have a rounded square shape and use a class on the container for the background color.
  * - [Utility](/components/icons?variant=base) icons have no background color.
+ *
+ * #### Changing the fill of an icon using currentColor
+ *
+ * To change the fill of an icon to match the current color of it's parent, add the `slds-current-color` class to the icon's container. This class utilizes the css currentColor value.
  *
  * #### Accessibility
  *
@@ -92,4 +96,5 @@
  * @name icons
  * @selector .slds-icon_container
  * @support dev-ready
+ * @layout responsive
  */

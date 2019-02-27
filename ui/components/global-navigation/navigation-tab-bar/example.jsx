@@ -2,12 +2,24 @@
 // Licensed under BSD 3-Clause - see LICENSE.txt or git.io/sfdc-license
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import SvgIcon from '../../../shared/svg-icon';
 import { Menu, MenuList, MenuItem } from '../../menus/dropdown/example';
 import { WaffleIcon } from '../../dynamic-icons/waffle/example';
-import { ButtonIcon } from '../../button-icons/base/example';
+import ButtonIcon from '../../button-icons/';
+import {
+  Subtab,
+  SubtabsContainer,
+  SubtabList,
+  SubtabPanel
+} from '../../tabs/sub-tabs/example';
+import {
+  IndicatorContainer,
+  IndicatorUnread,
+  IndicatorUnsaved,
+  TabItemIconContainer
+} from '../';
 import classNames from 'classnames';
-import _ from '../../../shared/helpers';
 
 const tabPanelId01 = 'context-tab-panel-1';
 const tabPanelId02 = 'context-tab-panel-2';
@@ -16,52 +28,72 @@ const tabId01 = 'context-tab-id-1';
 const tabId02 = 'context-tab-id-2';
 const tabId03 = 'context-tab-id-3';
 
-/// ///////////////////////////////////////////
-// Partial(s)
-/// ///////////////////////////////////////////
+/* -----------------------------------------------------------------------------
+    Elements
+----------------------------------------------------------------------------- */
 
-let ShortCutKey = props =>
+const ShortCutKey = props => (
   <span className="slds-text-body_small slds-text-color_weak slds-p-left_large">
     <span className="slds-assistive-text">:</span>
-    { props.children }
-  </span>;
+    {props.children}
+  </span>
+);
 
-// Context Tab
-let ContextTab = props =>
-  <li className={
-    classNames(
+export let ContextTab = props => (
+  <li
+    className={classNames(
       'slds-context-bar__item slds-context-bar__item_tab',
       props.className,
       {
         'slds-is-active': props.itemActive,
         'slds-is-unsaved': props.itemUnsaved,
         'slds-is-pinned': props.pinned,
-        'slds-has-notification': props.itemUnread
+        'slds-has-focus': props.hasFocus,
+        'slds-has-notification': props.itemUnread,
+        'slds-has-sub-tabs': props.hasSubtabs,
+        'slds-has-success': props.statusLevel === 'success',
+        'slds-has-warning': props.statusLevel === 'warning',
+        'slds-has-error': props.statusLevel === 'error'
       }
     )}
     role="presentation"
   >
-    <a href="javascript:void(0);" className="slds-context-bar__label-action" role="tab" title={props.title || 'tab name'} aria-selected={props.itemActive ? 'true' : 'false'} tabIndex={props.itemActive ? '0' : '-1'} aria-controls={props.tabPanelId} id={props.id}>
-      { props.itemUnsaved ? <abbr className="slds-indicator_unsaved" title="Tab Not Saved">*</abbr> : null }
-      { props.itemUnread &&
-        <span
-          aria-label="New Activity"
-          className="slds-indicator_unread"
-          role="alert"
-          title="New Activity"
-        >
-          <span className="slds-assistive-text">
-            New activity in Tab: { props.title || 'Subtab Name'}
-          </span>
-        </span>
-      }
-      <div className="slds-icon_container" title={_.startCase(props.symbol) || 'Case'}>
-        <SvgIcon className="slds-icon slds-icon_small slds-icon-text-default" sprite="standard" symbol={props.symbol || 'case'} />
-        <span className="slds-assistive-text">{ _.startCase(props.symbol) || 'Case' }</span>
-      </div>
-      <span className={classNames('slds-truncate', props.pinned ? 'slds-assistive-text' : null)} title={props.title || 'tab name'}>{ props.title || 'tab name'}</span>
+    <a
+      href="javascript:void(0);"
+      className="slds-context-bar__label-action"
+      role="tab"
+      title={props.title}
+      aria-selected={props.itemActive ? 'true' : 'false'}
+      tabIndex={props.itemActive ? '0' : '-1'}
+      aria-controls={props.tabPanelId}
+      id={props.id}
+    >
+      <IndicatorContainer>
+        {props.itemUnsaved && <IndicatorUnsaved title="Tab Not Saved" />}
+        {props.itemUnread && <IndicatorUnread />}
+      </IndicatorContainer>
+      {props.hasIcon && (
+        <TabItemIconContainer
+          statusLevel={props.statusLevel}
+          symbol={props.symbol}
+        />
+      )}
+      <span
+        className={classNames(
+          'slds-truncate',
+          props.pinned ? 'slds-assistive-text' : null
+        )}
+        title={props.title}
+      >
+        {props.title}
+      </span>
     </a>
-    <div className={classNames('slds-context-bar__icon-action slds-context-bar__dropdown-trigger slds-dropdown-trigger slds-dropdown-trigger_click slds-p-left_none slds-p-right_none', props.actionOverflow == 'true' ? 'slds-is-open' : null)}>
+    <div
+      className={classNames(
+        'slds-context-bar__icon-action slds-context-bar__dropdown-trigger slds-dropdown-trigger slds-dropdown-trigger_click slds-p-left_none slds-p-right_none',
+        props.actionOverflow === 'true' ? 'slds-is-open' : null
+      )}
+    >
       <ButtonIcon
         className="slds-button_icon-container slds-button_icon-x-small"
         tabIndex={props.itemActive ? '0' : '-1'}
@@ -69,63 +101,114 @@ let ContextTab = props =>
         aria-haspopup="true"
         assistiveText={'Actions for ' + props.title}
         title={'Actions for ' + props.title}
+        theme={
+          props.statusLevel === 'error' || props.statusLevel === 'success'
+            ? 'inverse'
+            : null
+        }
+        useCurrentColor={
+          props.statusLevel !== 'error' && props.statusLevel !== 'success'
+        }
       />
       <Menu className="slds-dropdown_right">
         <MenuList>
-          <MenuItem iconRight={<ShortCutKey>r</ShortCutKey>}>Refresh Tab</MenuItem>
-          <MenuItem iconRight={<ShortCutKey>⇧ + n</ShortCutKey>}>Open in a new window</MenuItem>
+          <MenuItem iconRight={<ShortCutKey>r</ShortCutKey>}>
+            Refresh Tab
+          </MenuItem>
+          <MenuItem iconRight={<ShortCutKey>⇧ + n</ShortCutKey>}>
+            Open in a new window
+          </MenuItem>
           <MenuItem iconRight={<ShortCutKey>p</ShortCutKey>}>Pin Tab</MenuItem>
-          <MenuItem iconRight={<ShortCutKey>w</ShortCutKey>}>Close Tab</MenuItem>
+          <MenuItem iconRight={<ShortCutKey>w</ShortCutKey>}>
+            Close Tab
+          </MenuItem>
         </MenuList>
       </Menu>
     </div>
-    { !props.pinned
-      ? <div className="slds-context-bar__icon-action slds-col_bump-left slds-p-left_none">
+    {!props.pinned ? (
+      <div className="slds-context-bar__icon-action slds-col_bump-left slds-p-left_none">
         <ButtonIcon
           className="slds-button_icon-container slds-button_icon-x-small"
           tabIndex={props.itemActive ? '0' : '-1'}
           symbol="close"
           assistiveText={'Close ' + props.title}
           title={'Close ' + props.title}
+          theme={
+            props.statusLevel === 'error' || props.statusLevel === 'success'
+              ? 'inverse'
+              : null
+          }
+          useCurrentColor={
+            props.statusLevel !== 'error' && props.statusLevel !== 'success'
+          }
         />
       </div>
-    : null }
-  </li>;
+    ) : null}
+  </li>
+);
 
-let ContextTabPanel = props =>
+ContextTab.propTypes = {
+  className: PropTypes.string,
+  hasFocus: PropTypes.bool,
+  hasSubtabs: PropTypes.bool,
+  id: PropTypes.string.isRequired,
+  itemActive: PropTypes.bool,
+  itemUnread: PropTypes.bool,
+  itemUnsaved: PropTypes.bool,
+  pinned: PropTypes.bool,
+  statusLevel: PropTypes.oneOf(['error', 'success', 'warning']),
+  tabPanelId: PropTypes.string.isRequired,
+  title: PropTypes.string
+};
+
+ContextTab.defaultProps = {
+  hasIcon: true,
+  title: 'Tab Name'
+};
+
+export let ContextTabPanel = props => (
   <div
     id={props.id}
-    className={classNames(
-      'slds-p-vertical_medium',
-      props.show ? 'slds-show' : 'slds-hide'
-    )}
+    className={classNames(props.show ? 'slds-show' : 'slds-hide')}
     role="tabpanel"
     aria-labelledby={props.tabId}
   >
     {props.children}
-  </div>;
+  </div>
+);
 
-/// ///////////////////////////////////////////
-// State Constructor(s)
-/// ///////////////////////////////////////////
-
-export let ContextTabBar = props =>
-
-  <div className={classNames('slds-context-bar slds-context-bar_tabs', props.className)}>
-
+export let ContextTabBar = props => (
+  <div
+    className={classNames(
+      'slds-context-bar slds-context-bar_tabs',
+      props.className
+    )}
+  >
     <div className="slds-context-bar__primary">
       <div className="slds-context-bar__item slds-context-bar__dropdown-trigger slds-dropdown-trigger slds-dropdown-trigger_click slds-no-hover">
         <div className="slds-context-bar__icon-action">
           <WaffleIcon className="slds-context-bar__button" />
         </div>
         <span className="slds-context-bar__label-action slds-context-bar__app-name">
-          <span className="slds-truncate" title={props.appName || 'App Name'}>{ props.appName || 'App Name' }</span>
+          <span className="slds-truncate" title={props.appName || 'App Name'}>
+            {props.appName || 'App Name'}
+          </span>
         </span>
       </div>
 
-      <div className={classNames('slds-context-bar__item slds-context-bar__object-switcher slds-context-bar__dropdown-trigger slds-dropdown-trigger slds-dropdown-trigger_click', props.objectSwitchClassName)}>
-        <a href="javascript:void(0);" className="slds-context-bar__label-action">
-          <span className="slds-truncate" title="Object">Object</span>
+      <div
+        className={classNames(
+          'slds-context-bar__item slds-context-bar__object-switcher slds-context-bar__dropdown-trigger slds-dropdown-trigger slds-dropdown-trigger_click',
+          props.objectSwitchClassName
+        )}
+      >
+        <a
+          href="javascript:void(0);"
+          className="slds-context-bar__label-action"
+        >
+          <span className="slds-truncate" title="Object">
+            Object
+          </span>
         </a>
         <div className="slds-context-bar__icon-action">
           <ButtonIcon
@@ -139,34 +222,39 @@ export let ContextTabBar = props =>
         <Menu className="slds-dropdown_right">
           <MenuList>
             <MenuItem>
-              <SvgIcon className="slds-icon slds-icon_small slds-icon-standard-account slds-m-right_small" sprite="standard" symbol="account" />
+              <SvgIcon
+                className="slds-icon slds-icon_small slds-icon-standard-account slds-m-right_small"
+                sprite="standard"
+                symbol="account"
+              />
               Accounts
             </MenuItem>
             <MenuItem>
-              <SvgIcon className="slds-icon slds-icon_small slds-icon-standard-case slds-m-right_small" sprite="standard" symbol="case" />
+              <SvgIcon
+                className="slds-icon slds-icon_small slds-icon-standard-case slds-m-right_small"
+                sprite="standard"
+                symbol="case"
+              />
               Cases
             </MenuItem>
             <MenuItem>
-              <SvgIcon className="slds-icon slds-icon_small slds-icon-standard-work-order slds-m-right_small" sprite="standard" symbol="work_order" />
+              <SvgIcon
+                className="slds-icon slds-icon_small slds-icon-standard-work-order slds-m-right_small"
+                sprite="standard"
+                symbol="work_order"
+              />
               Insights
             </MenuItem>
           </MenuList>
         </Menu>
       </div>
-      <div className={classNames('slds-context-bar__item slds-dropdown-trigger slds-dropdown-trigger_click', props.addTabClassName)}>
-        <div className="slds-context-bar__icon-action">
-          <ButtonIcon
-            className={classNames('slds-button_icon-container slds-button_icon-small', props.splitViewActive ? 'slds-is-selected' : null)}
-            symbol="side_list"
-            assistiveText="Toggle split view"
-            title="Toggle split view"
-            aria-expanded={props.splitViewActive ? 'true' : 'false'}
-            aria-controls="id_of_split_view_container"
-          />
-        </div>
-      </div>
-      <div className="slds-context-bar__vertical-divider" />
-      <div className={classNames('slds-context-bar__item slds-dropdown-trigger slds-dropdown-trigger_click', props.addTabActive ? 'slds-is-open' : null, props.addTabClassName)}>
+      <div
+        className={classNames(
+          'slds-context-bar__item slds-dropdown-trigger slds-dropdown-trigger_click',
+          props.addTabActive ? 'slds-is-open' : null,
+          props.addTabClassName
+        )}
+      >
         <div className="slds-context-bar__icon-action">
           <ButtonIcon
             className="slds-button_icon-container slds-button_icon-small"
@@ -175,38 +263,140 @@ export let ContextTabBar = props =>
             title="Open a New Tab"
           />
         </div>
-        { props.addTabActive
-          ? <section className="slds-popover slds-nubbin_top" role="dialog" aria-label="Add tab by URL or ID" style={{ position: 'absolute', left: '1.125rem', top: '2.75rem', marginLeft: '-10rem' }}>
+        {props.addTabActive ? (
+          <section
+            className="slds-popover slds-nubbin_top"
+            role="dialog"
+            aria-label="Add tab by URL or ID"
+            style={{
+              position: 'absolute',
+              left: '1.125rem',
+              top: '2.75rem',
+              marginLeft: '-10rem'
+            }}
+          >
             <div className="slds-popover__body">
               <div className="slds-form-element">
-                <label className="slds-form-element__label" htmlFor="text-input-01">Add Page by URL or ID</label>
+                <label
+                  className="slds-form-element__label"
+                  htmlFor="text-input-01"
+                >
+                  Add Page by URL or ID
+                </label>
                 <div className="slds-form-element__control slds-grid">
-                  <input id="text-input-01" className="slds-input" type="text" placeholder="Placeholder Text" />
-                  <button className="slds-button slds-button_brand slds-shrink-none slds-m-left_small" type="submit">Add Tab</button>
+                  <input
+                    id="text-input-01"
+                    className="slds-input"
+                    type="text"
+                    placeholder="Placeholder Text"
+                  />
+                  <button
+                    className="slds-button slds-button_brand slds-shrink-none slds-m-left_small"
+                    type="submit"
+                  >
+                    Add Tab
+                  </button>
                 </div>
               </div>
             </div>
           </section>
-        : null }
+        ) : null}
       </div>
     </div>
 
     <div className="slds-context-bar__secondary">
       <div className="slds-context-bar__vertical-divider" />
       <ul className="slds-grid" role="tablist">
-        { props.children }
+        {props.children}
       </ul>
     </div>
-  </div>;
+  </div>
+);
 
-/// ///////////////////////////////////////////
-// Export
-/// ///////////////////////////////////////////
+export const ContextTabBarOverflow = props => (
+  <li
+    className={classNames(
+      'slds-context-bar__item',
+      'slds-context-bar__dropdown-trigger',
+      'slds-dropdown-trigger',
+      'slds-dropdown-trigger_click',
+      {
+        'slds-is-open': props.isOpen,
+        'slds-has-notification': props.itemUnread,
+        'slds-is-unsaved': props.itemUnsaved,
+        'slds-has-success': props.statusLevel === 'success',
+        'slds-has-warning': props.statusLevel === 'warning',
+        'slds-has-error': props.statusLevel === 'error'
+      }
+    )}
+  >
+    <button
+      className="slds-button slds-context-bar__label-action"
+      title="More Tab Items"
+      aria-haspopup="true"
+    >
+      <IndicatorContainer>
+        {props.itemUnsaved && <IndicatorUnsaved />}
+        {props.itemUnread && <IndicatorUnread />}
+      </IndicatorContainer>
+      <span className="slds-truncate" title="More Tabs">
+        More <span className="slds-assistive-text">Tabs</span>
+      </span>
+      <SvgIcon
+        className="slds-button__icon slds-button__icon_small slds-button__icon_right"
+        sprite="utility"
+        symbol="chevrondown"
+      />
+    </button>
+    <Menu className="slds-dropdown_right">
+      <MenuList>
+        <MenuItem
+          className={classNames({
+            'slds-has-notification': props.itemUnread,
+            'slds-is-unsaved': props.itemUnsaved
+          })}
+          statusLevel={props.statusLevel}
+          title="Chat - Customer"
+        >
+          <IndicatorContainer>
+            {props.itemUnsaved && (
+              <IndicatorUnsaved title="Tab(s) within menu not saved" />
+            )}
+            {props.itemUnread && <IndicatorUnread />}
+          </IndicatorContainer>
+          {props.itemHasIcon && (
+            <TabItemIconContainer
+              statusLevel={props.statusLevel}
+              symbol="live_chat"
+            />
+          )}
+          <span>Chat - Customer</span>
+        </MenuItem>
+        <MenuItem title="Overflow Tab Item">
+          <IndicatorContainer />
+          {props.itemHasIcon && <TabItemIconContainer />}
+          <span>Overflow Tab Item</span>
+        </MenuItem>
+      </MenuList>
+    </Menu>
+  </li>
+);
 
-export const Context = props =>
-  <div style={{height: '16rem'}}>
-    {props.children}
-  </div>;
+ContextTabBarOverflow.propTypes = {
+  statusLevel: PropTypes.oneOf(['error', 'success', 'warning'])
+};
+
+ContextTabBarOverflow.defaultProps = {
+  itemHasIcon: true
+};
+
+/* -----------------------------------------------------------------------------
+    Exports
+----------------------------------------------------------------------------- */
+
+export const Context = props => (
+  <div style={{ height: '16rem' }}>{props.children}</div>
+);
 
 export default (
   <div className="demo-only">
@@ -216,36 +406,17 @@ export default (
         symbol="home"
         tabPanelId={tabPanelId01}
         id={tabId01}
-        itemActive
       />
-      <ContextTab
-        title="Tab Item 1"
-        tabPanelId={tabPanelId02}
-        id={tabId02}
-      />
-      <ContextTab
-        title="Tab Item 2"
-        tabPanelId={tabPanelId03}
-        id={tabId03}
-      />
+      <ContextTab title="Tab Item 1" tabPanelId={tabPanelId02} id={tabId02} />
+      <ContextTab title="Tab Item 2" tabPanelId={tabPanelId03} id={tabId03} />
     </ContextTabBar>
-    <ContextTabPanel
-      show
-      id={tabPanelId01}
-      tabId={tabId01}
-    >
+    <ContextTabPanel show id={tabPanelId01} tabId={tabId01}>
       Tab Home Content
     </ContextTabPanel>
-    <ContextTabPanel
-      id={tabPanelId02}
-      tabId={tabId02}
-    >
+    <ContextTabPanel id={tabPanelId02} tabId={tabId02}>
       Tab One Content
     </ContextTabPanel>
-    <ContextTabPanel
-      id={tabPanelId03}
-      tabId={tabId03}
-    >
+    <ContextTabPanel id={tabPanelId03} tabId={tabId03}>
       Tab Two Content
     </ContextTabPanel>
   </div>
@@ -253,54 +424,9 @@ export default (
 
 export let states = [
   {
-    id: 'split-view',
-    label: 'Split View - Active',
-    element:
-      <div className="demo-only">
-        <ContextTabBar splitViewActive>
-          <ContextTab
-            title="Home"
-            symbol="home"
-            tabPanelId={tabPanelId01}
-            id={tabId01}
-            itemActive
-          />
-          <ContextTab
-            title="Tab Item 1"
-            tabPanelId={tabPanelId02}
-            id={tabId02}
-          />
-          <ContextTab
-            title="Tab Item 2"
-            tabPanelId={tabPanelId03}
-            id={tabId03}
-          />
-        </ContextTabBar>
-        <ContextTabPanel
-          show
-          id={tabPanelId01}
-          tabId={tabId01}
-        >
-          Tab Home Content
-        </ContextTabPanel>
-        <ContextTabPanel
-          id={tabPanelId02}
-          tabId={tabId02}
-        >
-          Tab One Content
-        </ContextTabPanel>
-        <ContextTabPanel
-          id={tabPanelId03}
-          tabId={tabId03}
-        >
-          Tab Two Content
-        </ContextTabPanel>
-      </div>
-  },
-  {
     id: 'tab-active',
     label: 'Tab - Active',
-    element:
+    element: (
       <div className="demo-only">
         <ContextTabBar>
           <ContextTab
@@ -321,31 +447,22 @@ export let states = [
             id={tabId03}
           />
         </ContextTabBar>
-        <ContextTabPanel
-          id={tabPanelId01}
-          tabId={tabId01}
-        >
+        <ContextTabPanel id={tabPanelId01} tabId={tabId01}>
           Tab Home Content
         </ContextTabPanel>
-        <ContextTabPanel
-          show
-          id={tabPanelId02}
-          tabId={tabId02}
-        >
+        <ContextTabPanel show id={tabPanelId02} tabId={tabId02}>
           Tab One Content
         </ContextTabPanel>
-        <ContextTabPanel
-          id={tabPanelId03}
-          tabId={tabId03}
-        >
+        <ContextTabPanel id={tabPanelId03} tabId={tabId03}>
           Tab Two Content
         </ContextTabPanel>
       </div>
+    )
   },
   {
     id: 'tab-active-focus',
     label: 'Tab - Active Focus',
-    element:
+    element: (
       <div className="demo-only">
         <ContextTabBar>
           <ContextTab
@@ -359,7 +476,7 @@ export let states = [
             tabPanelId={tabPanelId02}
             id={tabId02}
             itemActive
-            className="slds-has-focus"
+            hasFocus
           />
           <ContextTab
             title="Tab Item 2"
@@ -367,32 +484,23 @@ export let states = [
             id={tabId03}
           />
         </ContextTabBar>
-        <ContextTabPanel
-          id={tabPanelId01}
-          tabId={tabId01}
-        >
+        <ContextTabPanel id={tabPanelId01} tabId={tabId01}>
           Tab Home Content
         </ContextTabPanel>
-        <ContextTabPanel
-          show
-          id={tabPanelId02}
-          tabId={tabId02}
-        >
+        <ContextTabPanel show id={tabPanelId02} tabId={tabId02}>
           Tab One Content
         </ContextTabPanel>
-        <ContextTabPanel
-          id={tabPanelId03}
-          tabId={tabId03}
-        >
+        <ContextTabPanel id={tabPanelId03} tabId={tabId03}>
           Tab Two Content
         </ContextTabPanel>
       </div>
+    )
   },
   {
     id: 'tab-item-action-menu-open',
     label: 'Tab - Action Overflow',
-    element:
-      <div className="demo-only" style={{height: '12rem'}}>
+    element: (
+      <div className="demo-only" style={{ height: '12rem' }}>
         <ContextTabBar>
           <ContextTab
             title="Home"
@@ -413,31 +521,22 @@ export let states = [
             id={tabId03}
           />
         </ContextTabBar>
-        <ContextTabPanel
-          id={tabPanelId01}
-          tabId={tabId01}
-        >
+        <ContextTabPanel id={tabPanelId01} tabId={tabId01}>
           Tab Home Content
         </ContextTabPanel>
-        <ContextTabPanel
-          show
-          id={tabPanelId02}
-          tabId={tabId02}
-        >
+        <ContextTabPanel show id={tabPanelId02} tabId={tabId02}>
           Tab One Content
         </ContextTabPanel>
-        <ContextTabPanel
-          id={tabPanelId03}
-          tabId={tabId03}
-        >
+        <ContextTabPanel id={tabPanelId03} tabId={tabId03}>
           Tab Two Content
         </ContextTabPanel>
       </div>
+    )
   },
   {
     id: 'unsaved-tab',
     label: 'Unsaved Tab',
-    element:
+    element: (
       <div className="demo-only">
         <ContextTabBar>
           <ContextTab
@@ -459,32 +558,26 @@ export let states = [
             itemUnsaved
           />
         </ContextTabBar>
-        <ContextTabPanel
-          show
-          id={tabPanelId01}
-          tabId={tabId01}
-        >
+        <ContextTabPanel show id={tabPanelId01} tabId={tabId01}>
           Tab Home Content
         </ContextTabPanel>
-        <ContextTabPanel
-          id={tabPanelId02}
-          tabId={tabId02}
-        >
+        <ContextTabPanel id={tabPanelId02} tabId={tabId02}>
           Tab One Content
         </ContextTabPanel>
-        <ContextTabPanel
-          id={tabPanelId03}
-          tabId={tabId03}
-        >
+        <ContextTabPanel id={tabPanelId03} tabId={tabId03}>
           Tab Two Content
         </ContextTabPanel>
       </div>
+    )
   },
   {
     id: 'unread-tab',
     label: 'Unread Tab',
-    element:
+    element: (
       <div className="demo-only">
+        <span aria-live="polite" className="slds-assistive-text">
+          New activity in Tab: Chat - Customer
+        </span>
         <ContextTabBar>
           <ContextTab
             title="Home"
@@ -506,32 +599,26 @@ export let states = [
             itemUnread
           />
         </ContextTabBar>
-        <ContextTabPanel
-          show
-          id={tabPanelId01}
-          tabId={tabId01}
-        >
+        <ContextTabPanel show id={tabPanelId01} tabId={tabId01}>
           Tab Home Content
         </ContextTabPanel>
-        <ContextTabPanel
-          id={tabPanelId02}
-          tabId={tabId02}
-        >
+        <ContextTabPanel id={tabPanelId02} tabId={tabId02}>
           Tab One Content
         </ContextTabPanel>
-        <ContextTabPanel
-          id={tabPanelId03}
-          tabId={tabId03}
-        >
-          Tab Two Content
+        <ContextTabPanel id={tabPanelId03} tabId={tabId03}>
+          Chat - Customer Content
         </ContextTabPanel>
       </div>
+    )
   },
   {
     id: 'unread-unsaved-tab',
     label: 'Unread/Unsaved Tab',
-    element:
+    element: (
       <div className="demo-only">
+        <span aria-live="polite" className="slds-assistive-text">
+          New activity in Tab: Chat - Customer
+        </span>
         <ContextTabBar>
           <ContextTab
             title="Home"
@@ -554,31 +641,775 @@ export let states = [
             itemUnsaved
           />
         </ContextTabBar>
-        <ContextTabPanel
-          show
-          id={tabPanelId01}
-          tabId={tabId01}
-        >
+        <ContextTabPanel show id={tabPanelId01} tabId={tabId01}>
           Tab Home Content
         </ContextTabPanel>
-        <ContextTabPanel
-          id={tabPanelId02}
-          tabId={tabId02}
-        >
+        <ContextTabPanel id={tabPanelId02} tabId={tabId02}>
           Tab One Content
         </ContextTabPanel>
-        <ContextTabPanel
-          id={tabPanelId03}
-          tabId={tabId03}
-        >
-          Tab Two Content
+        <ContextTabPanel id={tabPanelId03} tabId={tabId03}>
+          Chat - Customer Content
         </ContextTabPanel>
       </div>
+    )
+  },
+  {
+    id: 'tab-success',
+    label: 'Tab - Success',
+    element: (
+      <div className="demo-only">
+        <span aria-live="polite" className="slds-assistive-text">
+          Success: SLA agreement warning cleared in tab: Chat - Customer
+        </span>
+        <ContextTabBar>
+          <ContextTab
+            id={tabId01}
+            itemActive
+            symbol="home"
+            tabPanelId={tabPanelId01}
+            title="Home"
+          />
+          <ContextTab
+            id={tabId02}
+            tabPanelId={tabPanelId02}
+            title="Tab Item 1"
+          />
+          <ContextTab
+            statusLevel="success"
+            id={tabId03}
+            symbol="live_chat"
+            tabPanelId={tabPanelId03}
+            title="Chat - Customer"
+          />
+        </ContextTabBar>
+        <ContextTabPanel id={tabPanelId01} show tabId={tabId01}>
+          Tab Home Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId02} tabId={tabId02}>
+          Tab One Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId03} tabId={tabId03}>
+          Chat - Customer Content
+        </ContextTabPanel>
+      </div>
+    )
+  },
+  {
+    id: 'tab-success-active',
+    label: 'Tab - Success Active',
+    element: (
+      <div className="demo-only">
+        <span aria-live="polite" className="slds-assistive-text">
+          Success: SLA agreement warning cleared in tab: Chat - Customer
+        </span>
+        <ContextTabBar>
+          <ContextTab
+            id={tabId01}
+            symbol="home"
+            tabPanelId={tabPanelId01}
+            title="Home"
+          />
+          <ContextTab
+            id={tabId02}
+            tabPanelId={tabPanelId02}
+            title="Tab Item 1"
+          />
+          <ContextTab
+            statusLevel="success"
+            id={tabId03}
+            itemActive
+            symbol="live_chat"
+            tabPanelId={tabPanelId03}
+            title="Chat - Customer"
+          />
+        </ContextTabBar>
+        <ContextTabPanel id={tabPanelId01} tabId={tabId01}>
+          Tab Home Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId02} tabId={tabId02}>
+          Tab One Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId03} show tabId={tabId03}>
+          Chat - Customer Content
+        </ContextTabPanel>
+      </div>
+    )
+  },
+  {
+    id: 'tab-success-focus',
+    label: 'Tab - Success Focused',
+    element: (
+      <div className="demo-only">
+        <span aria-live="polite" className="slds-assistive-text">
+          Success: SLA agreement warning cleared in tab: Chat - Customer
+        </span>
+        <ContextTabBar>
+          <ContextTab
+            id={tabId01}
+            symbol="home"
+            tabPanelId={tabPanelId01}
+            title="Home"
+          />
+          <ContextTab
+            id={tabId02}
+            tabPanelId={tabPanelId02}
+            title="Tab Item 1"
+          />
+          <ContextTab
+            statusLevel="success"
+            hasFocus
+            id={tabId03}
+            itemActive
+            symbol="live_chat"
+            tabPanelId={tabPanelId03}
+            title="Chat - Customer"
+          />
+        </ContextTabBar>
+        <ContextTabPanel id={tabPanelId01} tabId={tabId01}>
+          Tab Home Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId02} tabId={tabId02}>
+          Tab One Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId03} show tabId={tabId03}>
+          Chat - Customer Content
+        </ContextTabPanel>
+      </div>
+    )
+  },
+  {
+    id: 'tab-success-unread',
+    label: 'Tab - Success Unread',
+    element: (
+      <div className="demo-only">
+        <span aria-live="polite" className="slds-assistive-text">
+          Success: SLA agreement warning cleared in tab: Chat - Customer
+        </span>
+        <ContextTabBar>
+          <ContextTab
+            id={tabId01}
+            itemActive
+            symbol="home"
+            tabPanelId={tabPanelId01}
+            title="Home"
+          />
+          <ContextTab
+            id={tabId02}
+            tabPanelId={tabPanelId02}
+            title="Tab Item 1"
+          />
+          <ContextTab
+            statusLevel="success"
+            id={tabId03}
+            itemUnread
+            symbol="live_chat"
+            tabPanelId={tabPanelId03}
+            title="Chat - Customer"
+          />
+        </ContextTabBar>
+        <ContextTabPanel id={tabPanelId01} show tabId={tabId01}>
+          Tab Home Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId02} tabId={tabId02}>
+          Tab One Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId03} tabId={tabId03}>
+          Chat - Customer Content
+        </ContextTabPanel>
+      </div>
+    )
+  },
+  {
+    id: 'tab-success-unsaved',
+    label: 'Tab - Success Unsaved',
+    element: (
+      <div className="demo-only">
+        <span aria-live="polite" className="slds-assistive-text">
+          Success: SLA agreement warning cleared in tab: Chat - Customer
+        </span>
+        <ContextTabBar>
+          <ContextTab
+            id={tabId01}
+            itemActive
+            symbol="home"
+            tabPanelId={tabPanelId01}
+            title="Home"
+          />
+          <ContextTab
+            id={tabId02}
+            tabPanelId={tabPanelId02}
+            title="Tab Item 1"
+          />
+          <ContextTab
+            statusLevel="success"
+            id={tabId03}
+            itemUnsaved
+            symbol="live_chat"
+            tabPanelId={tabPanelId03}
+            title="Chat - Customer"
+          />
+        </ContextTabBar>
+        <ContextTabPanel id={tabPanelId01} show tabId={tabId01}>
+          Tab Home Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId02} tabId={tabId02}>
+          Tab One Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId03} tabId={tabId03}>
+          Chat - Customer Content
+        </ContextTabPanel>
+      </div>
+    )
+  },
+  {
+    id: 'tab-success-unread-unsaved',
+    label: 'Tab - Success Unread and Unsaved',
+    element: (
+      <div className="demo-only">
+        <span aria-live="polite" className="slds-assistive-text">
+          Success: SLA agreement warning cleared in tab: Chat - Customer
+        </span>
+        <ContextTabBar>
+          <ContextTab
+            id={tabId01}
+            itemActive
+            symbol="home"
+            tabPanelId={tabPanelId01}
+            title="Home"
+          />
+          <ContextTab
+            id={tabId02}
+            tabPanelId={tabPanelId02}
+            title="Tab Item 1"
+          />
+          <ContextTab
+            statusLevel="success"
+            id={tabId03}
+            itemUnread
+            itemUnsaved
+            symbol="live_chat"
+            tabPanelId={tabPanelId03}
+            title="Chat - Customer"
+          />
+        </ContextTabBar>
+        <ContextTabPanel id={tabPanelId01} show tabId={tabId01}>
+          Tab Home Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId02} tabId={tabId02}>
+          Tab One Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId03} tabId={tabId03}>
+          Chat - Customer Content
+        </ContextTabPanel>
+      </div>
+    )
+  },
+  {
+    id: 'tab-warning',
+    label: 'Tab - Warning',
+    element: (
+      <div className="demo-only">
+        <span aria-live="polite" className="slds-assistive-text">
+          Warning: SLA agreement in 30 seconds in tab: Chat - Customer
+        </span>
+        <ContextTabBar>
+          <ContextTab
+            id={tabId01}
+            itemActive
+            symbol="home"
+            tabPanelId={tabPanelId01}
+            title="Home"
+          />
+          <ContextTab
+            id={tabId02}
+            tabPanelId={tabPanelId02}
+            title="Tab Item 1"
+          />
+          <ContextTab
+            statusLevel="warning"
+            id={tabId03}
+            symbol="live_chat"
+            tabPanelId={tabPanelId03}
+            title="SLA in 0.30"
+          />
+        </ContextTabBar>
+        <ContextTabPanel id={tabPanelId01} show tabId={tabId01}>
+          Tab Home Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId02} tabId={tabId02}>
+          Tab One Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId03} tabId={tabId03}>
+          Chat - Customer Content
+        </ContextTabPanel>
+      </div>
+    )
+  },
+  {
+    id: 'tab-warning-active',
+    label: 'Tab - Warning Active',
+    element: (
+      <div className="demo-only">
+        <span aria-live="polite" className="slds-assistive-text">
+          Warning: SLA agreement in 30 seconds in tab: Chat - Customer
+        </span>
+        <ContextTabBar>
+          <ContextTab
+            id={tabId01}
+            symbol="home"
+            tabPanelId={tabPanelId01}
+            title="Home"
+          />
+          <ContextTab
+            id={tabId02}
+            tabPanelId={tabPanelId02}
+            title="Tab Item 1"
+          />
+          <ContextTab
+            statusLevel="warning"
+            id={tabId03}
+            itemActive
+            symbol="live_chat"
+            tabPanelId={tabPanelId03}
+            title="SLA in 0.30"
+          />
+        </ContextTabBar>
+        <ContextTabPanel id={tabPanelId01} tabId={tabId01}>
+          Tab Home Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId02} tabId={tabId02}>
+          Tab One Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId03} show tabId={tabId03}>
+          Chat - Customer Content
+        </ContextTabPanel>
+      </div>
+    )
+  },
+  {
+    id: 'tab-warning-focus',
+    label: 'Tab - Warning focused',
+    element: (
+      <div className="demo-only">
+        <span aria-live="polite" className="slds-assistive-text">
+          Warning: SLA agreement in 30 seconds in tab: Chat - Customer
+        </span>
+        <ContextTabBar>
+          <ContextTab
+            id={tabId01}
+            symbol="home"
+            tabPanelId={tabPanelId01}
+            title="Home"
+          />
+          <ContextTab
+            id={tabId02}
+            tabPanelId={tabPanelId02}
+            title="Tab Item 1"
+          />
+          <ContextTab
+            statusLevel="warning"
+            hasFocus
+            id={tabId03}
+            itemActive
+            symbol="live_chat"
+            tabPanelId={tabPanelId03}
+            title="SLA in 0.30"
+          />
+        </ContextTabBar>
+        <ContextTabPanel id={tabPanelId01} show tabId={tabId01}>
+          Tab Home Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId02} tabId={tabId02}>
+          Tab One Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId03} tabId={tabId03}>
+          Chat - Customer Content
+        </ContextTabPanel>
+      </div>
+    )
+  },
+  {
+    id: 'tab-warning-unread',
+    label: 'Tab - Warning Unread',
+    element: (
+      <div className="demo-only">
+        <span aria-live="polite" className="slds-assistive-text">
+          Warning: SLA agreement in 30 seconds in tab: Chat - Customer
+        </span>
+        <ContextTabBar>
+          <ContextTab
+            id={tabId01}
+            itemActive
+            symbol="home"
+            tabPanelId={tabPanelId01}
+            title="Home"
+          />
+          <ContextTab
+            id={tabId02}
+            tabPanelId={tabPanelId02}
+            title="Tab Item 1"
+          />
+          <ContextTab
+            statusLevel="warning"
+            id={tabId03}
+            itemUnread
+            symbol="live_chat"
+            tabPanelId={tabPanelId03}
+            title="SLA in 0.30"
+          />
+        </ContextTabBar>
+        <ContextTabPanel id={tabPanelId01} show tabId={tabId01}>
+          Tab Home Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId02} tabId={tabId02}>
+          Tab One Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId03} tabId={tabId03}>
+          Chat - Customer Content
+        </ContextTabPanel>
+      </div>
+    )
+  },
+  {
+    id: 'tab-warning-unsaved',
+    label: 'Tab - Warning Unsaved',
+    element: (
+      <div className="demo-only">
+        <span aria-live="polite" className="slds-assistive-text">
+          Warning: SLA agreement in 30 seconds in tab: Chat - Customer
+        </span>
+        <ContextTabBar>
+          <ContextTab
+            id={tabId01}
+            itemActive
+            symbol="home"
+            tabPanelId={tabPanelId01}
+            title="Home"
+          />
+          <ContextTab
+            id={tabId02}
+            tabPanelId={tabPanelId02}
+            title="Tab Item 1"
+          />
+          <ContextTab
+            statusLevel="warning"
+            id={tabId03}
+            itemUnsaved
+            symbol="live_chat"
+            tabPanelId={tabPanelId03}
+            title="SLA in 0.30"
+          />
+        </ContextTabBar>
+        <ContextTabPanel id={tabPanelId01} show tabId={tabId01}>
+          Tab Home Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId02} tabId={tabId02}>
+          Tab One Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId03} tabId={tabId03}>
+          Chat - Customer Content
+        </ContextTabPanel>
+      </div>
+    )
+  },
+  {
+    id: 'tab-warning-unread-unsaved',
+    label: 'Tab - Warning Unread and Unsaved',
+    element: (
+      <div className="demo-only">
+        <span aria-live="polite" className="slds-assistive-text">
+          Warning: SLA agreement in 30 seconds in tab: Chat - Customer
+        </span>
+        <ContextTabBar>
+          <ContextTab
+            id={tabId01}
+            itemActive
+            symbol="home"
+            tabPanelId={tabPanelId01}
+            title="Home"
+          />
+          <ContextTab
+            id={tabId02}
+            tabPanelId={tabPanelId02}
+            title="Tab Item 1"
+          />
+          <ContextTab
+            statusLevel="warning"
+            id={tabId03}
+            itemUnread
+            itemUnsaved
+            symbol="live_chat"
+            tabPanelId={tabPanelId03}
+            title="SLA in 0.30"
+          />
+        </ContextTabBar>
+        <ContextTabPanel id={tabPanelId01} show tabId={tabId01}>
+          Tab Home Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId02} tabId={tabId02}>
+          Tab One Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId03} tabId={tabId03}>
+          Chat - Customer Content
+        </ContextTabPanel>
+      </div>
+    )
+  },
+  {
+    id: 'tab-error',
+    label: 'Tab - Error',
+    element: (
+      <div className="demo-only">
+        <span aria-live="polite" className="slds-assistive-text">
+          Violation: SLA agreement in tab: Chat - Customer
+        </span>
+        <ContextTabBar>
+          <ContextTab
+            id={tabId01}
+            itemActive
+            symbol="home"
+            tabPanelId={tabPanelId01}
+            title="Home"
+          />
+          <ContextTab
+            id={tabId02}
+            tabPanelId={tabPanelId02}
+            title="Tab Item 1"
+          />
+          <ContextTab
+            statusLevel="error"
+            id={tabId03}
+            symbol="live_chat"
+            tabPanelId={tabPanelId03}
+            title="SLA Violation"
+          />
+        </ContextTabBar>
+        <ContextTabPanel id={tabPanelId01} show tabId={tabId01}>
+          Tab Home Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId02} tabId={tabId02}>
+          Tab One Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId03} tabId={tabId03}>
+          Chat - Customer Content
+        </ContextTabPanel>
+      </div>
+    )
+  },
+  {
+    id: 'tab-error-active',
+    label: 'Tab - Error Active',
+    element: (
+      <div className="demo-only">
+        <span aria-live="polite" className="slds-assistive-text">
+          Violation: SLA agreement in tab: Chat - Customer
+        </span>
+        <ContextTabBar>
+          <ContextTab
+            id={tabId01}
+            symbol="home"
+            tabPanelId={tabPanelId01}
+            title="Home"
+          />
+          <ContextTab
+            id={tabId02}
+            tabPanelId={tabPanelId02}
+            title="Tab Item 1"
+          />
+          <ContextTab
+            statusLevel="error"
+            id={tabId03}
+            itemActive
+            symbol="live_chat"
+            tabPanelId={tabPanelId03}
+            title="SLA Violation"
+          />
+        </ContextTabBar>
+        <ContextTabPanel id={tabPanelId01} tabId={tabId01}>
+          Tab Home Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId02} tabId={tabId02}>
+          Tab One Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId03} show tabId={tabId03}>
+          Chat - Customer Content
+        </ContextTabPanel>
+      </div>
+    )
+  },
+  {
+    id: 'tab-error-focused',
+    label: 'Tab - Error focused',
+    element: (
+      <div className="demo-only">
+        <span aria-live="polite" className="slds-assistive-text">
+          Violation: SLA agreement in tab: Chat - Customer
+        </span>
+        <ContextTabBar>
+          <ContextTab
+            id={tabId01}
+            symbol="home"
+            tabPanelId={tabPanelId01}
+            title="Home"
+          />
+          <ContextTab
+            id={tabId02}
+            tabPanelId={tabPanelId02}
+            title="Tab Item 1"
+          />
+          <ContextTab
+            statusLevel="error"
+            hasFocus
+            id={tabId03}
+            itemActive
+            symbol="live_chat"
+            tabPanelId={tabPanelId03}
+            title="SLA Violation"
+          />
+        </ContextTabBar>
+        <ContextTabPanel id={tabPanelId01} tabId={tabId01}>
+          Tab Home Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId02} tabId={tabId02}>
+          Tab One Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId03} show tabId={tabId03}>
+          Chat - Customer Content
+        </ContextTabPanel>
+      </div>
+    )
+  },
+  {
+    id: 'tab-error-unread',
+    label: 'Tab - Error Unread',
+    element: (
+      <div className="demo-only">
+        <span aria-live="polite" className="slds-assistive-text">
+          Violation: SLA agreement in tab: Chat - Customer
+        </span>
+        <ContextTabBar>
+          <ContextTab
+            id={tabId01}
+            itemActive
+            symbol="home"
+            tabPanelId={tabPanelId01}
+            title="Home"
+          />
+          <ContextTab
+            id={tabId02}
+            tabPanelId={tabPanelId02}
+            title="Tab Item 1"
+          />
+          <ContextTab
+            statusLevel="error"
+            id={tabId03}
+            itemUnread
+            symbol="live_chat"
+            tabPanelId={tabPanelId03}
+            title="SLA Violation"
+          />
+        </ContextTabBar>
+        <ContextTabPanel id={tabPanelId01} show tabId={tabId01}>
+          Tab Home Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId02} tabId={tabId02}>
+          Tab One Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId03} tabId={tabId03}>
+          Chat - Customer Content
+        </ContextTabPanel>
+      </div>
+    )
+  },
+  {
+    id: 'tab-error-unsave',
+    label: 'Tab - Error Unsaved',
+    element: (
+      <div className="demo-only">
+        <span aria-live="polite" className="slds-assistive-text">
+          Violation: SLA agreement in tab: Chat - Customer
+        </span>
+        <ContextTabBar>
+          <ContextTab
+            id={tabId01}
+            itemActive
+            symbol="home"
+            tabPanelId={tabPanelId01}
+            title="Home"
+          />
+          <ContextTab
+            id={tabId02}
+            tabPanelId={tabPanelId02}
+            title="Tab Item 1"
+          />
+          <ContextTab
+            statusLevel="error"
+            id={tabId03}
+            itemUnsaved
+            symbol="live_chat"
+            tabPanelId={tabPanelId03}
+            title="SLA Violation"
+          />
+        </ContextTabBar>
+        <ContextTabPanel id={tabPanelId01} show tabId={tabId01}>
+          Tab Home Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId02} tabId={tabId02}>
+          Tab One Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId03} tabId={tabId03}>
+          Chat - Customer Content
+        </ContextTabPanel>
+      </div>
+    )
+  },
+  {
+    id: 'tab-error-unread-unsaved',
+    label: 'Tab - Error Unread and Unsaved',
+    element: (
+      <div className="demo-only">
+        <span aria-live="polite" className="slds-assistive-text">
+          Violation: SLA agreement in tab: Chat - Customer
+        </span>
+        <ContextTabBar>
+          <ContextTab
+            id={tabId01}
+            itemActive
+            symbol="home"
+            tabPanelId={tabPanelId01}
+            title="Home"
+          />
+          <ContextTab
+            id={tabId02}
+            tabPanelId={tabPanelId02}
+            title="Tab Item 1"
+          />
+          <ContextTab
+            statusLevel="error"
+            id={tabId03}
+            itemUnread
+            itemUnsaved
+            symbol="live_chat"
+            tabPanelId={tabPanelId03}
+            title="SLA Violation"
+          />
+        </ContextTabBar>
+        <ContextTabPanel id={tabPanelId01} show tabId={tabId01}>
+          Tab Home Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId02} tabId={tabId02}>
+          Tab One Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId03} tabId={tabId03}>
+          Chat - Customer Content
+        </ContextTabPanel>
+      </div>
+    )
   },
   {
     id: 'pinned-tab',
     label: 'Pinned Tab',
-    element:
+    element: (
       <div className="demo-only">
         <ContextTabBar>
           <ContextTab
@@ -600,31 +1431,22 @@ export let states = [
             id={tabId03}
           />
         </ContextTabBar>
-        <ContextTabPanel
-          id={tabPanelId01}
-          tabId={tabId01}
-        >
+        <ContextTabPanel id={tabPanelId01} tabId={tabId01}>
           Tab Home Content
         </ContextTabPanel>
-        <ContextTabPanel
-          show
-          id={tabPanelId02}
-          tabId={tabId02}
-        >
+        <ContextTabPanel show id={tabPanelId02} tabId={tabId02}>
           Tab One Content
         </ContextTabPanel>
-        <ContextTabPanel
-          id={tabPanelId03}
-          tabId={tabId03}
-        >
+        <ContextTabPanel id={tabPanelId03} tabId={tabId03}>
           Tab Two Content
         </ContextTabPanel>
       </div>
+    )
   },
   {
     id: 'pinned-tab-active',
     label: 'Pinned Tab - Active',
-    element:
+    element: (
       <div className="demo-only">
         <ContextTabBar>
           <ContextTab
@@ -646,31 +1468,22 @@ export let states = [
             id={tabId03}
           />
         </ContextTabBar>
-        <ContextTabPanel
-          show
-          id={tabPanelId01}
-          tabId={tabId01}
-        >
+        <ContextTabPanel show id={tabPanelId01} tabId={tabId01}>
           Tab Home Content
         </ContextTabPanel>
-        <ContextTabPanel
-          id={tabPanelId02}
-          tabId={tabId02}
-        >
+        <ContextTabPanel id={tabPanelId02} tabId={tabId02}>
           Tab One Content
         </ContextTabPanel>
-        <ContextTabPanel
-          id={tabPanelId03}
-          tabId={tabId03}
-        >
+        <ContextTabPanel id={tabPanelId03} tabId={tabId03}>
           Tab Two Content
         </ContextTabPanel>
       </div>
+    )
   },
   {
     id: 'pinned-tab-active-focus',
     label: 'Pinned Tab - Active Focus',
-    element:
+    element: (
       <div className="demo-only">
         <ContextTabBar>
           <ContextTab
@@ -680,7 +1493,7 @@ export let states = [
             id={tabId01}
             itemActive
             pinned
-            className="slds-has-focus"
+            hasFocus
           />
           <ContextTab
             title="Tab Item 1"
@@ -693,31 +1506,22 @@ export let states = [
             id={tabId03}
           />
         </ContextTabBar>
-        <ContextTabPanel
-          show
-          id={tabPanelId01}
-          tabId={tabId01}
-        >
+        <ContextTabPanel show id={tabPanelId01} tabId={tabId01}>
           Tab Home Content
         </ContextTabPanel>
-        <ContextTabPanel
-          id={tabPanelId02}
-          tabId={tabId02}
-        >
+        <ContextTabPanel id={tabPanelId02} tabId={tabId02}>
           Tab One Content
         </ContextTabPanel>
-        <ContextTabPanel
-          id={tabPanelId03}
-          tabId={tabId03}
-        >
+        <ContextTabPanel id={tabPanelId03} tabId={tabId03}>
           Tab Two Content
         </ContextTabPanel>
       </div>
+    )
   },
   {
     id: 'unsaved-pinned-tab',
     label: 'Unsaved Pinned Tab',
-    element:
+    element: (
       <div className="demo-only">
         <ContextTabBar>
           <ContextTab
@@ -740,32 +1544,26 @@ export let states = [
             id={tabId03}
           />
         </ContextTabBar>
-        <ContextTabPanel
-          id={tabPanelId01}
-          tabId={tabId01}
-        >
+        <ContextTabPanel id={tabPanelId01} tabId={tabId01}>
           Tab Home Content
         </ContextTabPanel>
-        <ContextTabPanel
-          show
-          id={tabPanelId02}
-          tabId={tabId02}
-        >
+        <ContextTabPanel show id={tabPanelId02} tabId={tabId02}>
           Tab One Content
         </ContextTabPanel>
-        <ContextTabPanel
-          id={tabPanelId03}
-          tabId={tabId03}
-        >
+        <ContextTabPanel id={tabPanelId03} tabId={tabId03}>
           Tab Two Content
         </ContextTabPanel>
       </div>
+    )
   },
   {
     id: 'unread-pinned-tab',
     label: 'Unread Pinned Tab',
-    element:
+    element: (
       <div className="demo-only">
+        <span aria-live="polite" className="slds-assistive-text">
+          New activity in Tab: Chat - Customer
+        </span>
         <ContextTabBar>
           <ContextTab
             title="Chat - Customer"
@@ -787,31 +1585,645 @@ export let states = [
             id={tabId03}
           />
         </ContextTabBar>
-        <ContextTabPanel
-          id={tabPanelId01}
-          tabId={tabId01}
-        >
+        <ContextTabPanel id={tabPanelId01} tabId={tabId01}>
           Tab Home Content
         </ContextTabPanel>
-        <ContextTabPanel
-          show
-          id={tabPanelId02}
-          tabId={tabId02}
-        >
+        <ContextTabPanel show id={tabPanelId02} tabId={tabId02}>
           Tab One Content
         </ContextTabPanel>
-        <ContextTabPanel
-          id={tabPanelId03}
-          tabId={tabId03}
-        >
+        <ContextTabPanel id={tabPanelId03} tabId={tabId03}>
           Tab Two Content
         </ContextTabPanel>
       </div>
+    )
+  },
+  {
+    id: 'pinned-tab-success',
+    label: 'Pinned Success Tab',
+    element: (
+      <div className="demo-only">
+        <span aria-live="polite" className="slds-assistive-text">
+          Success: SLA agreement warning cleared in tab: Chat - Customer
+        </span>
+        <ContextTabBar>
+          <ContextTab
+            statusLevel="success"
+            id={tabId01}
+            pinned
+            symbol="live_chat"
+            tabPanelId={tabPanelId01}
+            title="Chat - Customer"
+          />
+          <ContextTab
+            id={tabId02}
+            itemActive
+            tabPanelId={tabPanelId02}
+            title="Tab Item 1"
+          />
+          <ContextTab
+            id={tabId03}
+            tabPanelId={tabPanelId03}
+            title="Tab Item 2"
+          />
+        </ContextTabBar>
+        <ContextTabPanel id={tabPanelId01} tabId={tabId01}>
+          Chat - Customer Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId02} show tabId={tabId02}>
+          Tab One Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId03} tabId={tabId03}>
+          Tab Two Content
+        </ContextTabPanel>
+      </div>
+    )
+  },
+  {
+    id: 'pinned-tab-success-active',
+    label: 'Pinned Success Tab Active',
+    element: (
+      <div className="demo-only">
+        <span aria-live="polite" className="slds-assistive-text">
+          Success: SLA agreement warning cleared in tab: Chat - Customer
+        </span>
+        <ContextTabBar>
+          <ContextTab
+            statusLevel="success"
+            id={tabId01}
+            itemActive
+            pinned
+            symbol="live_chat"
+            tabPanelId={tabPanelId01}
+            title="Chat - Customer"
+          />
+          <ContextTab
+            id={tabId02}
+            tabPanelId={tabPanelId02}
+            title="Tab Item 1"
+          />
+          <ContextTab
+            id={tabId03}
+            tabPanelId={tabPanelId03}
+            title="Tab Item 2"
+          />
+        </ContextTabBar>
+        <ContextTabPanel id={tabPanelId01} show tabId={tabId01}>
+          Chat - Customer Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId02} tabId={tabId02}>
+          Tab One Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId03} tabId={tabId03}>
+          Tab Two Content
+        </ContextTabPanel>
+      </div>
+    )
+  },
+  {
+    id: 'pinned-tab-success-focused',
+    label: 'Pinned Success Tab Focused',
+    element: (
+      <div className="demo-only">
+        <span aria-live="polite" className="slds-assistive-text">
+          Success: SLA agreement warning cleared in tab: Chat - Customer
+        </span>
+        <ContextTabBar>
+          <ContextTab
+            statusLevel="success"
+            hasFocus
+            id={tabId01}
+            itemActive
+            pinned
+            symbol="live_chat"
+            tabPanelId={tabPanelId01}
+            title="Chat - Customer"
+          />
+          <ContextTab
+            id={tabId02}
+            tabPanelId={tabPanelId02}
+            title="Tab Item 1"
+          />
+          <ContextTab
+            id={tabId03}
+            tabPanelId={tabPanelId03}
+            title="Tab Item 2"
+          />
+        </ContextTabBar>
+        <ContextTabPanel id={tabPanelId01} show tabId={tabId01}>
+          Chat - Customer Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId02} tabId={tabId02}>
+          Tab One Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId03} tabId={tabId03}>
+          Tab Two Content
+        </ContextTabPanel>
+      </div>
+    )
+  },
+  {
+    id: 'pinned-tab-success-unread',
+    label: 'Pinned Success Tab Unread',
+    element: (
+      <div className="demo-only">
+        <span aria-live="polite" className="slds-assistive-text">
+          Success: SLA agreement warning cleared in tab: Chat - Customer
+        </span>
+        <ContextTabBar>
+          <ContextTab
+            statusLevel="success"
+            id={tabId01}
+            itemUnread
+            pinned
+            symbol="live_chat"
+            tabPanelId={tabPanelId01}
+            title="Chat - Customer"
+          />
+          <ContextTab
+            id={tabId02}
+            itemActive
+            tabPanelId={tabPanelId02}
+            title="Tab Item 1"
+          />
+          <ContextTab
+            id={tabId03}
+            tabPanelId={tabPanelId03}
+            title="Tab Item 2"
+          />
+        </ContextTabBar>
+        <ContextTabPanel id={tabPanelId01} tabId={tabId01}>
+          Chat - Customer Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId02} show tabId={tabId02}>
+          Tab One Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId03} tabId={tabId03}>
+          Tab Two Content
+        </ContextTabPanel>
+      </div>
+    )
+  },
+  {
+    id: 'pinned-tab-success-unsaved',
+    label: 'Pinned Success Tab Unsaved',
+    element: (
+      <div className="demo-only">
+        <span aria-live="polite" className="slds-assistive-text">
+          Success: SLA agreement warning cleared in tab: Chat - Customer
+        </span>
+        <ContextTabBar>
+          <ContextTab
+            statusLevel="success"
+            id={tabId01}
+            itemUnsaved
+            pinned
+            symbol="live_chat"
+            tabPanelId={tabPanelId01}
+            title="Chat - Customer"
+          />
+          <ContextTab
+            id={tabId02}
+            itemActive
+            tabPanelId={tabPanelId02}
+            title="Tab Item 1"
+          />
+          <ContextTab
+            id={tabId03}
+            tabPanelId={tabPanelId03}
+            title="Tab Item 2"
+          />
+        </ContextTabBar>
+        <ContextTabPanel id={tabPanelId01} tabId={tabId01}>
+          Chat - Customer Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId02} show tabId={tabId02}>
+          Tab One Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId03} tabId={tabId03}>
+          Tab Two Content
+        </ContextTabPanel>
+      </div>
+    )
+  },
+  {
+    id: 'pinned-tab-warning',
+    label: 'Pinned Warning Tab',
+    element: (
+      <div className="demo-only">
+        <span aria-live="polite" className="slds-assistive-text">
+          Warning: SLA agreement in 30 seconds in tab: Chat - Customer
+        </span>
+        <ContextTabBar>
+          <ContextTab
+            statusLevel="warning"
+            id={tabId01}
+            pinned
+            symbol="live_chat"
+            tabPanelId={tabPanelId01}
+            title="Chat - Customer"
+          />
+          <ContextTab
+            id={tabId02}
+            itemActive
+            tabPanelId={tabPanelId02}
+            title="Tab Item 1"
+          />
+          <ContextTab
+            id={tabId03}
+            tabPanelId={tabPanelId03}
+            title="Tab Item 2"
+          />
+        </ContextTabBar>
+        <ContextTabPanel id={tabPanelId01} tabId={tabId01}>
+          Chat - Customer Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId02} show tabId={tabId02}>
+          Tab One Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId03} tabId={tabId03}>
+          Tab Two Content
+        </ContextTabPanel>
+      </div>
+    )
+  },
+  {
+    id: 'pinned-tab-warning-active',
+    label: 'Pinned Warning Tab Active',
+    element: (
+      <div className="demo-only">
+        <span aria-live="polite" className="slds-assistive-text">
+          Warning: SLA agreement in 30 seconds in tab: Chat - Customer
+        </span>
+        <ContextTabBar>
+          <ContextTab
+            statusLevel="warning"
+            id={tabId01}
+            itemActive
+            pinned
+            symbol="live_chat"
+            tabPanelId={tabPanelId01}
+            title="Chat - Customer"
+          />
+          <ContextTab
+            id={tabId02}
+            tabPanelId={tabPanelId02}
+            title="Tab Item 1"
+          />
+          <ContextTab
+            id={tabId03}
+            tabPanelId={tabPanelId03}
+            title="Tab Item 2"
+          />
+        </ContextTabBar>
+        <ContextTabPanel id={tabPanelId01} show tabId={tabId01}>
+          Chat - Customer Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId02} tabId={tabId02}>
+          Tab One Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId03} tabId={tabId03}>
+          Tab Two Content
+        </ContextTabPanel>
+      </div>
+    )
+  },
+  {
+    id: 'pinned-tab-warning-focused',
+    label: 'Pinned Warning Tab Focused',
+    element: (
+      <div className="demo-only">
+        <span aria-live="polite" className="slds-assistive-text">
+          Warning: SLA agreement in 30 seconds in tab: Chat - Customer
+        </span>
+        <ContextTabBar>
+          <ContextTab
+            statusLevel="warning"
+            hasFocus
+            id={tabId01}
+            itemActive
+            pinned
+            symbol="live_chat"
+            tabPanelId={tabPanelId01}
+            title="Chat - Customer"
+          />
+          <ContextTab
+            id={tabId02}
+            tabPanelId={tabPanelId02}
+            title="Tab Item 1"
+          />
+          <ContextTab
+            id={tabId03}
+            tabPanelId={tabPanelId03}
+            title="Tab Item 2"
+          />
+        </ContextTabBar>
+        <ContextTabPanel id={tabPanelId01} show tabId={tabId01}>
+          Chat - Customer Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId02} tabId={tabId02}>
+          Tab One Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId03} tabId={tabId03}>
+          Tab Two Content
+        </ContextTabPanel>
+      </div>
+    )
+  },
+  {
+    id: 'pinned-tab-warning-unread',
+    label: 'Pinned Warning Tab Unread',
+    element: (
+      <div className="demo-only">
+        <span aria-live="polite" className="slds-assistive-text">
+          Warning: SLA agreement in 30 seconds in tab: Chat - Customer
+        </span>
+        <ContextTabBar>
+          <ContextTab
+            statusLevel="warning"
+            id={tabId01}
+            itemUnread
+            pinned
+            symbol="live_chat"
+            tabPanelId={tabPanelId01}
+            title="Chat - Customer"
+          />
+          <ContextTab
+            id={tabId02}
+            itemActive
+            tabPanelId={tabPanelId02}
+            title="Tab Item 1"
+          />
+          <ContextTab
+            id={tabId03}
+            tabPanelId={tabPanelId03}
+            title="Tab Item 2"
+          />
+        </ContextTabBar>
+        <ContextTabPanel id={tabPanelId01} tabId={tabId01}>
+          Chat - Customer Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId02} show tabId={tabId02}>
+          Tab One Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId03} tabId={tabId03}>
+          Tab Two Content
+        </ContextTabPanel>
+      </div>
+    )
+  },
+  {
+    id: 'pinned-tab-warning-unsaved',
+    label: 'Pinned Warning Tab Unsaved',
+    element: (
+      <div className="demo-only">
+        <span aria-live="polite" className="slds-assistive-text">
+          Warning: SLA agreement in 30 seconds in tab: Chat - Customer
+        </span>
+        <ContextTabBar>
+          <ContextTab
+            statusLevel="warning"
+            id={tabId01}
+            itemUnsaved
+            pinned
+            symbol="live_chat"
+            tabPanelId={tabPanelId01}
+            title="Chat - Customer"
+          />
+          <ContextTab
+            id={tabId02}
+            itemActive
+            tabPanelId={tabPanelId02}
+            title="Tab Item 1"
+          />
+          <ContextTab
+            id={tabId03}
+            tabPanelId={tabPanelId03}
+            title="Tab Item 2"
+          />
+        </ContextTabBar>
+        <ContextTabPanel id={tabPanelId01} tabId={tabId01}>
+          Chat - Customer Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId02} show tabId={tabId02}>
+          Tab One Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId03} tabId={tabId03}>
+          Tab Two Content
+        </ContextTabPanel>
+      </div>
+    )
+  },
+  {
+    id: 'pinned-tab-error',
+    label: 'Pinned Error Tab',
+    element: (
+      <div className="demo-only">
+        <span aria-live="polite" className="slds-assistive-text">
+          Violation: SLA agreement in tab: Chat - Customer
+        </span>
+        <ContextTabBar>
+          <ContextTab
+            statusLevel="error"
+            id={tabId01}
+            pinned
+            symbol="live_chat"
+            tabPanelId={tabPanelId01}
+            title="Chat - Customer"
+          />
+          <ContextTab
+            id={tabId02}
+            itemActive
+            tabPanelId={tabPanelId02}
+            title="Tab Item 1"
+          />
+          <ContextTab
+            id={tabId03}
+            tabPanelId={tabPanelId03}
+            title="Tab Item 2"
+          />
+        </ContextTabBar>
+        <ContextTabPanel id={tabPanelId01} tabId={tabId01}>
+          Chat - Customer Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId02} show tabId={tabId02}>
+          Tab One Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId03} tabId={tabId03}>
+          Tab Two Content
+        </ContextTabPanel>
+      </div>
+    )
+  },
+  {
+    id: 'pinned-tab-error-active',
+    label: 'Pinned Error Tab Active',
+    element: (
+      <div className="demo-only">
+        <span aria-live="polite" className="slds-assistive-text">
+          Violation: SLA agreement in tab: Chat - Customer
+        </span>
+        <ContextTabBar>
+          <ContextTab
+            statusLevel="error"
+            id={tabId01}
+            itemActive
+            pinned
+            symbol="live_chat"
+            tabPanelId={tabPanelId01}
+            title="Chat - Customer"
+          />
+          <ContextTab
+            id={tabId02}
+            tabPanelId={tabPanelId02}
+            title="Tab Item 1"
+          />
+          <ContextTab
+            id={tabId03}
+            tabPanelId={tabPanelId03}
+            title="Tab Item 2"
+          />
+        </ContextTabBar>
+        <ContextTabPanel id={tabPanelId01} show tabId={tabId01}>
+          Chat - Customer Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId02} tabId={tabId02}>
+          Tab One Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId03} tabId={tabId03}>
+          Tab Two Content
+        </ContextTabPanel>
+      </div>
+    )
+  },
+  {
+    id: 'pinned-tab-error-focused',
+    label: 'Pinned Error Tab Focused',
+    element: (
+      <div className="demo-only">
+        <span aria-live="polite" className="slds-assistive-text">
+          Violation: SLA agreement in tab: Chat - Customer
+        </span>
+        <ContextTabBar>
+          <ContextTab
+            statusLevel="error"
+            id={tabId01}
+            itemActive
+            pinned
+            symbol="live_chat"
+            tabPanelId={tabPanelId01}
+            title="Chat - Customer"
+          />
+          <ContextTab
+            id={tabId02}
+            tabPanelId={tabPanelId02}
+            title="Tab Item 1"
+          />
+          <ContextTab
+            id={tabId03}
+            tabPanelId={tabPanelId03}
+            title="Tab Item 2"
+          />
+        </ContextTabBar>
+        <ContextTabPanel id={tabPanelId01} show tabId={tabId01}>
+          Chat - Customer Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId02} tabId={tabId02}>
+          Tab One Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId03} tabId={tabId03}>
+          Tab Two Content
+        </ContextTabPanel>
+      </div>
+    )
+  },
+  {
+    id: 'pinned-tab-error-unread',
+    label: 'Pinned Error Tab Unread',
+    element: (
+      <div className="demo-only">
+        <span aria-live="polite" className="slds-assistive-text">
+          Violation: SLA agreement in tab: Chat - Customer
+        </span>
+        <ContextTabBar>
+          <ContextTab
+            statusLevel="error"
+            id={tabId01}
+            itemUnread
+            pinned
+            symbol="live_chat"
+            tabPanelId={tabPanelId01}
+            title="Chat - Customer"
+          />
+          <ContextTab
+            id={tabId02}
+            itemActive
+            tabPanelId={tabPanelId02}
+            title="Tab Item 1"
+          />
+          <ContextTab
+            id={tabId03}
+            tabPanelId={tabPanelId03}
+            title="Tab Item 2"
+          />
+        </ContextTabBar>
+        <ContextTabPanel id={tabPanelId01} tabId={tabId01}>
+          Chat - Customer Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId02} show tabId={tabId02}>
+          Tab One Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId03} tabId={tabId03}>
+          Tab Two Content
+        </ContextTabPanel>
+      </div>
+    )
+  },
+  {
+    id: 'pinned-tab-error-unsaved',
+    label: 'Pinned Error Tab Unsaved',
+    element: (
+      <div className="demo-only">
+        <span aria-live="polite" className="slds-assistive-text">
+          Violation: SLA agreement in tab: Chat - Customer
+        </span>
+        <ContextTabBar>
+          <ContextTab
+            statusLevel="error"
+            id={tabId01}
+            itemUnsaved
+            pinned
+            symbol="live_chat"
+            tabPanelId={tabPanelId01}
+            title="Chat - Customer"
+          />
+          <ContextTab
+            id={tabId02}
+            itemActive
+            tabPanelId={tabPanelId02}
+            title="Tab Item 1"
+          />
+          <ContextTab
+            id={tabId03}
+            tabPanelId={tabPanelId03}
+            title="Tab Item 2"
+          />
+        </ContextTabBar>
+        <ContextTabPanel id={tabPanelId01} tabId={tabId01}>
+          Chat - Customer Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId02} show tabId={tabId02}>
+          Tab One Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId03} tabId={tabId03}>
+          Tab Two Content
+        </ContextTabPanel>
+      </div>
+    )
   },
   {
     id: 'overflow-tabs',
     label: 'Overflow Tabs',
-    element:
+    element: (
       <div className="demo-only">
         <ContextTabBar>
           <ContextTab
@@ -831,39 +2243,25 @@ export let states = [
             tabPanelId={tabPanelId03}
             id={tabId03}
           />
-          <li className="slds-context-bar__item slds-context-bar__dropdown-trigger slds-dropdown-trigger slds-dropdown-trigger_click">
-            <button className="slds-button slds-context-bar__label-action" aria-haspopup="true">
-              <span className="slds-p-left_xx-small slds-truncate" title="More Tab Items">More <span className="slds-assistive-text">Tabs</span></span>
-              <SvgIcon className="slds-button__icon slds-button__icon_small slds-button__icon_right" sprite="utility" symbol="chevrondown" />
-            </button>
-          </li>
+          <ContextTabBarOverflow />
         </ContextTabBar>
-        <ContextTabPanel
-          show
-          id={tabPanelId01}
-          tabId={tabId01}
-        >
+        <ContextTabPanel show id={tabPanelId01} tabId={tabId01}>
           Tab Home Content
         </ContextTabPanel>
-        <ContextTabPanel
-          id={tabPanelId02}
-          tabId={tabId02}
-        >
+        <ContextTabPanel id={tabPanelId02} tabId={tabId02}>
           Tab One Content
         </ContextTabPanel>
-        <ContextTabPanel
-          id={tabPanelId03}
-          tabId={tabId03}
-        >
+        <ContextTabPanel id={tabPanelId03} tabId={tabId03}>
           Tab Two Content
         </ContextTabPanel>
       </div>
+    )
   },
   {
     id: 'overflow-tabs-open',
     label: 'Overflow Tabs - Open',
-    element:
-      <div className="demo-only" style={{height: '8rem'}}>
+    element: (
+      <div className="demo-only" style={{ height: '8rem' }}>
         <ContextTabBar>
           <ContextTab
             title="Home"
@@ -882,50 +2280,24 @@ export let states = [
             tabPanelId={tabPanelId03}
             id={tabId03}
           />
-          <li className="slds-context-bar__item slds-context-bar__dropdown-trigger slds-dropdown-trigger slds-dropdown-trigger_click slds-is-open">
-            <button className="slds-button slds-context-bar__label-action" aria-haspopup="true">
-              <span className="slds-p-left_xx-small slds-truncate" title="More Tab Items">More <span className="slds-assistive-text">Tabs</span></span>
-              <SvgIcon className="slds-button__icon slds-button__icon_small slds-button__icon_right" sprite="utility" symbol="chevrondown" />
-            </button>
-            <Menu className="slds-dropdown_right">
-              <MenuList>
-                <MenuItem>
-                  <SvgIcon className="slds-icon slds-icon_small slds-icon-text-default" sprite="standard" symbol="case" />
-                  <span>Overflow Tab Item</span>
-                </MenuItem>
-                <MenuItem>
-                  <SvgIcon className="slds-icon slds-icon_small slds-icon-text-default" sprite="standard" symbol="case" />
-                  <span>Overflow Tab Item</span>
-                </MenuItem>
-              </MenuList>
-            </Menu>
-          </li>
+          <ContextTabBarOverflow isOpen />
         </ContextTabBar>
-        <ContextTabPanel
-          show
-          id={tabPanelId01}
-          tabId={tabId01}
-        >
+        <ContextTabPanel show id={tabPanelId01} tabId={tabId01}>
           Tab Home Content
         </ContextTabPanel>
-        <ContextTabPanel
-          id={tabPanelId02}
-          tabId={tabId02}
-        >
+        <ContextTabPanel id={tabPanelId02} tabId={tabId02}>
           Tab One Content
         </ContextTabPanel>
-        <ContextTabPanel
-          id={tabPanelId03}
-          tabId={tabId03}
-        >
+        <ContextTabPanel id={tabPanelId03} tabId={tabId03}>
           Tab Two Content
         </ContextTabPanel>
       </div>
+    )
   },
   {
     id: 'unsaved-overflow-tabs',
     label: 'Unsaved Overflow Tabs',
-    element:
+    element: (
       <div className="demo-only">
         <ContextTabBar>
           <ContextTab
@@ -945,40 +2317,25 @@ export let states = [
             tabPanelId={tabPanelId03}
             id={tabId03}
           />
-          <li className="slds-context-bar__item slds-context-bar__dropdown-trigger slds-dropdown-trigger slds-dropdown-trigger_click slds-is-unsaved">
-            <button className="slds-button slds-context-bar__label-action" title="More Tab Items" aria-haspopup="true">
-              <abbr className="slds-indicator_unsaved" title="Tab(s) within menu not saved">*</abbr>
-              <span className="slds-p-left_xx-small slds-truncate" title="More Tabs">More <span className="slds-assistive-text">Tabs</span></span>
-              <SvgIcon className="slds-button__icon slds-button__icon_small slds-button__icon_right" sprite="utility" symbol="chevrondown" />
-            </button>
-          </li>
+          <ContextTabBarOverflow itemUnsaved />
         </ContextTabBar>
-        <ContextTabPanel
-          show
-          id={tabPanelId01}
-          tabId={tabId01}
-        >
+        <ContextTabPanel show id={tabPanelId01} tabId={tabId01}>
           Tab Home Content
         </ContextTabPanel>
-        <ContextTabPanel
-          id={tabPanelId02}
-          tabId={tabId02}
-        >
+        <ContextTabPanel id={tabPanelId02} tabId={tabId02}>
           Tab One Content
         </ContextTabPanel>
-        <ContextTabPanel
-          id={tabPanelId03}
-          tabId={tabId03}
-        >
+        <ContextTabPanel id={tabPanelId03} tabId={tabId03}>
           Tab Two Content
         </ContextTabPanel>
       </div>
+    )
   },
   {
     id: 'unsaved-overflow-tabs-open',
     label: 'Unsaved Overflow Tabs - Open',
-    element:
-      <div className="demo-only" style={{height: '8rem'}}>
+    element: (
+      <div className="demo-only" style={{ height: '8rem' }}>
         <ContextTabBar>
           <ContextTab
             title="Home"
@@ -997,53 +2354,28 @@ export let states = [
             tabPanelId={tabPanelId03}
             id={tabId03}
           />
-          <li className="slds-context-bar__item slds-context-bar__dropdown-trigger slds-dropdown-trigger slds-dropdown-trigger_click slds-is-open slds-is-unsaved">
-            <button className="slds-button slds-context-bar__label-action" title="More Tab Items" aria-haspopup="true">
-              <abbr className="slds-indicator_unsaved" title="Tab(s) within menu not saved">*</abbr>
-              <span className="slds-p-left_xx-small slds-truncate" title="More Tabs">More <span className="slds-assistive-text">Tabs</span></span>
-              <SvgIcon className="slds-button__icon slds-button__icon_small slds-button__icon_right" sprite="utility" symbol="chevrondown" />
-            </button>
-            <Menu className="slds-dropdown_right">
-              <MenuList>
-                <MenuItem className="slds-is-unsaved" title="Overflow Tab Item">
-                  <abbr className="slds-unsaved-indicator" title="Tab(s) within menu not saved">*</abbr>
-                  <SvgIcon className="slds-icon slds-icon_small slds-icon-text-default" sprite="standard" symbol="case" />
-                  <span>Overflow Tab Item</span>
-                </MenuItem>
-                <MenuItem title="Overflow Tab Item">
-                  <SvgIcon className="slds-icon slds-icon_small slds-icon-text-default" sprite="standard" symbol="case" />
-                  <span>Overflow Tab Item</span>
-                </MenuItem>
-              </MenuList>
-            </Menu>
-          </li>
+          <ContextTabBarOverflow isOpen itemUnsaved />
         </ContextTabBar>
-        <ContextTabPanel
-          show
-          id={tabPanelId01}
-          tabId={tabId01}
-        >
+        <ContextTabPanel show id={tabPanelId01} tabId={tabId01}>
           Tab Home Content
         </ContextTabPanel>
-        <ContextTabPanel
-          id={tabPanelId02}
-          tabId={tabId02}
-        >
+        <ContextTabPanel id={tabPanelId02} tabId={tabId02}>
           Tab One Content
         </ContextTabPanel>
-        <ContextTabPanel
-          id={tabPanelId03}
-          tabId={tabId03}
-        >
+        <ContextTabPanel id={tabPanelId03} tabId={tabId03}>
           Tab Two Content
         </ContextTabPanel>
       </div>
+    )
   },
   {
     id: 'unread-overflow-tabs',
     label: 'Unread Overflow Tabs',
-    element:
+    element: (
       <div className="demo-only">
+        <span aria-live="polite" className="slds-assistive-text">
+          New activity in Tab: Chat - Customer
+        </span>
         <ContextTabBar>
           <ContextTab
             title="Home"
@@ -1062,49 +2394,28 @@ export let states = [
             tabPanelId={tabPanelId03}
             id={tabId03}
           />
-          <li className="slds-context-bar__item slds-context-bar__dropdown-trigger slds-dropdown-trigger slds-dropdown-trigger_click slds-has-notification">
-            <button className="slds-button slds-context-bar__label-action" title="More Tab Items" aria-haspopup="true">
-              <span
-                aria-label="New Activity"
-                className="slds-indicator_unread"
-                role="alert"
-                title="New Activity"
-              >
-                <span className="slds-assistive-text">
-                  New Tab activity with in More Tabs menu
-                </span>
-              </span>
-              <span className="slds-p-left_xx-small slds-truncate" title="More Tabs">More <span className="slds-assistive-text">Tabs</span></span>
-              <SvgIcon className="slds-button__icon slds-button__icon_small slds-button__icon_right" sprite="utility" symbol="chevrondown" />
-            </button>
-          </li>
+          <ContextTabBarOverflow itemUnread />
         </ContextTabBar>
-        <ContextTabPanel
-          show
-          id={tabPanelId01}
-          tabId={tabId01}
-        >
+        <ContextTabPanel show id={tabPanelId01} tabId={tabId01}>
           Tab Home Content
         </ContextTabPanel>
-        <ContextTabPanel
-          id={tabPanelId02}
-          tabId={tabId02}
-        >
+        <ContextTabPanel id={tabPanelId02} tabId={tabId02}>
           Tab One Content
         </ContextTabPanel>
-        <ContextTabPanel
-          id={tabPanelId03}
-          tabId={tabId03}
-        >
+        <ContextTabPanel id={tabPanelId03} tabId={tabId03}>
           Tab Two Content
         </ContextTabPanel>
       </div>
+    )
   },
   {
     id: 'unread-overflow-tabs-open',
     label: 'Unread Overflow Tabs - Open',
-    element:
-      <div className="demo-only" style={{height: '8rem'}}>
+    element: (
+      <div className="demo-only" style={{ height: '8rem' }}>
+        <span aria-live="polite" className="slds-assistive-text">
+          New activity in Tab: Chat - Customer
+        </span>
         <ContextTabBar>
           <ContextTab
             title="Home"
@@ -1123,68 +2434,367 @@ export let states = [
             tabPanelId={tabPanelId03}
             id={tabId03}
           />
-          <li className="slds-context-bar__item slds-context-bar__dropdown-trigger slds-dropdown-trigger slds-dropdown-trigger_click slds-is-open slds-has-notification">
-            <button className="slds-button slds-context-bar__label-action" title="More Tab Items" aria-haspopup="true">
-              <span
-                aria-label="New Activity"
-                className="slds-indicator_unread"
-                role="alert"
-                title="New Activity"
-              >
-                <span className="slds-assistive-text">
-                  New Tab activity with in More Tabs menu
-                </span>
-              </span>
-              <span className="slds-p-left_xx-small slds-truncate" title="More Tabs">More <span className="slds-assistive-text">Tabs</span></span>
-              <SvgIcon className="slds-button__icon slds-button__icon_small slds-button__icon_right" sprite="utility" symbol="chevrondown" />
-            </button>
-            <Menu className="slds-dropdown_right">
-              <MenuList>
-                <MenuItem className="slds-has-notification" title="Chat - Customer">
-                  <span
-                    className="slds-indicator_unread"
-                    title="New Activity"
-                  >
-                    <span className="slds-assistive-text">
-                      New Activity
-                    </span>
-                  </span>
-                  <SvgIcon className="slds-icon slds-icon_small slds-icon-text-default" sprite="standard" symbol="live_chat" />
-                  <span>Chat - Customer</span>
-                </MenuItem>
-                <MenuItem title="Overflow Tab Item">
-                  <SvgIcon className="slds-icon slds-icon_small slds-icon-text-default" sprite="standard" symbol="case" />
-                  <span>Overflow Tab Item</span>
-                </MenuItem>
-              </MenuList>
-            </Menu>
-          </li>
+          <ContextTabBarOverflow isOpen itemUnread />
         </ContextTabBar>
-        <ContextTabPanel
-          show
-          id={tabPanelId01}
-          tabId={tabId01}
-        >
+        <ContextTabPanel show id={tabPanelId01} tabId={tabId01}>
           Tab Home Content
         </ContextTabPanel>
-        <ContextTabPanel
-          id={tabPanelId02}
-          tabId={tabId02}
-        >
+        <ContextTabPanel id={tabPanelId02} tabId={tabId02}>
           Tab One Content
         </ContextTabPanel>
-        <ContextTabPanel
-          id={tabPanelId03}
-          tabId={tabId03}
-        >
+        <ContextTabPanel id={tabPanelId03} tabId={tabId03}>
           Tab Two Content
         </ContextTabPanel>
       </div>
+    )
+  },
+  {
+    id: 'unread-unsaved-overflow-tabs-open',
+    label: 'Unread Unsaved Overflow Tabs - Open',
+    element: (
+      <div className="demo-only" style={{ height: '8rem' }}>
+        <span aria-live="polite" className="slds-assistive-text">
+          New activity in Tab: Chat - Customer
+        </span>
+        <ContextTabBar>
+          <ContextTab
+            title="Home"
+            symbol="home"
+            tabPanelId={tabPanelId01}
+            id={tabId01}
+            itemActive
+          />
+          <ContextTab
+            title="Tab Item 1"
+            tabPanelId={tabPanelId02}
+            id={tabId02}
+          />
+          <ContextTab
+            title="Tab Item 2"
+            tabPanelId={tabPanelId03}
+            id={tabId03}
+          />
+          <ContextTabBarOverflow isOpen itemUnread itemUnsaved />
+        </ContextTabBar>
+        <ContextTabPanel show id={tabPanelId01} tabId={tabId01}>
+          Tab Home Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId02} tabId={tabId02}>
+          Tab One Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId03} tabId={tabId03}>
+          Tab Two Content
+        </ContextTabPanel>
+      </div>
+    )
+  },
+  {
+    id: 'unread-unsaved-overflow-tabs-without-icon-open',
+    label: 'Unread Unsaved Overflow Tabs without Icon - Open',
+    element: (
+      <div className="demo-only" style={{ height: '8rem' }}>
+        <span aria-live="polite" className="slds-assistive-text">
+          New activity in Tab: Chat - Customer
+        </span>
+        <ContextTabBar>
+          <ContextTab
+            title="Home"
+            symbol="home"
+            tabPanelId={tabPanelId01}
+            id={tabId01}
+            itemActive
+          />
+          <ContextTab
+            title="Tab Item 1"
+            tabPanelId={tabPanelId02}
+            id={tabId02}
+          />
+          <ContextTab
+            title="Tab Item 2"
+            tabPanelId={tabPanelId03}
+            id={tabId03}
+            itemUnread
+            itemUnsaved
+            hasIcon={false}
+          />
+          <ContextTabBarOverflow
+            isOpen
+            itemUnread
+            itemUnsaved
+            itemHasIcon={false}
+          />
+        </ContextTabBar>
+        <ContextTabPanel show id={tabPanelId01} tabId={tabId01}>
+          Tab Home Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId02} tabId={tabId02}>
+          Tab One Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId03} tabId={tabId03}>
+          Tab Two Content
+        </ContextTabPanel>
+      </div>
+    )
+  },
+  {
+    id: 'success-overflow',
+    label: 'Success Overflow Tabs',
+    element: (
+      <div className="demo-only" style={{ height: '8rem' }}>
+        <span aria-live="polite" className="slds-assistive-text">
+          Success: SLA agreement warning cleared in tab: Chat - Customer
+        </span>
+        <ContextTabBar>
+          <ContextTab
+            id={tabId01}
+            itemActive
+            symbol="home"
+            tabPanelId={tabPanelId01}
+            title="Home"
+          />
+          <ContextTab
+            id={tabId02}
+            tabPanelId={tabPanelId02}
+            title="Tab Item 1"
+          />
+          <ContextTab
+            id={tabId03}
+            tabPanelId={tabPanelId03}
+            title="Tab Item 2"
+          />
+          <ContextTabBarOverflow statusLevel="success" isOpen />
+        </ContextTabBar>
+        <ContextTabPanel id={tabPanelId01} show tabId={tabId01}>
+          Tab Home Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId02} tabId={tabId02}>
+          Tab One Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId03} tabId={tabId03}>
+          Tab Two Content
+        </ContextTabPanel>
+      </div>
+    )
+  },
+  {
+    id: 'success-overflow-unread-unsaved',
+    label: 'Success Overflow Tabs Unread and Unsaved',
+    element: (
+      <div className="demo-only" style={{ height: '8rem' }}>
+        <span aria-live="polite" className="slds-assistive-text">
+          Success: SLA agreement warning cleared in tab: Chat - Customer
+        </span>
+        <ContextTabBar>
+          <ContextTab
+            id={tabId01}
+            itemActive
+            symbol="home"
+            tabPanelId={tabPanelId01}
+            title="Home"
+          />
+          <ContextTab
+            id={tabId02}
+            tabPanelId={tabPanelId02}
+            title="Tab Item 1"
+          />
+          <ContextTab
+            id={tabId03}
+            tabPanelId={tabPanelId03}
+            title="Tab Item 2"
+          />
+          <ContextTabBarOverflow
+            statusLevel="success"
+            isOpen
+            itemUnread
+            itemUnsaved
+          />
+        </ContextTabBar>
+        <ContextTabPanel id={tabPanelId01} show tabId={tabId01}>
+          Tab Home Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId02} tabId={tabId02}>
+          Tab One Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId03} tabId={tabId03}>
+          Tab Two Content
+        </ContextTabPanel>
+      </div>
+    )
+  },
+  {
+    id: 'warning-overflow',
+    label: 'Warning Overflow Tabs',
+    element: (
+      <div className="demo-only" style={{ height: '8rem' }}>
+        <span aria-live="polite" className="slds-assistive-text">
+          Warning: SLA agreement in 30 seconds in tab: Chat - Customer
+        </span>
+        <ContextTabBar>
+          <ContextTab
+            id={tabId01}
+            itemActive
+            symbol="home"
+            tabPanelId={tabPanelId01}
+            title="Home"
+          />
+          <ContextTab
+            id={tabId02}
+            tabPanelId={tabPanelId02}
+            title="Tab Item 1"
+          />
+          <ContextTab
+            id={tabId03}
+            tabPanelId={tabPanelId03}
+            title="Tab Item 2"
+          />
+          <ContextTabBarOverflow statusLevel="warning" isOpen />
+        </ContextTabBar>
+        <ContextTabPanel id={tabPanelId01} show tabId={tabId01}>
+          Tab Home Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId02} tabId={tabId02}>
+          Tab One Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId03} tabId={tabId03}>
+          Tab Two Content
+        </ContextTabPanel>
+      </div>
+    )
+  },
+  {
+    id: 'warning-overflow-unread-unsaved',
+    label: 'Warning Overflow Tabs Unread and Unsaved',
+    element: (
+      <div className="demo-only" style={{ height: '8rem' }}>
+        <span aria-live="polite" className="slds-assistive-text">
+          Warning: SLA agreement in 30 seconds in tab: Chat - Customer
+        </span>
+        <ContextTabBar>
+          <ContextTab
+            id={tabId01}
+            itemActive
+            symbol="home"
+            tabPanelId={tabPanelId01}
+            title="Home"
+          />
+          <ContextTab
+            id={tabId02}
+            tabPanelId={tabPanelId02}
+            title="Tab Item 1"
+          />
+          <ContextTab
+            id={tabId03}
+            tabPanelId={tabPanelId03}
+            title="Tab Item 2"
+          />
+          <ContextTabBarOverflow
+            statusLevel="warning"
+            isOpen
+            itemUnread
+            itemUnsaved
+          />
+        </ContextTabBar>
+        <ContextTabPanel id={tabPanelId01} show tabId={tabId01}>
+          Tab Home Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId02} tabId={tabId02}>
+          Tab One Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId03} tabId={tabId03}>
+          Tab Two Content
+        </ContextTabPanel>
+      </div>
+    )
+  },
+  {
+    id: 'error-overflow',
+    label: 'Error Overflow Tabs',
+    element: (
+      <div className="demo-only" style={{ height: '8rem' }}>
+        <span aria-live="polite" className="slds-assistive-text">
+          Violation: SLA agreement in tab: Chat - Customer
+        </span>
+        <ContextTabBar>
+          <ContextTab
+            id={tabId01}
+            itemActive
+            symbol="home"
+            tabPanelId={tabPanelId01}
+            title="Home"
+          />
+          <ContextTab
+            id={tabId02}
+            tabPanelId={tabPanelId02}
+            title="Tab Item 1"
+          />
+          <ContextTab
+            id={tabId03}
+            tabPanelId={tabPanelId03}
+            title="Tab Item 2"
+          />
+          <ContextTabBarOverflow statusLevel="error" isOpen />
+        </ContextTabBar>
+        <ContextTabPanel id={tabPanelId01} show tabId={tabId01}>
+          Tab Home Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId02} tabId={tabId02}>
+          Tab One Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId03} tabId={tabId03}>
+          Tab Two Content
+        </ContextTabPanel>
+      </div>
+    )
+  },
+  {
+    id: 'error-overflow-unread-unsaved',
+    label: 'Error Overflow Tabs Unread and Unsaved',
+    element: (
+      <div className="demo-only" style={{ height: '8rem' }}>
+        <span aria-live="polite" className="slds-assistive-text">
+          Violation: SLA agreement in tab: Chat - Customer
+        </span>
+        <ContextTabBar>
+          <ContextTab
+            id={tabId01}
+            itemActive
+            symbol="home"
+            tabPanelId={tabPanelId01}
+            title="Home"
+          />
+          <ContextTab
+            id={tabId02}
+            tabPanelId={tabPanelId02}
+            title="Tab Item 1"
+          />
+          <ContextTab
+            id={tabId03}
+            tabPanelId={tabPanelId03}
+            title="Tab Item 2"
+          />
+          <ContextTabBarOverflow
+            statusLevel="error"
+            isOpen
+            itemUnread
+            itemUnsaved
+          />
+        </ContextTabBar>
+        <ContextTabPanel id={tabPanelId01} show tabId={tabId01}>
+          Tab Home Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId02} tabId={tabId02}>
+          Tab One Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId03} tabId={tabId03}>
+          Tab Two Content
+        </ContextTabPanel>
+      </div>
+    )
   },
   {
     id: 'object-switcher-active',
     label: 'Object Switcher - Active',
-    element:
+    element: (
       <div className="demo-only">
         <ContextTabBar objectSwitchClassName="slds-is-active">
           <ContextTab
@@ -1204,31 +2814,23 @@ export let states = [
             id={tabId03}
           />
         </ContextTabBar>
-        <ContextTabPanel
-          id={tabPanelId01}
-          tabId={tabId01}
-        >
+        <ContextTabPanel id={tabPanelId01} tabId={tabId01}>
           Tab Home Content
         </ContextTabPanel>
-        <ContextTabPanel
-          id={tabPanelId02}
-          tabId={tabId02}
-        >
+        <ContextTabPanel id={tabPanelId02} tabId={tabId02}>
           Tab One Content
         </ContextTabPanel>
-        <ContextTabPanel
-          id={tabPanelId03}
-          tabId={tabId03}
-        >
+        <ContextTabPanel id={tabPanelId03} tabId={tabId03}>
           Tab Two Content
         </ContextTabPanel>
       </div>
+    )
   },
   {
     id: 'object-switcher-menu-open',
     label: 'Object Switcher - Open',
-    element:
-      <div className="demo-only" style={{height: '11rem'}}>
+    element: (
+      <div className="demo-only" style={{ height: '11rem' }}>
         <ContextTabBar objectSwitchClassName="slds-is-open">
           <ContextTab
             title="Home"
@@ -1247,31 +2849,23 @@ export let states = [
             id={tabId03}
           />
         </ContextTabBar>
-        <ContextTabPanel
-          id={tabPanelId01}
-          tabId={tabId01}
-        >
+        <ContextTabPanel id={tabPanelId01} tabId={tabId01}>
           Tab Home Content
         </ContextTabPanel>
-        <ContextTabPanel
-          id={tabPanelId02}
-          tabId={tabId02}
-        >
+        <ContextTabPanel id={tabPanelId02} tabId={tabId02}>
           Tab One Content
         </ContextTabPanel>
-        <ContextTabPanel
-          id={tabPanelId03}
-          tabId={tabId03}
-        >
+        <ContextTabPanel id={tabPanelId03} tabId={tabId03}>
           Tab Two Content
         </ContextTabPanel>
       </div>
+    )
   },
   {
     id: 'add-tab-dialog-open',
     label: 'Add Tab Dialog - Open',
-    element:
-      <div className="demo-only" style={{height: '8rem'}}>
+    element: (
+      <div className="demo-only" style={{ height: '8rem' }}>
         <ContextTabBar addTabActive>
           <ContextTab
             title="Home"
@@ -1290,24 +2884,78 @@ export let states = [
             id={tabId03}
           />
         </ContextTabBar>
-        <ContextTabPanel
-          id={tabPanelId01}
-          tabId={tabId01}
-        >
+        <ContextTabPanel id={tabPanelId01} tabId={tabId01}>
           Tab Home Content
         </ContextTabPanel>
-        <ContextTabPanel
-          id={tabPanelId02}
-          tabId={tabId02}
-        >
+        <ContextTabPanel id={tabPanelId02} tabId={tabId02}>
           Tab One Content
         </ContextTabPanel>
-        <ContextTabPanel
-          id={tabPanelId03}
-          tabId={tabId03}
-        >
+        <ContextTabPanel id={tabPanelId03} tabId={tabId03}>
           Tab Two Content
         </ContextTabPanel>
       </div>
+    )
+  },
+  {
+    id: 'sub-tabs-open',
+    label: 'Sub Tabs - Open',
+    element: (
+      <div className="demo-only" style={{ height: '8rem' }}>
+        <ContextTabBar>
+          <ContextTab
+            title="Home"
+            symbol="home"
+            tabPanelId={tabPanelId01}
+            id={tabId01}
+            itemActive
+            hasSubtabs
+          />
+          <ContextTab
+            title="Tab Item 1"
+            tabPanelId={tabPanelId02}
+            id={tabId02}
+          />
+          <ContextTab
+            title="Tab Item 2"
+            tabPanelId={tabPanelId03}
+            id={tabId03}
+          />
+        </ContextTabBar>
+        <ContextTabPanel show id={tabPanelId01} tabId={tabId01}>
+          <SubtabsContainer>
+            <SubtabList>
+              <Subtab
+                active
+                title="00071938"
+                tabItemId="subtab-tabitem-01"
+                tabPanelId="subtab-tabpanel-01"
+              />
+              <Subtab
+                title="Chat - Customer"
+                tabItemId="subtab-tabitem-02"
+                tabPanelId="subtab-tabpanel-02"
+                symbol="live_chat"
+              />
+            </SubtabList>
+            <SubtabPanel
+              id="subtab-tabpanel-01"
+              tabId="subtab-tabitem-01"
+              isVisible
+            >
+              Item One Content
+            </SubtabPanel>
+            <SubtabPanel id="subtab-tabpanel-02" tabId="subtab-tabitem-02">
+              Item Two Content
+            </SubtabPanel>
+          </SubtabsContainer>
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId02} tabId={tabId02}>
+          Tab One Content
+        </ContextTabPanel>
+        <ContextTabPanel id={tabPanelId03} tabId={tabId03}>
+          Tab Two Content
+        </ContextTabPanel>
+      </div>
+    )
   }
 ];

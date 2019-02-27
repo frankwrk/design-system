@@ -2,22 +2,23 @@
 // Licensed under BSD 3-Clause - see LICENSE.txt or git.io/sfdc-license
 
 import React from 'react';
-import { Avatar } from '../../avatar/base/example';
 import { StandardIcon } from '../../icons/standard/example';
-import { ListboxPill } from '../../pills/listbox-of-pill-options/example';
+import {
+  ListboxPills,
+  ListboxPillsItem,
+  ListboxPill
+} from '../../pills/listbox-of-pill-options/example';
 import {
   ComboboxContainer,
   Listbox,
   ListboxItem,
   EntityOption
 } from '../base/example';
-import SvgIcon from '../../../shared/svg-icon';
 
 /* -----------------------------------------------------------------------------
     Variables
 ----------------------------------------------------------------------------- */
 
-const listboxSelectionsId = 'listbox-selections-unique-id';
 const listboxOptionId01 = 'listbox-option-unique-id-01';
 const listboxOptionId02 = 'listbox-option-unique-id-02';
 
@@ -25,7 +26,7 @@ const listboxOptionId02 = 'listbox-option-unique-id-02';
     Private
 ----------------------------------------------------------------------------- */
 
-const ListboxDropdown = props =>
+const ListboxDropdown = props => (
   <Listbox className="slds-dropdown slds-dropdown_fluid" vertical>
     <ListboxItem>
       <EntityOption
@@ -42,7 +43,8 @@ const ListboxDropdown = props =>
         entityMeta
       />
     </ListboxItem>
-  </Listbox>;
+  </Listbox>
+);
 
 /* -----------------------------------------------------------------------------
     Exports
@@ -66,7 +68,7 @@ export let states = [
   {
     id: 'focused',
     label: 'Focused',
-    element:
+    element: (
       <div className="demo-only" style={{ height: '10rem' }}>
         <ComboboxContainer
           containerClassName="slds-has-input-focus"
@@ -77,7 +79,8 @@ export let states = [
           isOpen
           listbox={<ListboxDropdown />}
         />
-      </div>,
+      </div>
+    ),
     script: `
       document.getElementById('combobox-unique-id').focus()
     `
@@ -85,7 +88,7 @@ export let states = [
   {
     id: 'open-item-focused',
     label: 'Open - Item Focused',
-    element:
+    element: (
       <div className="demo-only" style={{ height: '10rem' }}>
         <ComboboxContainer
           inputIcon="right"
@@ -97,11 +100,12 @@ export let states = [
           aria-activedescendant={listboxOptionId01}
         />
       </div>
+    )
   },
   {
     id: 'closed-option-selected',
     label: 'Option Selected',
-    element:
+    element: (
       <div className="demo-only" style={{ height: '10rem' }}>
         <ComboboxContainer
           selectedOptionsInline
@@ -116,11 +120,12 @@ export let states = [
           listbox={<ListboxDropdown />}
         />
       </div>
+    )
   },
   {
     id: 'options-selected',
     label: 'Option(s) Selected',
-    element:
+    element: (
       <div className="demo-only" style={{ height: '10rem' }}>
         <ComboboxContainer
           inputIcon="right"
@@ -129,29 +134,34 @@ export let states = [
           autocomplete
           listbox={<ListboxDropdown />}
         >
-          <Listbox aria-label="Selected Options:" inline>
-            <ListboxItem>
+          <ListboxPills>
+            <ListboxPillsItem>
               <ListboxPill label="Acme" tabIndex="0">
-                <Avatar className="slds-avatar_x-small slds-pill__icon_container">
-                  <StandardIcon />
-                </Avatar>
+                <StandardIcon
+                  containerClassName="slds-pill__icon_container"
+                  title="Account"
+                  assistiveText="Account"
+                />
               </ListboxPill>
-            </ListboxItem>
-            <ListboxItem>
+            </ListboxPillsItem>
+            <ListboxPillsItem>
               <ListboxPill label="Salesforce.com, Inc.">
-                <Avatar className="slds-avatar_x-small slds-pill__icon_container">
-                  <StandardIcon />
-                </Avatar>
+                <StandardIcon
+                  containerClassName="slds-pill__icon_container"
+                  title="Account"
+                  assistiveText="Account"
+                />
               </ListboxPill>
-            </ListboxItem>
-          </Listbox>
+            </ListboxPillsItem>
+          </ListboxPills>
         </ComboboxContainer>
       </div>
+    )
   },
   {
     id: 'focused-options-selected',
     label: 'Focused - Option(s) Selected',
-    element:
+    element: (
       <div className="demo-only" style={{ height: '10rem' }}>
         <ComboboxContainer
           isOpen
@@ -162,28 +172,29 @@ export let states = [
           autocomplete
           listbox={<ListboxDropdown />}
         >
-          <Listbox
-            id={listboxSelectionsId}
-            aria-label="Selected Options:"
-            inline
-          >
-            <ListboxItem>
+          <ListboxPills>
+            <ListboxPillsItem>
               <ListboxPill label="Acme" tabIndex="0">
-                <Avatar className="slds-avatar_x-small slds-pill__icon_container">
-                  <StandardIcon />
-                </Avatar>
+                <StandardIcon
+                  containerClassName="slds-pill__icon_container"
+                  title="Account"
+                  assistiveText="Account"
+                />
               </ListboxPill>
-            </ListboxItem>
-            <ListboxItem>
+            </ListboxPillsItem>
+            <ListboxPillsItem>
               <ListboxPill label="Salesforce.com, Inc.">
-                <Avatar className="slds-avatar_x-small slds-pill__icon_container">
-                  <StandardIcon />
-                </Avatar>
+                <StandardIcon
+                  containerClassName="slds-pill__icon_container"
+                  title="Account"
+                  assistiveText="Account"
+                />
               </ListboxPill>
-            </ListboxItem>
-          </Listbox>
+            </ListboxPillsItem>
+          </ListboxPills>
         </ComboboxContainer>
-      </div>,
+      </div>
+    ),
     script: `
       document.getElementById('combobox-unique-id').focus()
     `

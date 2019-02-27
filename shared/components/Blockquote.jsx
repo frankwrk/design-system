@@ -2,13 +2,13 @@
 // Licensed under BSD 3-Clause - see LICENSE.txt or git.io/sfdc-license
 
 import React from 'react';
-import classNames from 'classnames';
+import PropTypes from 'prop-types';
 
 class Blockquote extends React.Component {
   render() {
-    const { type = 'note' } = this.props;
+    const { type } = this.props;
     return (
-      // types include: note (default), ally, warning
+      // types include: note (default), a11y, warning
       <blockquote className={`doc site-blockquote_${type}`}>
         {this.props.header ? (
           <p className="doc lead">{this.props.header}</p>
@@ -18,5 +18,15 @@ class Blockquote extends React.Component {
     );
   }
 }
+
+Blockquote.propTypes = {
+  type: PropTypes.oneOf(['note', 'a11y', 'warning']),
+  header: PropTypes.string,
+  children: PropTypes.node
+};
+
+Blockquote.defaultProps = {
+  type: 'note'
+};
 
 export default Blockquote;

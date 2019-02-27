@@ -1,4 +1,4 @@
-# Salesforce Lightning Design System [![Build Status](https://travis-ci.org/salesforce-ux/design-system.svg?branch=master)](https://travis-ci.org/salesforce-ux/design-system) [![Greenkeeper badge](https://badges.greenkeeper.io/salesforce-ux/design-system-internal.svg?token=daad1067bbfc5d75c4fb2372360b4b0869bed68d4dc370f6b618b1db22b8f052)](https://greenkeeper.io/)
+# Salesforce Lightning Design System [![Build Status](https://travis-ci.org/salesforce-ux/design-system.svg?branch=master)](https://travis-ci.org/salesforce-ux/design-system)
 
 Welcome to the [Salesforce Lightning Design System](https://www.lightningdesignsystem.com) brought to you by [Salesforce UX](https://twitter.com/salesforceux).
 
@@ -58,9 +58,9 @@ In this example we can see that `.slds-button_brand` must be applied to a `.slds
 
 It's important to know that `slds-button_brand` will only be associated to the button component via this `@restrict` chain. Each rule uses its `@restrict` to declare its place in the hierarchy - **it is not the the file that tells us to which component a selector belongs**
 
-For a more complex example, see: https://github.com/salesforce-ux/design-system-internal/blob/summer-17/ui/components/combobox/base/_index.scss
+For a more complex example, see: https://github.com/salesforce-ux/design-system/blob/master/ui/components/combobox/base/_index.scss
 
-While there is a handful of annotations used throughout the codebase, you'll only need to know a few to get started:
+While there are a handful of annotations used throughout the codebase, you'll only need to know a few to get started:
 
 * `@base`: creates a new component
 * `@variant`: a component implementation with corresponding markup
@@ -97,56 +97,70 @@ ui/
 
 All other selectors which are not `@base/@variant/@modifier` are considered child elements of a component.
 
-For more information see the [Full annotation docs](https://github.com/salesforce-ux/design-system-internal/wiki/Documentation-Styleguide)
-
-
-
 ## Tasks
-
-Install [gulp](http://gulpjs.com/) globally:
-
-```bash
-npm install --global gulp
-```
 
 ### `npm start`
 
 Start the Lightning Design System preview app.
 
-### `gulp lint`
+### `npm run gulp -- lint`
 
 Lint the code base for syntax and stylistic errors.
 
 ```bash
 # Lint indentation, Sass, JavaScript files
-gulp lint
+npm run gulp -- lint
 
-# Lint languages independently
-gulp lint:sass
-gulp lint:js
-gulp lint:js:test
-gulp lint:spaces
-gulp lint:html
-gulp lint:vnu (optional: --component "{trees_base_with*,trees_base_deep*}")
+# Lint languagesindependently
+npm run gulp -- lint:sass
+npm run gulp -- lint:javascript
+npm run gulp -- lint:javascript:test
+npm run gulp -- lint:spaces
+npm run gulp -- lint:html
+
+# HTML5 validation
+npm run gulp -- lint:vnu
+# HTML5 validation on comma separated component names
+npm run gulp -- lint:vnu --components button,path,trees
+
+# a11y validation
+npm run gulp -- lint:a11y
+# a11y validation on comma separated component names
+npm run gulp -- lint:a11y --components button,path,trees
+
+# Lint examples using vnu, aXe, slds validation, and HTML5 validation
+npm run gulp -- lint:examples
+```
+
+### Pull Request Checks
+
+To run all the checks a pull request will run in Travis use the following command.
+
+```bash
+# To run every check against all components
+npm run pr-checks
+
+# To run every check but target certain components for slow checks like aXe and vnu
+npm run pr-checks -- --components button,path,trees
 ```
 
 ### Compilation
 
-### `npm run build && npm run dist`
+`npm run build && npm run dist`
 
 Generate the Lightning Design System into the `.dist` directory.
 
-### `gulp styles`
+`npm run gulp -- styles`
 
 Compile Sass to CSS into `.assets/styles`.
 
-### `gulp clean`
+`npm run gulp -- clean`
 
 Delete temporary build and local files.
 
 ### Stats
 
-`npm run stats`: Useful stats about the project's deliverables.
+`npm run gulp -- styles:stats`: Useful stats about the project's deliverables.
 
 ### Tests
 
@@ -158,7 +172,7 @@ Delete temporary build and local files.
 
 The Salesforce Lightning Design System uses `npm` to manage dependencies. Please [install Node.js](https://nodejs.org), and try running `npm install` again.
 
-If Node.js is already installed, make sure you’re running v6 or up.
+If Node.js is already installed, make sure you’re running v8 or up.
 
 ### JavaScript and compilation issues
 

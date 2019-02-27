@@ -6,12 +6,19 @@ import SvgIcon from '../../../shared/svg-icon';
 import classNames from 'classnames';
 import _ from '../../../shared/helpers';
 
-import { Fieldset, Legend, FormElementControl } from '../../radio-group/base/example';
+import { Fieldset, Legend } from '../../radio-group/base/example';
+import { FormElementControl } from '../../form-element';
 import { UtilityIcon } from '../../icons/base/example';
 
 /// ////////////////////////////////////////
 // Partial(s)
 /// ////////////////////////////////////////
+
+export const Option = props => (
+  <span className="slds-text-title" key={_.uniqueId()}>
+    {props.label}
+  </span>
+);
 
 export let VisualPicker = props => {
   const uniqueId = _.uniqueId('visual-picker-');
@@ -22,80 +29,79 @@ export let VisualPicker = props => {
         'slds-visual-picker',
         {
           'slds-visual-picker_large': props.size === 'large',
-          'slds-visual-picker_medium': props.size == 'medium'
-        }
+          'slds-visual-picker_medium': props.size === 'medium'
+        },
+        props.className
       )}
     >
       <input
         type={props.type}
         id={uniqueId}
+        value={uniqueId}
         name="options"
         defaultChecked={props.checked}
         disabled={props.disabled}
       />
       <label htmlFor={uniqueId}>
-        { props.icon
-          ? <span
+        {props.icon ? (
+          <span
             className={classNames(
-              'slds-visual-picker__figure slds-visual-picker__icon slds-align_absolute-center',
-              props.className
+              'slds-visual-picker__figure slds-visual-picker__icon slds-align_absolute-center'
             )}
           >
             <span className="slds-is-selected">
-              <span className="slds-icon_container" title="description of icon when needed">
+              <span className="slds-icon_container">
                 <SvgIcon
                   className="slds-icon slds-icon_large slds-icon-action-check"
                   sprite="action"
                   symbol="check"
                 />
-                <span className="slds-assistive-text">Provide description of icon</span>
               </span>
             </span>
             <span className="slds-is-not-selected">
-              <span className="slds-icon_container" title="description of icon when needed">
+              <span className="slds-icon_container">
                 <SvgIcon
                   className={classNames(
                     'slds-icon slds-icon-' +
-                    props.sprite + '-' +
-                    props.symbol + ' slds-icon_large',
+                      props.sprite +
+                      '-' +
+                      props.symbol +
+                      ' slds-icon_large',
                     { 'slds-icon-text-default': props.sprite === 'utility' }
                   )}
                   sprite={props.sprite || 'action'}
                   symbol={props.symbol}
                 />
-                <span className="slds-assistive-text">Provide description of icon</span>
               </span>
             </span>
           </span>
-        : <span
-          className={classNames(
-              'slds-visual-picker__figure slds-visual-picker__text slds-align_absolute-center',
-              props.className
+        ) : (
+          <span
+            className={classNames(
+              'slds-visual-picker__figure slds-visual-picker__text slds-align_absolute-center'
             )}
           >
             {props.children}
           </span>
-        }
-        { props.label
-          ? <span className="slds-visual-picker__body">
-            {props.label}
-          </span>
-        : null }
-        { !props.icon
-          ? <span className="slds-icon_container slds-visual-picker__text-check">
+        )}
+        {props.label ? (
+          <span className="slds-visual-picker__body">{props.label}</span>
+        ) : null}
+        {!props.icon ? (
+          <span className="slds-icon_container slds-visual-picker__text-check">
             <SvgIcon
               className="slds-icon slds-icon-text-check slds-icon_x-small"
               sprite="utility"
               symbol="check"
             />
           </span>
-        : null }
+        ) : null}
       </label>
     </div>
   );
 };
 
-export let VisualPickerMediaObject = props =>
+export let VisualPickerMediaObject = props => (
   <a
     href="javascript:void(0);"
     className={classNames(
@@ -104,15 +110,13 @@ export let VisualPickerMediaObject = props =>
     )}
   >
     <div className="slds-media__figure slds-media__figure_fixed-width slds-align_absolute-center slds-m-left_xx-small">
-      <UtilityIcon
-        className="slds-icon-text-default"
-        symbol="knowledge_base"
-      />
+      <UtilityIcon className="slds-icon-text-default" symbol="knowledge_base" />
     </div>
     <div className="slds-media__body slds-border_left slds-p-around_small">
       {props.children}
     </div>
-  </a>;
+  </a>
+);
 
 /// ////////////////////////////////////////
 // Export
@@ -127,7 +131,7 @@ export default (
         icon
         sprite="utility"
         symbol="connected_apps"
-        label="Connected App"
+        label={<Option label="Connected App" />}
         size="medium"
       />
       <VisualPicker
@@ -135,7 +139,7 @@ export default (
         icon
         sprite="utility"
         symbol="custom_apps"
-        label="Custom App"
+        label={<Option label="Custom App" />}
         size="medium"
       />
     </FormElementControl>
@@ -146,29 +150,30 @@ export let states = [
   {
     id: 'disabled',
     label: 'Disabled option',
-    element:
+    element: (
       <Fieldset>
         <Legend>Select an app</Legend>
         <FormElementControl>
           <VisualPicker
-            type="checkbox"
+            type="radio"
             icon
             sprite="utility"
             symbol="connected_apps"
-            label="Connected App"
+            label={<Option label="Connected App" />}
             size="medium"
           />
           <VisualPicker
-            type="checkbox"
+            type="radio"
             disabled
             icon
             sprite="utility"
             symbol="custom_apps"
-            label="Custom App"
+            label={<Option label="Custom App" />}
             size="medium"
           />
         </FormElementControl>
       </Fieldset>
+    )
   }
 ];
 
@@ -176,7 +181,7 @@ export let examples = [
   {
     id: 'checkbox-group',
     label: 'Checkbox group',
-    element:
+    element: (
       <Fieldset>
         <Legend>Add the following object(s)</Legend>
         <FormElementControl>
@@ -185,7 +190,7 @@ export let examples = [
             icon
             sprite="standard"
             symbol="account"
-            label="Account"
+            label={<Option label="Account" />}
             size="medium"
           />
           <VisualPicker
@@ -193,7 +198,7 @@ export let examples = [
             icon
             sprite="standard"
             symbol="lead"
-            label="Lead"
+            label={<Option label="Lead" />}
             size="medium"
           />
           <VisualPicker
@@ -201,10 +206,11 @@ export let examples = [
             icon
             sprite="standard"
             symbol="orders"
-            label="Orders"
+            label={<Option label="Orders" />}
             size="medium"
           />
         </FormElementControl>
       </Fieldset>
+    )
   }
 ];

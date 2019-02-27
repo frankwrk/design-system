@@ -3,9 +3,11 @@
 
 import React, { Component } from 'react';
 import classNames from 'classnames';
+import PropTypes from 'prop-types';
+import _ from '../../shared/helpers';
 
 class ProgressRing extends Component {
-  getCoordinatesForPercent (percent) {
+  getCoordinatesForPercent(percent) {
     const pct = percent / 100;
     const x = Math.cos(2 * Math.PI * pct);
     const y = Math.sin(2 * Math.PI * pct);
@@ -13,18 +15,34 @@ class ProgressRing extends Component {
     return { x, y };
   }
 
-  render () {
-    const { percent, isWarning, isComplete, isExpired } = this.props;
-    const { x, y } = this.getCoordinatesForPercent(percent);
-    const isLong = (percent > 50) ? 1 : 0;
+  render() {
+    const {
+      percent,
+      isWarning,
+      isComplete,
+      isExpired,
+      isActiveStep,
+      isFilling,
+      className
+    } = this.props;
+    let adjustedPercent = percent;
+    if (isFilling && !isComplete) {
+      adjustedPercent = 100 - percent;
+    }
+    const { x, y } = this.getCoordinatesForPercent(adjustedPercent);
+    const isLong = percent > 50 ? 1 : 0;
+    const isSweep = isFilling && !isComplete ? 0 : 1;
+    const uniqueId = _.uniqueId('slds-progress-ring-path-');
+
     let stateClass;
 
     if (isWarning) stateClass = 'slds-progress-ring_warning';
     if (isExpired) stateClass = 'slds-progress-ring_expired';
     if (isComplete) stateClass = 'slds-progress-ring_complete';
+    if (isActiveStep) stateClass = 'slds-progress-ring_active-step';
 
     return (
-      <div className={classNames('slds-progress-ring', stateClass)}>
+      <div className={classNames('slds-progress-ring', stateClass, className)}>
         <div
           className="slds-progress-ring__progress"
           role="progressbar"
@@ -35,22 +53,25 @@ class ProgressRing extends Component {
           <svg viewBox="-1 -1 2 2">
             <path
               className="slds-progress-ring__path"
-              id="slds-progress-ring-path"
-              d={`M 1 0 A 1 1 0 ${isLong} 1 ${x} ${y} L 0 0`}
+              id={uniqueId}
+              d={`M 1 0 A 1 1 0 ${isLong} ${isSweep} ${x} ${y} L 0 0`}
             />
           </svg>
         </div>
 
-        <div className="slds-progress-ring__content">
-          {this.props.children}
-        </div>
+        <div className="slds-progress-ring__content">{this.props.children}</div>
       </div>
     );
   }
-};
+}
 
 ProgressRing.propTypes = {
-  percent: React.PropTypes.number
+  percent: PropTypes.number,
+  isWarning: PropTypes.bool,
+  isComplete: PropTypes.bool,
+  isExpired: PropTypes.bool,
+  isActiveStep: PropTypes.bool,
+  isFilling: PropTypes.bool
 };
 
 ProgressRing.defaultProps = {

@@ -2,53 +2,96 @@
 // Licensed under BSD 3-Clause - see LICENSE.txt or git.io/sfdc-license
 
 import React from 'react';
+import PropTypes from 'prop-types';
+import { FormElement, Fieldset } from '../../form-element/';
+import { Input } from '../../input/base/example';
 
-export default (
-<div className="demo-only" style={{width: '440px'}}>
-  <div className="slds-form slds-form_compound">
-    <fieldset className="slds-form-element">
-      <legend className="slds-form-element__label slds-text-title_caps">Location</legend>
-      <div className="slds-form-element__group">
-        <div className="slds-form-element__row">
-          <div className="slds-form-element slds-size_1-of-2">
-            <label className="slds-form-element__label" htmlFor="input-01">Latitude</label>
-            <input id="input-01" className="slds-input" type="text" />
-          </div>
-          <div className="slds-form-element slds-size_1-of-2">
-            <label className="slds-form-element__label" htmlFor="input-02">Longitude</label>
-            <input id="input-02" className="slds-input" type="text" />
-          </div>
-        </div>
-      </div>
-    </fieldset>
+export const CompoundForm = props => {
+  const { hasTooltip, isRequired } = props;
 
-    <fieldset className="slds-form-element">
-      <legend className="slds-form-element__label slds-text-title_caps">Address</legend>
-      <div className="slds-form-element__group">
-        <div className="slds-form-element__row">
-          <div className="slds-form-element slds-size_1-of-1">
-            <label className="slds-form-element__label" htmlFor="input-03">Street</label>
-            <input id="input-03" className="slds-input" type="text" />
+  return (
+    <React.Fragment>
+      <Fieldset
+        hasCompoundFields
+        hasTooltip={hasTooltip}
+        isRequired={isRequired}
+        isDeprecated
+        label="Location"
+      >
+        <div className="slds-form-element__group">
+          <div className="slds-form-element__row">
+            <FormElement
+              formElementClassName="slds-size_1-of-2"
+              labelContent="Latitude"
+              inputId="input-01"
+            >
+              <Input id="input-01" />
+            </FormElement>
+            <FormElement
+              formElementClassName="slds-size_1-of-2"
+              labelContent="Longitude"
+              inputId="input-02"
+            >
+              <Input id="input-02" />
+            </FormElement>
           </div>
         </div>
-        <div className="slds-form-element__row">
-          <div className="slds-form-element slds-size_1-of-2">
-            <label className="slds-form-element__label" htmlFor="input-04">City</label>
-            <input id="input-04" className="slds-input" type="text" />
+      </Fieldset>
+      <Fieldset
+        hasCompoundFields
+        label="Shipping Address"
+        isAddress
+        isDeprecated
+      >
+        <div className="slds-form-element__group">
+          <div className="slds-form-element__row">
+            <FormElement
+              formElementClassName="slds-size_1-of-1"
+              labelContent="Shipping Street"
+              inputId="input-03"
+            >
+              <Input id="input-03" />
+            </FormElement>
           </div>
-          <div className="slds-form-element slds-size_1-of-2">
-            <label className="slds-form-element__label" htmlFor="input-05">State</label>
-            <input id="input-05" className="slds-input" type="text" />
+          <div className="slds-form-element__row">
+            <FormElement
+              formElementClassName="slds-size_4-of-6"
+              labelContent="Shipping City"
+              inputId="input-04"
+            >
+              <Input id="input-04" />
+            </FormElement>
+            <FormElement
+              formElementClassName="slds-size_2-of-6"
+              labelContent="Shipping State/Province"
+              inputId="input-05"
+            >
+              <Input id="input-05" defaultValue="MT" />
+            </FormElement>
+          </div>
+          <div className="slds-form-element__row">
+            <FormElement
+              formElementClassName="slds-size_4-of-6"
+              labelContent="Shipping Zip/Postal Code"
+              inputId="input-06"
+            >
+              <Input id="input-06" />
+            </FormElement>
+            <FormElement
+              formElementClassName="slds-size_2-of-6"
+              labelContent="Shipping Country"
+              inputId="input-07"
+            >
+              <Input id="input-07" defaultValue="Canada" />
+            </FormElement>
           </div>
         </div>
-        <div className="slds-form-element__row">
-          <div className="slds-form-element slds-size_1-of-2">
-            <label className="slds-form-element__label" htmlFor="input-06">ZIP Code</label>
-            <input id="input-06" className="slds-input" type="text" />
-          </div>
-        </div>
-      </div>
-    </fieldset>
-  </div>
-</div>
-);
+      </Fieldset>
+    </React.Fragment>
+  );
+};
+
+CompoundForm.propTypes = {
+  hasTooltip: PropTypes.bool,
+  isRequired: PropTypes.bool
+};

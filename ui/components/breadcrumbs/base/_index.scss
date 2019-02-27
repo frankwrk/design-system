@@ -3,7 +3,6 @@
 
 /**
  * @summary Create breadcrumbs component
- *
  * @name base
  * @selector .slds-breadcrumb
  * @restrict ol
@@ -12,15 +11,14 @@
  */
 .slds-breadcrumb {
   /**
-   * Item of the breadcrumb list
-   *
+   * @summary Item of the breadcrumb list
    * @selector .slds-breadcrumb__item
    * @restrict .slds-breadcrumb li
-   * @required
    */
   .slds-list__item,
   &__item {
     position: relative;
+    font-weight: $font-weight-bold;
 
     &:before {
       content: '\003E';
@@ -47,5 +45,9 @@
         content: '';
       }
     }
+  }
+
+  .slds-dropdown-trigger {
+    margin-right: $spacing-x-small;
   }
 }

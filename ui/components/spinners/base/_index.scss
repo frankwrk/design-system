@@ -30,11 +30,10 @@
 /* stylelint-enable selector-class-pattern */
 
 /**
- * This is the gray base class for spinner
- *
  * @name base
  * @selector .slds-spinner
  * @restrict div
+ * @support dev-ready
  * @variant
  */
 
@@ -42,7 +41,17 @@
   position: absolute;
   top: 50%;
   left: 50%;
+  z-index: ($z-index-spinner + 1);
   transform: translate(-50%, -50%) rotate(90deg);
+}
+
+.slds-spinner_inline {
+  position: relative;
+  top: auto;
+  left: auto;
+  right: auto;
+  bottom: auto;
+  transform: none;
 }
 
 .slds-spinner,
@@ -121,6 +130,40 @@
   animation-delay: 750ms;
 }
 
+/**
+ * @summary Set a delay of 300ms on spinner
+ * @selector .slds-spinner_delayed
+ * @restrict .slds-spinner
+ * @modifier
+ * @group timing
+ */
+.slds-spinner_delayed {
+
+  &:before {
+    animation-delay: 216.66667ms;
+  }
+
+  .slds-spinner__dot-a:before {
+    animation-delay: 383.33333ms;
+  }
+
+  .slds-spinner__dot-b:before {
+    animation-delay: 550ms;
+  }
+
+  &:after {
+    animation-delay: 716.66667ms;
+  }
+
+  .slds-spinner__dot-a:after {
+    animation-delay: 883.33333ms;
+  }
+
+  .slds-spinner__dot-b:after {
+    animation-delay: 1050ms;
+  }
+}
+
 
 /**
  * This creates the blue brand spinner
@@ -140,7 +183,7 @@
   .slds-spinner__dot-b:before,
   .slds-spinner__dot-a:after,
   .slds-spinner__dot-b:after {
-    background-color: $color-brand;
+    background-color: $brand-primary;
   }
 }
 
@@ -149,8 +192,6 @@
  *
  * @selector .slds-spinner_inverse
  * @restrict .slds-spinner
- * @modifier
- * @group color
  */
 
 .slds-spinner_inverse,
@@ -179,6 +220,10 @@
 .slds-spinner_xx-small,
 .slds-spinner--xx-small {
   width: 0.5rem;
+
+  &.slds-spinner_inline {
+    height: 0.5rem;
+  }
 
   &.slds-spinner:before,
   &.slds-spinner:after,
@@ -254,6 +299,10 @@
 .slds-spinner--x-small {
   width: 1rem;
 
+  &.slds-spinner_inline {
+    height: 1rem;
+  }
+
   &.slds-spinner:before,
   &.slds-spinner:after,
   .slds-spinner__dot-a:before,
@@ -327,6 +376,10 @@
 .slds-spinner_small,
 .slds-spinner--small {
   width: 1.25rem;
+
+  &.slds-spinner_inline {
+    height: 1.25rem;
+  }
 
   &.slds-spinner:before,
   &.slds-spinner:after,
@@ -402,6 +455,10 @@
 .slds-spinner--medium {
   width: 2rem;
 
+  &.slds-spinner_inline {
+    height: 2rem;
+  }
+
   &.slds-spinner:before,
   &.slds-spinner:after,
   .slds-spinner__dot-a:before,
@@ -475,6 +532,10 @@
 .slds-spinner_large,
 .slds-spinner--large {
   width: 2.75rem;
+
+  &.slds-spinner_inline {
+    height: 2.75rem;
+  }
 
   &.slds-spinner:before,
   &.slds-spinner:after,

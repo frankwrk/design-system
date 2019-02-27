@@ -5,6 +5,7 @@
  * @name panels
  * @selector .slds-popover_panel
  * @restrict .slds-popover
+ * @support dev-ready
  * @variant
  */
 .slds-popover_panel,
@@ -54,4 +55,13 @@
       top: ($spacing-large + $spacing-small);
     }
   }
+}
+
+/**
+ * @name Label for panels
+ * @selector .slds-popover_panel__label
+ * @restrict .slds-popover_panel p
+ */
+.slds-popover_panel__label {
+  @include text-title;
 }

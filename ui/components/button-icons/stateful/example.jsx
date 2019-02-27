@@ -2,34 +2,97 @@
 // Licensed under BSD 3-Clause - see LICENSE.txt or git.io/sfdc-license
 
 import React from 'react';
-import { ButtonIcon } from '../base/example';
+import PropTypes from 'prop-types';
 
-/// ////////////////////////////////////////
-// Export
-/// ////////////////////////////////////////
+import ButtonIcon from '../';
 
-export default (
+export const ButtonIconStateful = props => (
   <ButtonIcon
-    className="slds-button_icon-border-filled"
+    aria-pressed={props['aria-pressed']}
+    assistiveText={props.assistiveText}
+    disabled={props.disabled}
+    selected={props.selected}
+    symbol={props.symbol}
+    theme={props.theme}
+    title={props.title}
+  />
+);
+
+ButtonIconStateful.propTypes = {
+  title: PropTypes.string.isRequired,
+  symbol: PropTypes.string.isRequired,
+  assistiveText: PropTypes.string.isRequired,
+  'aria-pressed': PropTypes.string,
+  disabled: PropTypes.bool,
+  selected: PropTypes.bool,
+  theme: PropTypes.string
+};
+
+ButtonIconStateful.defaultProps = {
+  'aria-pressed': false,
+  disabled: false,
+  selected: false,
+  theme: null
+};
+
+/**
+ * Default
+ */
+export default (
+  <ButtonIconStateful
     aria-pressed="false"
-    symbol="like"
     assistiveText="Like"
+    symbol="like"
+    theme="neutral"
     title="Like"
   />
 );
 
-export let states = [
+/**
+ * States
+ */
+export const states = [
   {
     id: 'button-icon-stateful-selected',
     label: 'Selected',
-    element:
-      <ButtonIcon
-        className="slds-button_icon-border-filled"
+    element: (
+      <ButtonIconStateful
+        title="Like"
+        symbol="like"
+        theme="neutral"
+        assistiveText="Like"
         aria-pressed="true"
         selected
-        symbol="like"
-        assistiveText="Like"
-        title="Like"
       />
+    )
+  },
+  {
+    id: 'button-icon-stateful-disabled',
+    label: 'Disabled',
+    element: (
+      <ButtonIconStateful
+        title="Pin"
+        symbol="pin"
+        theme="neutral"
+        assistiveText="Pin"
+        aria-pressed="false"
+        disabled
+      />
+    )
+  },
+  {
+    id: 'button-icon-stateful-selected-disabled',
+    label: 'Selected Disabled',
+    element: (
+      <ButtonIconStateful
+        title="Pin"
+        symbol="pinned"
+        theme="neutral"
+        assistiveText="Pin"
+        aria-pressed="true"
+        selected
+        disabled
+      />
+    )
   }
 ];

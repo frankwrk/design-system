@@ -2,9 +2,7 @@
 // Licensed under BSD 3-Clause - see LICENSE.txt or git.io/sfdc-license
 
 import React from 'react';
-import SvgIcon from '../../../shared/svg-icon';
 import { TileMedia } from '../base/example';
-import classNames from 'classnames';
 
 const avatar = (
   <span className="slds-avatar slds-avatar_circle slds-avatar_medium">
@@ -24,17 +22,19 @@ export let states = [
   {
     id: 'tile-avatar',
     label: 'Default',
-    element:
+    element: (
       <div className="demo-only" style={{ width: '30rem' }}>
         <TileMedia title="Lexee L. Jackson" media={avatar} />
       </div>
+    )
   },
   {
     id: 'tile-avatar-with-action',
     label: 'With actions',
-    element:
+    element: (
       <div className="demo-only" style={{ width: '30rem' }}>
         <TileMedia title="Lexee L. Jackson" media={avatar} actions />
       </div>
+    )
   }
 ];

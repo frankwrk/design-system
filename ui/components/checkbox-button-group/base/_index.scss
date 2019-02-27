@@ -7,7 +7,7 @@
  * @name base
  * @selector .slds-checkbox_button-group
  * @restrict div, span
- * @required
+ * @support dev-ready
  * @variant
  */
 .slds-checkbox_button-group,
@@ -19,11 +19,9 @@
 }
 
 /**
- * Initializes checkbox inside a button group
- *
+ * @summary Initializes checkbox inside a button group
  * @selector .slds-checkbox_button
  * @restrict .slds-checkbox_button-group span
- * @required
  */
 .slds-checkbox_button,
 .slds-checkbox--button {
@@ -33,11 +31,9 @@
   background-clip: padding-box;
 
   /**
-   * Creates a custom styled checkbox
-   *
+   * @summary Creates a custom styled checkbox
    * @selector .slds-checkbox_faux
-   * @restrict .slds-checkbox__label span, .slds-checkbox_button__label span
-   * @required
+   * @restrict .slds-checkbox_button-group span
    */
   .slds-checkbox_faux,
   .slds-checkbox--faux {
@@ -57,11 +53,9 @@
   }
 
   /**
-   * Creates a custom styled checkbox
-   *
+   * @summary Creates a custom styled checkbox
    * @selector .slds-checkbox_button__label
    * @restrict .slds-checkbox_button label
-   * @required
    */
   .slds-checkbox_button__label .slds-checkbox_faux,
   .slds-checkbox--button__label .slds-checkbox--faux,
@@ -96,7 +90,6 @@
     border-radius: 0 $border-radius-medium $border-radius-medium 0;
   }
 
-  // Hide input and style checkbox--faux
   [type="checkbox"] {
     @include square(1px);
     border: 0;
@@ -113,13 +106,13 @@
     &:checked ~ .slds-checkbox--faux,
     &:checked + .slds-checkbox_button__label,
     &:checked + .slds-checkbox--button__label {
-      background-color: $color-background-button-brand;
+      background-color: $brand-accessible;
       color: $color-text-button-brand;
 
       // Need something stronger when the input is checked
       &:hover,
       &:focus {
-        background-color: $color-background-button-brand;
+        background-color: $brand-accessible-active;
       }
     }
 
@@ -152,8 +145,8 @@
     &[disabled]:checked ~ .slds-checkbox--faux,
     &[disabled]:checked + .slds-checkbox_button__label,
     &[disabled]:checked + .slds-checkbox--button__label {
-      background-color: $color-background-button-default-disabled;
-      color: $color-text-button-default-disabled;
+      background-color: $brand-disabled;
+      color: $color-text-button-brand-disabled;
       cursor: default;
     }
   }

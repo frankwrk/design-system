@@ -1,22 +1,55 @@
-<!--
-NOTE: Please make site changes for summer-17/winter-18 directly on the new site's repository.
-      Pull requests that don't follow this rule will get closed.
--->
+Please refer to our [Commit Guidelines](https://github.com/salesforce-ux/design-system-internal/blob/spring-19/CONTRIBUTING.md#commit-guidelines) for documenting changes.
 
-Changes proposed in this pull request:
+**Changes proposed in this pull request:**
 
-* 
-* 
-* 
+*
 
-### Reviewer, please refer to this "definition of done" checklist:
+### Acceptance Criteria
+
+#### General
 
 * [ ] Tested on **desktop** (see [supported browsers](https://www.lightningdesignsystem.com/faq/#what-browsers-are-supported))
 * [ ] Tested on **mobile** (for responsive or mobile-specific features)
 * [ ] Confirm **Accessibility**
-* [ ] Documentation is up to date
-* [ ] Release notes mention the changes
 
-⚠️ Once this pull request is merged, please merge the code into other development branches:
-[Merge branch 'spring-17' into summer-17](http://bit.ly/2fjT4LY)
-[Merge branch 'summer-17' into winter-18](http://bit.ly/2mbKAbV)
+#### Feature
+
+* [ ] Reference User Story work item number in description
+* [ ] Add usage examples
+* [ ] Add documentation for new usage guidelines
+* [ ] Add tests to test new components and implementation usage
+* [ ] Add component specific Release notes mentioning the changes
+* [ ] If feature requires the implementor to move to a new version, please provide a migration description in the component specific Release notes
+
+#### Fix
+
+* [ ] Reference Bug work item number in description
+* [ ] Add tests to ensure bug does not happen again
+* [ ] Add component specific Release notes mentioning the changes
+
+#### Design Changes
+
+* [ ] Add component specific Release notes mentioning the changes
+* [ ] If change requires the implementor to move to a new version, please provide a migration description in the component specific Release notes
+
+#### Deprecated
+
+* [ ] If css selector is being deprecated, apply the `@deprecate` annotation to selector comment block
+
+
+  > ```css
+  >  /**
+  >   * @selector .slds-bar
+  >   * @deprecated
+  >   */
+  >  .slds-bar { ... }
+  > ```
+
+* [ ] If css selector is being deprecated, move deprecated code to `_deprecate.scss` file and wrap in `deprecate` mixin.
+* [ ] Provide `deprecate` mixin with version code will become deprecated and a brief description for what the code is being deprecated for.
+
+  > ```css
+  >  @include deprecate('4.0.0', 'Please use slds-foo instead of slds-bar') {
+  >     .slds-bar { ... }
+  >  }
+  > ```

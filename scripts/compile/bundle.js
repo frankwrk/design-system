@@ -2,17 +2,18 @@
 // Licensed under BSD 3-Clause - see LICENSE.txt or git.io/sfdc-license
 
 const Task = require('data.task');
-const I = require('immutable-ext');
-const webpack = require('webpack');
 const fs = require('fs');
+const I = require('immutable-ext');
+const _ = require('lodash');
 const path = require('path');
-const paths = require('../helpers/paths');
+const webpack = require('webpack');
 
 const toTask = require('futurize').futurize(Task);
 const writeFile = toTask(fs.writeFile);
 
-const { FOLDERNAME, entry, manifest } = require('./entry');
-const Minify = require('./minify');
+const paths = require('../helpers/paths');
+
+const { FOLDERNAME, chunkedEntry, manifest } = require('./helpers');
 const webpackConfig = require('./webpack.config');
 
 const externals = {
@@ -22,62 +23,64 @@ const externals = {
 };
 
 // chunked :: Task Error I.Map
-const chunked = prefix =>
+const createChunkedConfig = prefix =>
   webpackConfig
     .set('externals', externals)
     .setIn(['output', 'library'], ['SLDS', '[name]'])
     .setIn(['output', 'filename'], '[name]') // [name] will already have ".js" appended
     .setIn(
       ['output', 'jsonpFunction'],
-      `webpackJsonpSLDS_${prefix.replace(new RegExp(path.sep, 'g'), '_')}`
+      `webpackJsonpSLDS_${prefix.replace(
+        new RegExp(_.escapeRegExp(path.sep), 'g'),
+        '_'
+      )}`
     )
-    .set(
-      'plugins',
-      I.List.of(
-        new webpack.optimize.CommonsChunkPlugin({
-          name: `${prefix}/common.js`,
-          minChunks: 2
-        })
-      )
-    );
+    .setIn(['optimization', 'splitChunks'], {
+      chunks: 'all',
+      name: `${prefix}/common.js`,
+      minChunks: 2
+    });
 
 // chunkedConfigs :: Task Error (I.List WebpackCfg)
-const chunkedConfigs = entry.map(entryMap =>
-  entryMap.map((entry, prefix) => chunked(prefix).set('entry', entry)).toList()
+const chunkedConfigs = chunkedEntry.map(entryMap =>
+  entryMap
+    .map((entry, prefix) => createChunkedConfig(prefix).set('entry', entry))
+    .toList()
 );
 
 // umd :: WebpackCfg
 const umd = webpackConfig
-  .set('entry', './scripts/compile/slds.js')
+  .set('entry', './scripts/compile/entry.slds.js')
   .setIn(['output', 'library'], 'SLDS')
   .setIn(['output', 'libraryTarget'], 'umd')
   .setIn(['output', 'filename'], `${FOLDERNAME}/slds.umd.js`);
 
 // Task Error (List WebpackCfg)
-const configs = chunkedConfigs.map(cfgs =>
-  cfgs
+// const configs = Task.of(I.List.of(umd));
+const configs = chunkedConfigs.map(configs =>
+  configs
     .unshift(umd)
     .filter(
-      c =>
-        I.Map.isMap(c.get('entry')) ? c.get('entry').count() : c.has('entry')
+      config =>
+        I.Map.isMap(config.get('entry'))
+          ? config.get('entry').count()
+          : config.has('entry')
     )
 );
 
 // watch :: (I.Map, Path, WatchOptions) -> Task Error Stats
 const watch = (options = {}) =>
-  configs.chain(
-    cfgs =>
-      new Task((reject, resolve) =>
-        webpack(cfgs.toJS()).watch(options, (err, stats) => {
-          if (err) return reject(err);
-          if (stats.hasErrors()) {
-            const errors = stats.toJson().errors.join('\n\n');
-            console.log(errors);
-          }
-          resolve(stats);
-        })
-      )
-  );
+  new Task((reject, resolve) => {
+    const config = umd.set('mode', 'development').toJS();
+    webpack(config).watch(options, (err, stats) => {
+      if (err) return reject(err);
+      if (stats.hasErrors()) {
+        const errors = stats.toJson().errors.join('\n\n');
+        console.log(errors);
+      }
+      resolve(stats);
+    });
+  });
 
 // compile :: (I.Map, Path) -> Task Error Stats
 const compile = configs =>
@@ -105,26 +108,18 @@ const compile = configs =>
     });
   });
 
-const compileLibs = () =>
-  configs
-    .map(cfgs =>
-      cfgs.map(cfg =>
-        cfg.update('plugins', plugins =>
-          (plugins || I.List()).push(new Minify())
-        )
-      )
-    )
-    .chain(compile);
+const compileLibrary = () => configs.chain(compile);
 
-const writeManifest = () =>
+const writeManifest = stats =>
   manifest
     .map(m => JSON.stringify(m, null, 2))
     .chain(contents =>
       writeFile(path.join(paths.dist, 'manifest.json'), contents)
-    );
+    )
+    .map(() => stats);
 
-// createLibrary :: Path -> Task Error (List Stats)
-const createLibrary = () => compileLibs().chain(writeManifest);
+// createLibrary :: () -> Task Error (List Stats)
+const createLibrary = () => compileLibrary().chain(writeManifest);
 
 module.exports = {
   configs,

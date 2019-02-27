@@ -2,9 +2,11 @@
 // Licensed under BSD 3-Clause - see LICENSE.txt or git.io/sfdc-license
 
 import React from 'react';
-import { NavVertical, NavVerticalItem, NavVerticalSection }
-  from '../base/example';
-import classNames from 'classnames';
+import {
+  NavVertical,
+  NavVerticalItem,
+  NavVerticalSection
+} from '../list/example';
 
 const sectionId01 = 'entity-header';
 const sectionId02 = 'folder-header';
@@ -14,7 +16,7 @@ export let states = [
   {
     id: 'collapsed',
     label: 'Collapsed',
-    element:
+    element: (
       <div className="demo-only" style={{ width: '320px' }}>
         <NavVertical>
           <NavVerticalSection id={sectionId01} title="Reports">
@@ -42,11 +44,7 @@ export let states = [
               Shared with Me
             </NavVerticalItem>
           </NavVerticalSection>
-          <NavVerticalSection
-            title="Folders"
-            collapsed
-            listId={sectionId03}
-          >
+          <NavVerticalSection title="Folders" collapsed listId={sectionId03}>
             <NavVerticalItem aria-describedby={sectionId02}>
               Overflow Item One
             </NavVerticalItem>
@@ -59,11 +57,12 @@ export let states = [
           </NavVerticalSection>
         </NavVertical>
       </div>
+    )
   },
   {
     id: 'expanded',
     label: 'Expanded',
-    element:
+    element: (
       <div className="demo-only" style={{ width: '320px' }}>
         <NavVertical>
           <NavVerticalSection id={sectionId01} title="Reports">
@@ -91,11 +90,7 @@ export let states = [
               Shared with Me
             </NavVerticalItem>
           </NavVerticalSection>
-          <NavVerticalSection
-            title="Folders"
-            expanded
-            listId={sectionId03}
-          >
+          <NavVerticalSection title="Folders" expanded listId={sectionId03}>
             <NavVerticalItem aria-describedby={sectionId02}>
               Overflow Item One
             </NavVerticalItem>
@@ -108,5 +103,6 @@ export let states = [
           </NavVerticalSection>
         </NavVertical>
       </div>
+    )
   }
 ];

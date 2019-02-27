@@ -1,7 +1,7 @@
-const minimist = require('minimist');
+const args = require('yargs').argv;
 const packageJSON = require('../package.json');
 const fs = require('fs');
-const compare = require('@salesforce-ux/instant-vrt');
+const compare = require('@salesforce-ux/instant-vrt/compare');
 const path = require('path');
 const request = require('request');
 const Task = require('data.task');
@@ -9,7 +9,7 @@ const Task = require('data.task');
 // the indexName is really just for local dev
 const branch = process.env.TRAVIS_BRANCH || packageJSON.config.search.indexName;
 
-const snapPath = minimist(process.argv.slice(2)).path;
+const snapPath = args.path;
 
 const snapUrl = branch =>
   `${process.env.VRT_HOST}/snapshot/${branch}?useToken=true`;
@@ -41,14 +41,22 @@ const readFile = filepath =>
     )
   );
 
-const getSnap = () => readFile(snapPath);
+const getSnap = () => readFile(snapPath).map(JSON.parse);
 
 const getRef = () =>
   Task.of(path.resolve(__dirname, 'snap.json'))
     .chain(filepath => statOrDownload(snapUrl(branch), filepath))
-    .chain(readFile);
+    .chain(readFile)
+    .map(JSON.parse);
 
-Task.of(refContents => snapContents => compare(refContents, snapContents))
+Task.of(snapContents => refContents =>
+  Object.keys(snapContents).map(
+    k =>
+      refContents[k]
+        ? Object.assign({ file: k }, compare(refContents[k], snapContents[k]))
+        : { file: k, passed: false } // if it doesn't exist, fail it so we can lint
+  )
+)
   .ap(getSnap())
   .ap(getRef())
   .map(report =>

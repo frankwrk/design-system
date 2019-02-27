@@ -7,7 +7,7 @@
  * @name base
  * @selector .slds-table
  * @restrict table
- * @required
+ * @support dev-ready
  * @variant
  */
 .slds-table {
@@ -36,6 +36,8 @@
     background-color: $table-color-background-header;
     color: $table-color-text-header;
     padding: $table-cell-spacing;
+    font-weight: $font-weight-bold;
+    line-height: normal;
   }
 
   /**
@@ -69,6 +71,10 @@
     > td,
     > th {
       background-color: $color-background-row-selected;
+    }
+
+    a {
+      color: $color-text-link-primary-active;
     }
   }
 
@@ -144,12 +150,16 @@
   th.slds-has-focus,
   [role="gridcell"]:focus,
   [role="gridcell"].slds-has-focus {
-    box-shadow: $color-border-selection 0 0 0 1px inset;
+    box-shadow: $brand-accessible 0 0 0 1px inset;
   }
 
   th:active,
   [role="gridcell"]:active {
     box-shadow: none;
+  }
+
+  .slds-radio [type='radio'] + .slds-radio__label .slds-radio_faux {
+    margin-right: 0;
   }
 }
 
@@ -262,6 +272,7 @@
  * @name advanced
  * @selector .slds-table_fixed-layout
  * @restrict .slds-table
+ * @support dev-ready
  * @variant
  */
 .slds-table_fixed-layout,
@@ -302,7 +313,7 @@
 }
 
 /**
- * If the column is sortable than lets handle the actionable
+ * If the column is sortable, then let's handle the actionable
  * region of the `<th>` cell
  *
  * @selector .slds-is-sortable
@@ -318,9 +329,9 @@
     background-color: $table-color-background-header-hover;
     color: currentColor;
 
-    .slds-icon {
+    .slds-is-sortable__icon {
       display: inline-block;
-      fill: $color-text-link;
+      fill: $brand-accessible;
     }
   }
 }
@@ -329,7 +340,7 @@
  * Actionable area inside th
  *
  * @selector .slds-th__action
- * @restrict .slds-table_fixed-layout th div, .slds-table_fixed-layout th a
+ * @restrict .slds-table th div, .slds-table th a
  */
 .slds-th__action {
   display: flex;
@@ -353,6 +364,30 @@
   &--form {
     display: inline-flex; // Allows for alignment of form element, such as a checkbox
   }
+
+  /**
+   * Allows for alignment of button, such as a menu
+   *
+   * @selector .slds-th__action-button
+   * @restrict .slds-has-button-menu .slds-button_icon
+   */
+  &-button {
+    position: absolute;
+    top: 50%;
+    right: $spacing-xx-small;
+    transform: translateY(-50%);
+  }
+}
+
+/**
+ * If the column header has a menu button, then let's add right padding to the
+ * header to preserve truncation
+ *
+ * @selector .slds-has-button-menu
+ * @restrict .slds-table_fixed-layout th
+ */
+.slds-has-button-menu .slds-th__action {
+  padding-right: $spacing-large;
 }
 
 /**
@@ -391,6 +426,38 @@
   &--asc .slds-is-sortable__icon {
     transform: rotate(180deg);
   }
+}
+
+$max-column-support: 15;
+
+@for $i from 1 through $max-column-support {
+
+  .slds-table_column-#{$i}-wrap tbody tr > *:nth-child(#{$i}) .slds-truncate {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    hyphens: none;
+    white-space: normal;
+  }
+}
+
+[class*="slds-table_column-"] tr td .slds-truncate {
+  overflow: hidden;
+  position: relative;
+  max-height: 3.25rem;
+
+  &:after {
+    content: '';
+    position: absolute;
+    top: 2.25rem;
+    bottom: 0;
+    right: 0;
+    width: 50%;
+    background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 69%);
+  }
+}
+
+[class*="slds-table_column-"] tr:hover td .slds-truncate:after {
+  background: linear-gradient(to right, rgba(250, 250, 249, 0) 0%, rgba(250, 250, 249, 1) 69%);
 }
 
 /**

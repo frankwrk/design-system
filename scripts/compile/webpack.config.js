@@ -3,19 +3,26 @@
 
 const I = require('immutable');
 const path = require('path');
+const webpack = require('webpack');
+
 const paths = require('../helpers/paths');
 
+const disableThreadLoaderOnTravis = use =>
+  process.env.TRAVIS ? use.loader !== 'thread-loader' : true;
+
 module.exports = I.fromJS({
-  output: {
-    path: paths.dist,
-    publicPath: '/assets/scripts/bundle/'
-  },
+  mode: 'production',
   module: {
     rules: [
       {
         test: /\.jsx?$/,
-        exclude: /node_modules/,
         use: [
+          {
+            loader: 'thread-loader',
+            options: {
+              workerNodeArgs: ['--max-old-space-size=1024']
+            }
+          },
           {
             loader: 'babel-loader',
             options: {
@@ -24,7 +31,7 @@ module.exports = I.fromJS({
               plugins: ['transform-object-rest-spread']
             }
           }
-        ]
+        ].filter(disableThreadLoaderOnTravis)
       },
       {
         test: /\.scss$/,
@@ -38,30 +45,40 @@ module.exports = I.fromJS({
       },
       {
         test: /\.mdx$/,
-        exclude: /node_modules/,
         use: [
           {
-            loader: 'babel-loader'
-          },
-          {
-            loader: './scripts/compile/mdx-post-loader'
-          },
-          {
-            loader: 'mdx-loader',
+            loader: 'thread-loader',
             options: {
-              unwrapped: false
+              workerNodeArgs: ['--max-old-space-size=1024']
             }
+          },
+          {
+            loader: 'babel-loader',
+            options: {
+              babelrc: false,
+              presets: ['es2015', 'react'],
+              plugins: ['transform-object-rest-spread']
+            }
+          },
+          {
+            loader: path.resolve(paths.root, 'scripts/compile/mdx-loader.js')
           }
-        ]
+        ].filter(disableThreadLoaderOnTravis)
       }
     ]
   },
+  optimization: {},
+  output: {
+    globalObject: 'this',
+    path: paths.dist,
+    publicPath: '/assets/scripts/bundle/'
+  },
+  plugins: [],
   resolve: {
     extensions: ['.js', '.jsx'],
     alias: {
       // This is intentional. A detailed error will be thrown (see bundle.js)
       lodash: ''
     }
-  },
-  plugins: []
+  }
 });

@@ -7,6 +7,7 @@
  * @name base
  * @selector .slds-datepicker
  * @restrict div
+ * @support dev-ready
  * @variant
  */
 .slds-datepicker {
@@ -54,15 +55,18 @@
     &:hover:not(.slds-disabled-text) > .slds-day,
     &:focus:not(.slds-disabled-text) > .slds-day,
     &.slds-is-today > .slds-day {
-      background: $color-background-row-hover;
       cursor: pointer;
+    }
+
+    &.slds-is-today > .slds-day {
+      background-color: $color-background-row-selected;
     }
 
     &:focus {
       outline: 0;
 
       > .slds-day {
-        box-shadow: $color-border-brand-dark 0 0 0 1px inset;
+        box-shadow: $brand-accessible 0 0 0 1px inset;
       }
     }
 
@@ -72,15 +76,15 @@
      * @selector .slds-is-selected
      * @restrict .slds-datepicker td
      */
-    &.slds-is-selected:not(.slds-is-today) > .slds-day {
-      background: $color-background-button-brand-hover;
-      color: $color-text-button-brand-hover;
+    &.slds-is-selected > .slds-day {
+      background: $brand-accessible;
+      color: $color-text-brand-primary;
     }
 
     &.slds-is-selected:focus > .slds-day {
-      background: $color-background-row-hover;
-      box-shadow: $color-border-brand-dark 0 0 3px;
-      color: currentColor;
+      background: $brand-accessible-active;
+      box-shadow: $brand-accessible-active 0 0 3px;
+      color: $color-text-brand-primary;
     }
   }
 
@@ -114,6 +118,11 @@
   &__month {
     font-size: $font-size-small;
   }
+}
+
+.slds-has-error .slds-datepicker__filter .slds-select {
+  border: $border-width-thin solid $color-border-input;
+  box-shadow: none;
 }
 
 /**

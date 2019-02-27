@@ -8,6 +8,7 @@
  * @selector .slds-icon_container
  * @restrict span, div
  * @notes Used when an icon with a background color is accompanied by `.slds-assistive-text` and also receives a `background-color` class
+ * @support dev-ready
  * @variant
  */
 .slds-icon_container,
@@ -15,6 +16,7 @@
   @include deprecate('4.0.0', 'slds-icon__container is deprecated. Use slds-icon_container instead.');
   display: inline-block;
   border-radius: $border-radius-medium;
+  line-height: $line-height-reset;
 
   /**
    * @summary Circle container for icons
@@ -97,6 +99,12 @@ $bg-standard-map: map-merge($task2-monkey-patch, $bg-standard-map);
   }
 }
 
+/**
+ * @selector .slds-icon_xx-small
+ * @restrict .slds-icon
+ * @modifier
+ * @group size
+ */
 .slds-icon_xx-small,
 .slds-icon--xx-small {
   @include square($square-icon-xx-small-content);
@@ -105,7 +113,7 @@ $bg-standard-map: map-merge($task2-monkey-patch, $bg-standard-map);
 
 /**
  * @selector .slds-icon_x-small
- * @restrict .slds-icon
+ * @restrict .slds-icon, .slds-button__icon
  * @modifier
  * @group size
  */
@@ -114,6 +122,7 @@ $bg-standard-map: map-merge($task2-monkey-patch, $bg-standard-map);
   @include square($square-icon-utility-small);
   line-height: $line-height-reset;
 }
+
 
 /**
  * @selector .slds-icon_small
@@ -139,6 +148,8 @@ $bg-standard-map: map-merge($task2-monkey-patch, $bg-standard-map);
 }
 
 /**
+ * @summary Changes the icon fill color to match the default state
+ *
  * @selector .slds-icon-text-default
  * @restrict .slds-icon
  * @modifier
@@ -149,6 +160,8 @@ $bg-standard-map: map-merge($task2-monkey-patch, $bg-standard-map);
 }
 
 /**
+ * @summary Changes the icon fill color to match the warning state
+ *
  * @selector .slds-icon-text-warning
  * @restrict .slds-icon
  * @modifier
@@ -159,6 +172,20 @@ $bg-standard-map: map-merge($task2-monkey-patch, $bg-standard-map);
 }
 
 /**
+ * @summary Changes the icon fill color to match the success state
+ *
+ * @selector .slds-icon-text-success
+ * @restrict .slds-icon
+ * @modifier
+ * @group color
+ */
+.slds-icon-text-success {
+  fill: $color-text-success;
+}
+
+/**
+ * @summary Changes the icon fill color to match the error state
+ *
  * @selector .slds-icon-text-error
  * @restrict .slds-icon
  * @modifier
@@ -176,4 +203,17 @@ $bg-standard-map: map-merge($task2-monkey-patch, $bg-standard-map);
  */
 .slds-icon-text-light {
   fill: $color-text-input-icon;
+}
+
+/**
+ * @selector .slds-current-color
+ * @restrict *
+ * @modifier
+ * @group color
+ */
+.slds-current-color {
+
+  .slds-icon {
+    fill: currentColor;
+  }
 }

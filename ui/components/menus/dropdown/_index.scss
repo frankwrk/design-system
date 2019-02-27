@@ -1,18 +1,15 @@
 // Copyright (c) 2015-present, salesforce.com, inc. All rights reserved
 // Licensed under BSD 3-Clause - see LICENSE.txt or git.io/sfdc-license
 
+@import 'deprecate';
+
 /**
- * Icons can be included on either the right, left, or both sides of an option.
- *
- * When using icons (e.g. checkmarks) to indicate selected state:
- * - all selectable items should contain an icon
- * - icons of non-selected are hidden by default
- * - a selected item reveals its icon when `aria-checked="true"` is applied to its `menuitemcheckbox` or `menuitemradio` child (e.g. `<a role="menuitemcheckbox" aria-checked="true" ...>`).
  *
  * @summary Initializes a trigger element around the dropdown
  * @name dropdown
  * @selector .slds-dropdown-trigger
  * @restrict div, span, li
+ * @support dev-ready
  * @variant
  */
 .slds-dropdown-trigger {
@@ -26,26 +23,6 @@
   .slds-dropdown_bottom,
   .slds-dropdown--bottom {
     top: auto;
-  }
-
-  @include deprecate('4.0.0', 'Use .slds-dropdown-trigger--hover instead') {
-
-    .slds-dropdown {
-      visibility: hidden;
-      opacity: 0;
-      transition: opacity $duration-quickly linear, visibility $duration-quickly linear;
-    }
-
-    &:hover,
-    &:focus {
-      outline: 0;
-
-      .slds-dropdown {
-        visibility: visible;
-        opacity: 1;
-        transition: opacity $duration-quickly linear, visibility $duration-quickly linear;
-      }
-    }
   }
 
   /**
@@ -82,7 +59,8 @@
   &_click,
   &--click {
 
-    .slds-dropdown {
+    .slds-dropdown,
+    &:hover .slds-dropdown {
       display: none;
     }
 
@@ -119,7 +97,7 @@
 /**
  * @summary Initializes dropdown
  * @selector .slds-dropdown
- * @restrict .slds-dropdown-trigger div, .slds-dropdown-trigger ul
+ * @restrict .slds-dropdown-trigger div, .slds-dropdown-trigger ul, .slds-docked-composer_overflow div
  * @notes Applies positioning and container styles, by default, dropdown appears below and center of target
  */
 .slds-dropdown {
@@ -144,7 +122,7 @@
    * @selector .slds-dropdown_left
    * @restrict .slds-dropdown
    * @modifier
-   * @group position
+   * @group menu position
    */
   &_left,
   &--left {
@@ -157,7 +135,7 @@
    * @selector .slds-dropdown_right
    * @restrict .slds-dropdown
    * @modifier
-   * @group position
+   * @group menu position
    */
   &_right,
   &--right {
@@ -171,7 +149,7 @@
    * @selector .slds-dropdown_bottom
    * @restrict .slds-dropdown
    * @modifier
-   * @group position
+   * @group menu position
    */
   &_bottom,
   &--bottom {
@@ -187,7 +165,7 @@
    */
   &_xx-small,
   &--xx-small {
-    min-width: $size-x-small;
+    min-width: $size-xx-small;
   }
 
   /**
@@ -366,6 +344,7 @@
   mark {
     font-weight: $font-weight-bold;
     background-color: transparent;
+    color: inherit;
   }
 
   // Adjust position of dropdown with top nubbin
@@ -380,55 +359,13 @@
     margin-bottom: ($square-tooltip-nubbin / 2);
   }
 
-  @include deprecate('4.0.0') {
-
-    &_nubbin-top,
-    &--nubbin-top {
-      @include nubbin(top, 'before');
-      @include nubbin(top);
-      margin-top: ($square-tooltip-nubbin / 2);
-
-      &:before {
-        background: $color-background-alt;
-      }
-
-      &:after {
-        background: $color-background-alt;
-        box-shadow: -1px -1px 0 0 rgba(0, 0, 0, 0.16);
-        z-index: -1;
-      }
-
-      &.slds-dropdown_left,
-      &.slds-dropdown--left {
-        left: ($spacing-medium * -1);
-
-        &:before,
-        &:after {
-          left: $spacing-large;
-          margin-left: 0;
-        }
-      }
-
-      &.slds-dropdown_right,
-      &.slds-dropdown--right {
-        right: ($spacing-medium * -1);
-
-        &:before,
-        &:after {
-          left: auto;
-          right: $spacing-large;
-          margin-left: 0;
-        }
-      }
-    }
-  }
-
   /**
    * @summary Adds padding to area above dropdown menu list
    * @selector .slds-dropdown__header
    * @restrict .slds-dropdown li
    */
   &__header {
+    @include text-title;
     padding: $spacing-x-small $spacing-small;
   }
 
@@ -440,11 +377,13 @@
    */
   &__item {
     line-height: $line-height-text;
+    font-weight: $font-weight-regular;
 
     > a {
       position: relative;
       display: flex;
       justify-content: space-between;
+      align-items: center;
       padding: $spacing-x-small $spacing-small;
       color: $color-text-default;
       white-space: nowrap;
@@ -468,6 +407,69 @@
 
         &:hover {
           background-color: transparent;
+        }
+
+        .slds-icon {
+          fill: $color-text-button-default-disabled;
+        }
+      }
+
+      /**
+       * @summary Places a menu item into an errored state
+       *
+       * @selector .slds-has-error
+       * @restrict .slds-dropdown__item > a
+       * @modifier
+       * @group notification
+       */
+      &.slds-has-error {
+        background: $color-background-destructive;
+      }
+
+      /**
+       * @summary Places a menu item into a success state
+       *
+       * @selector .slds-has-success
+       * @restrict .slds-dropdown__item > a
+       * @modifier
+       * @group notification
+       */
+      &.slds-has-success {
+        background: $color-background-success-dark;
+      }
+
+      &.slds-has-error,
+      &.slds-has-success {
+        color: $color-gray-1;
+      }
+
+      /**
+       * @summary Places a menu item into a warning state
+       *
+       * @selector .slds-has-warning
+       * @restrict .slds-dropdown__item > a
+       * @modifier
+       * @group notification
+       */
+      &.slds-has-warning {
+        background: $color-background-warning;
+
+        .slds-indicator_unread {
+          background-color: currentColor;
+        }
+
+        .slds-indicator_unsaved {
+          color: currentColor;
+        }
+      }
+
+      &.slds-has-error,
+      &.slds-has-success,
+      &.slds-has-warning {
+
+        &:hover,
+        &:focus {
+          text-decoration: underline;
         }
       }
     }
@@ -493,54 +495,9 @@
     &.slds-is-selected .slds-icon--selected {
       opacity: 1;
     }
-  }
 
-  @include deprecate('4.0.0') {
-
-    .slds-has-icon {
-      position: relative;
-
-      &_left > a,
-      &--left > a,
-      &_left > span,
-      &--left > span {
-        padding-left: $spacing-x-large;
-      }
-
-      &_right > a,
-      &--right > a,
-      &_right > span,
-      &--right > span {
-        padding-right: $spacing-x-large;
-      }
-
-      &_left-right > a,
-      &--left-right > a,
-      &_left-right > span,
-      &--left-right > span {
-        padding: {
-          left: $spacing-x-large;
-          right: $spacing-x-large;
-        }
-      }
-
-      .slds-icon {
-        @include square($square-icon-medium-content);
-        position: absolute;
-        top: 50%;
-        margin-top: (($square-icon-medium-content / 2) * -1);
-        fill: $color-text-icon-default;
-
-        &_left,
-        &--left {
-          left: $spacing-small;
-        }
-
-        &_right,
-        &--right {
-          right: $spacing-small;
-        }
-      }
+    &.slds-has-notification .slds-indicator_unsaved {
+      top: rem(-6px);
     }
-  } // Deprecate has-icon
+  }
 }
